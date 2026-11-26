@@ -12,7 +12,7 @@ namespace SyndicateLauncher.Services;
 /// change here shows up in game at once, even mid-match. With the Syndicate menu setting off, GameLauncher
 /// still loads SyndicateMenu.dll when the crosshair is on, after writing menu-load.txt = "crosshair": the DLL
 /// then runs in crosshair-only mode (no menu, keys, game-object scan or other hooks), so nothing else of the
-/// menu is in the match and achievements still count.
+/// menu is in the match and matches still pay V-Bucks.
 /// </summary>
 public static class CrosshairService
 {

@@ -200,7 +200,7 @@
                 <Border Grid.Column="3" Height="46" CornerRadius="23" Padding="7,0,20,0" Margin="0,0,14,0"
                         VerticalAlignment="Center" BorderBrush="#2EFFFFFF" BorderThickness="1"
                         Background="{DynamicResource Tint_D90A0A0A}"
-                        ToolTip="Your V-Bucks. Earn more by claiming Tilt Achievements.">
+                        ToolTip="Your V-Bucks. Eliminations and wins in matches earn more.">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Image Source="/SyndicateLauncher;component/Assets/vbucks.png" Width="32" Height="32"
                                RenderOptions.BitmapScalingMode="HighQuality" />
@@ -360,7 +360,7 @@
                 </Grid>
             </Border>
 
-            <!-- Career + achievement progress -->
+            <!-- Career totals and win rate -->
             <Border Grid.Column="4" Style="{StaticResource Glass}">
                 <Grid>
                     <Grid.RowDefinitions>

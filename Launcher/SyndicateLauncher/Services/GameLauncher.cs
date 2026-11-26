@@ -667,10 +667,10 @@ public static class GameLauncher
             GameInstallation.Validate(build, Runtime, Record);
             status("Starting the local login backend...");
             var exchangeCode = await StartBackendAsync(profile, season, status);
-            // Syndicate Achievements: matches played with the Syndicate menu on don't count. The backend has to know
+            // Matches played with the in-game menu on pay no V-Bucks (backend syndicateProgression.js). The backend has to know
             // before the first match event of this session arrives, so it is set here, at every launch.
             try { await SyndicateBackend.SetMenuAsync(profile.Name, enableMenu); }
-            catch (Exception e) { Record("Achievements: could not tell the backend the menu state (" + e.Message + ")."); }
+            catch (Exception e) { Record("Menu state: could not tell the backend ("  + e.Message + ")."); }
             LastLaunch = (profile.Name, season, enableMenu);
             if (!syndicateServer)
             {

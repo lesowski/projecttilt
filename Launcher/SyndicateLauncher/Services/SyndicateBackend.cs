@@ -334,8 +334,8 @@ public static class SyndicateBackend
     }
 
     /// <summary>
-    /// Tells the backend whether this launch has the Syndicate menu on. While it is, no match counts toward Syndicate
-    /// Achievements (backend Utils/syndicateAchievements.js). Set at every launch, never at exit.
+    /// Tells the backend whether this launch has the in-game menu on. While it is, kills and wins pay no V-Bucks
+    /// (backend Utils/syndicateProgression.js). Set at every launch, never at exit.
     /// </summary>
     public static Task SetMenuAsync(string username, bool active) =>
         PostAsPlayerAsync(username, "launcher/menu", new { active });
