@@ -207,6 +207,6 @@ public sealed partial class MainViewModel
     public string CrosshairSummary => !Cross.Enabled
         ? "Off. Turn it on to see it in your next match."
         : EnableMenu
-            ? "On. Drawn by the Syndicate menu; changes show in game right away."
-            : "On. Changes show in game right away, even mid-match. The Syndicate menu stays off; only the crosshair loads.";
+            ? "On. Drawn by the Tilt menu; changes show in game right away."
+            : "On. Changes show in game right away, even mid-match. The Tilt menu stays off; only the crosshair loads.";
 }

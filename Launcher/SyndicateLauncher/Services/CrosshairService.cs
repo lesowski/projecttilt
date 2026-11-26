@@ -38,7 +38,7 @@ public static class CrosshairService
         static string B(bool v) => v ? "1" : "0";
         static string I(int v) => v.ToString(CultureInfo.InvariantCulture);
         var sb = new StringBuilder();
-        sb.Append("; Syndicate crosshair. Written by the launcher (Settings > Display > Crosshair); edits here are overwritten.\r\n");
+        sb.Append("; Tilt crosshair. Written by the launcher (Settings > Display > Crosshair); edits here are overwritten.\r\n");
         sb.Append("enabled=").Append(B(c.Enabled)).Append("\r\n");
         sb.Append("lines=").Append(B(c.Lines)).Append("\r\n");
         sb.Append("t=").Append(B(c.TStyle)).Append("\r\n");

@@ -69,7 +69,7 @@ namespace SyndicateLauncher.Studio
                 host.Environment["TILTED_BOT_COUNT"] = "0";
             }
             else host.Environment.Remove("TILTED_STUDIO");
-            record?.Invoke("Syndicate Studio is open: " + studio.Playlist + (studio.StudioMatch ? ", Studio match (no bots, endless warm-up)" : ", normal match") + ", dev live data on");
+            record?.Invoke("Tilt Studio is open: " + studio.Playlist + (studio.StudioMatch ? ", Studio match (no bots, endless warm-up)" : ", normal match") + ", dev live data on");
             return studio.Playlist;
         }
 

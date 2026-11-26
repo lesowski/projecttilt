@@ -25,7 +25,7 @@
   </PropertyGroup>
   <!-- Splash logo and exe icon come from the launcher's own assets. -->
   <PropertyGroup>
-    <ApplicationIcon>..\..\..\Launcher\SyndicateLauncher\Assets\syndicate.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\..\Launcher\SyndicateLauncher\Assets\tilt.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\..\..\Launcher\SyndicateLauncher\Assets\logo.png" LogicalName="Syndicate.Logo" />

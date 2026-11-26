@@ -324,9 +324,9 @@ public sealed partial class MainViewModel : ViewModelBase
         public string LauncherVersionText => ResolveLauncherVersion();
         /// <summary>The release build stamp ("Build 2026.11.17.0430"), or "" in a dev build.</summary>
         public string LauncherBuildText => ResolveReleaseTag() is { } tag ? "Build " + tag.TrimStart('v', 'V') : "";
-        public string SettingsVersionLine => "SYNDICATE " + LauncherVersionText
+        public string SettingsVersionLine => "TILT " + LauncherVersionText
             + (LauncherBuildText.Length > 0 ? " (" + LauncherBuildText + ")" : "") + "\nEsc closes settings";
-        public string AboutVersionLine => "Syndicate Launcher " + LauncherVersionText
+        public string AboutVersionLine => "Tilt Launcher " + LauncherVersionText
             + (LauncherBuildText.Length > 0 ? " (" + LauncherBuildText + ")" : "") + " - Chapter 1 (1.7.2 to 10.40)";
 
         // The version players see is the launcher's own version (<Version> in SyndicateLauncher.csproj, which
@@ -399,7 +399,7 @@ public sealed partial class MainViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Couldn't open the Syndicate Discord: {ex.Message}";
+            StatusMessage = $"Couldn't open the Tilt Discord: {ex.Message}";
         }
     }
     private void OpenSupport()
@@ -410,7 +410,7 @@ public sealed partial class MainViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Couldn't open Syndicate support: {ex.Message}";
+            StatusMessage = $"Couldn't open Tilt support: {ex.Message}";
         }
     }
     private void OpenDonate()
@@ -1123,7 +1123,7 @@ public sealed partial class MainViewModel : ViewModelBase
             studioStatus?.Invoke("Create a profile in the launcher first (Settings).");
             return false;
         }
-        SetServerStatus("Starting the Syndicate server...", ServerStatusKind.Starting);
+        SetServerStatus("Starting the Tilt server...", ServerStatusKind.Starting);
         try
         {
             var botNames = RosterForMatch();
@@ -1234,7 +1234,7 @@ public sealed partial class MainViewModel : ViewModelBase
         5 => "A realistic lobby: 15% beginner, 30% average, 30% above-average, 20% advanced, 5% pro.",
         _ => "Higher sliders make that aspect more capable or more frequent. Settings apply to the next launched server."
     };
-    public string BotChipText=>"AI: Syndicate";
+    public string BotChipText=>"AI: Tilt";
     // Profiles -----------------------------------------------------------
     public ObservableCollection<Profile> Profiles { get; } = new();
     public bool HasProfiles => Profiles.Count > 0;
@@ -1384,7 +1384,7 @@ public sealed partial class MainViewModel : ViewModelBase
     public string NewProfileModeDescription => NewProfileIsProgression
         ? "Progression Mode is for users who want to feel that Nostalgic grinding feeling again. You start at level 0, tier 0. You can complete challenges and work your way through the battle pass"
         : "Unlock All is for users who want to enjoy the classic game but be able to use all cosmetics";
-    public string DifficultyMeta => $"AI: Syndicate · {DifficultyName}";
+    public string DifficultyMeta => $"AI: Tilt · {DifficultyName}";
     public string NewProfileName
     {
         get => _newProfileName;

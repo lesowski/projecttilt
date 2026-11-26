@@ -36,7 +36,7 @@ public partial class MainWindow : Window
         model.LogAdded += OnDiagnosticsLog;
         model.ProblemReported += ShowProblem;
         model.ProblemsResolved += ResolveProblems;
-        AddDiagnosticsLine("Syndicate launcher ready.");
+        AddDiagnosticsLine("Tilt launcher ready.");
         BrowserTimeline.PositionChanged += OnTimelinePositionChanged;
         BrowserSlider.AddHandler(Thumb.DragStartedEvent, new DragStartedEventHandler(OnSliderDragStarted));
         BrowserSlider.AddHandler(Thumb.DragDeltaEvent, new DragDeltaEventHandler(OnSliderDragDelta));
@@ -52,7 +52,7 @@ public partial class MainWindow : Window
 #if DEV_BUILD
         DevBadge.Visibility = Visibility.Visible;
         StudioNavButton.Visibility = Visibility.Visible;
-        Title = "Syndicate Launcher (DEV)";
+        Title = "Tilt Launcher (DEV)";
 #endif
     }
 
@@ -694,8 +694,8 @@ public partial class MainWindow : Window
             "Your local match: how many bots, how hard they are and what they're called. Changes apply to the next match.",
             "Extras that go beyond the original game, loaded with the next match.",
             "Your custom crosshair, field of view, stretched resolution and extra launch flags.",
-            "Your game folder, Syndicate's local files and version information.",
-            "Colours, your own themes and live effects. Saved on this PC and applied every time Syndicate opens."
+            "Your game folder, Tilt's local files and version information.",
+            "Colours, your own themes and live effects. Saved on this PC and applied every time Tilt opens."
         };
 
         SettingsPageTitle.Text = titles[index];

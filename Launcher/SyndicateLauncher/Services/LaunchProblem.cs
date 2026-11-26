@@ -44,7 +44,7 @@ public sealed record LaunchProblem(string Title, IReadOnlyList<string> Steps)
 #if DEV_BUILD
             "Run UPDATE FROM GIT.cmd again (it builds or copies " + module + " into Documents\\Syndicate\\Runtime\\dlls).",
 #else
-            "Close Syndicate, then reinstall the launcher - a game file was removed (usually by antivirus). Add the Syndicate folder to your antivirus exclusions first so it is not removed again.",
+            "Close Tilt, then reinstall the launcher - a game file was removed (usually by antivirus). Add the Tilt folder to your antivirus exclusions first so it is not removed again.",
 #endif
             "If Windows Security removed it, restore it from Protection history first.",
             "Press Play again."
@@ -90,7 +90,7 @@ public sealed record LaunchProblem(string Title, IReadOnlyList<string> Steps)
         new[]
         {
             "Check Windows Security > Protection history for a blocked or quarantined file.",
-            "Make sure the Syndicate folder is on a local drive (not a network or cloud-only folder).",
+            "Make sure the Tilt folder is on a local drive (not a network or cloud-only folder).",
             "Press Play again."
         });
 
@@ -99,12 +99,12 @@ public sealed record LaunchProblem(string Title, IReadOnlyList<string> Steps)
     internal static LaunchProblem IslandLoadFailed(string? exitCode, string? crashCode)
     {
         if (exitCode is null)
-            return new("[HOST-ISLAND-02] The Syndicate server timed out while loading the island.",
+            return new("[HOST-ISLAND-02] The Tilt server timed out while loading the island.",
                 new[] { "Close other memory-heavy apps and press Play again.", "If it happens again, send the log folder below to the team." });
 
         string details = crashCode is null || string.Equals(exitCode, crashCode, StringComparison.OrdinalIgnoreCase)
             ? exitCode : exitCode + ", native exception " + crashCode;
-        return new("[HOST-ISLAND-01] The Syndicate server exited while loading the island (" + details + ").",
+        return new("[HOST-ISLAND-01] The Tilt server exited while loading the island (" + details + ").",
             new[] { "Send the log folder below to the team. It includes any Erbium logs captured for this attempt." });
     }
 
@@ -136,7 +136,7 @@ public sealed record LaunchProblem(string Title, IReadOnlyList<string> Steps)
 #if DEV_BUILD
             return new("The launcher's game files don't match.", new[] { "Run UPDATE FROM GIT.cmd (or extract the complete launcher ZIP again).", "Press Play again." });
 #else
-            return new("The launcher's game files don't match.", new[] { "Close Syndicate, add the Syndicate folder to your antivirus exclusions, then reinstall the launcher - a file was changed or removed (often by antivirus).", "Press Play again." });
+            return new("The launcher's game files don't match.", new[] { "Close Tilt, add the Tilt folder to your antivirus exclusions, then reinstall the launcher - a file was changed or removed (often by antivirus).", "Press Play again." });
 #endif
         if (m.Contains("out of memory"))
             return new("Fortnite ran out of memory while loading.", new[] { "Close memory-heavy apps (browsers, editors).", "Make sure Windows manages the paging file and the drive has free space.", "Press Play again." });
@@ -150,9 +150,9 @@ public sealed record LaunchProblem(string Title, IReadOnlyList<string> Steps)
             return new(firstSentence, new[] { "Press Play again.", "If it happens again, send the log folder below to the team." });
         if (m.Contains("backend") || m.Contains("mongo") || m.Contains("node"))
 #if DEV_BUILD
-            return new("The local Syndicate backend didn't start.", new[] { "Run UPDATE FROM GIT.cmd (it repairs the backend and its Node/MongoDB files).", "Press Play again." });
+            return new("The local Tilt backend didn't start.", new[] { "Run UPDATE FROM GIT.cmd (it repairs the backend and its Node/MongoDB files).", "Press Play again." });
 #else
-            return new("The local Syndicate backend didn't start.", new[] { "Fully close Syndicate, then end any leftover node.exe or mongod.exe in Task Manager.", "Reopen the launcher; if it keeps happening, reinstall it." });
+            return new("The local Tilt backend didn't start.", new[] { "Fully close Tilt, then end any leftover node.exe or mongod.exe in Task Manager.", "Reopen the launcher; if it keeps happening, reinstall it." });
 #endif
         return new(firstSentence, new[] { "Press Play again.", "If it happens again, send the log folder below to the team." });
     }

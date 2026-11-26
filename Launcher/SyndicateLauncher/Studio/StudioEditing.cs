@@ -430,7 +430,7 @@ namespace SyndicateLauncher.Studio
             var list = ops.ToList();
             if (list.Count == 0) return true;
             var token = DevToken();
-            if (string.IsNullOrEmpty(token)) { Out("ERROR: the backend hasn't created its developer token yet — start Syndicate's local services first."); return false; }
+            if (string.IsNullOrEmpty(token)) { Out("ERROR: the backend hasn't created its developer token yet — start Tilt's local services first."); return false; }
             try
             {
                 // Sent in parts of at most ~80 KB: the backend's JSON body limit is 100 KB, and a big house with
@@ -749,7 +749,7 @@ namespace SyndicateLauncher.Studio
         void DeleteCustomPlot(string key)
         {
             if (FindPlot(key) is not { } found || !found.Custom) return;
-            if (MessageBox.Show(this, "Delete the House Plot \"" + found.Name + "\"?", "Syndicate Studio", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+            if (MessageBox.Show(this, "Delete the House Plot \"" + found.Name + "\"?", "Tilt Studio", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
             _plots.Remove(found);
             SaveCustomPlots();
             if (_contentPick == key) _contentPick = null;

@@ -71,7 +71,7 @@ public partial class App : Application
         {
             WriteCrash("main window", ex);
             splash?.Close();
-            MessageBox.Show("Syndicate Launcher could not start.\n\n" + ex.Message, "Syndicate Launcher",
+            MessageBox.Show("Tilt Launcher could not start.\n\n" + ex.Message, "Tilt Launcher",
                 MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown(1);
             return;
@@ -115,12 +115,12 @@ public partial class App : Application
                     {
                         var names = string.Join("\n  \x2022 ", result.Restored);
                         MessageBox.Show(
-                            "Syndicate detected that one or more game files were removed (likely by antivirus) " +
+                            "Tilt detected that one or more game files were removed (likely by antivirus) " +
                             "and has restored them automatically.\n\n" +
                             "Restored files:\n  \x2022 " + names + "\n\n" +
                             "These folders have also been re-added to your antivirus exclusion list " +
                             "so this should not happen again.",
-                            "Syndicate \x2014 Files Restored",
+                            "Tilt \x2014 Files Restored",
                             MessageBoxButton.OK,
                             MessageBoxImage.Information);
                     }
@@ -128,13 +128,13 @@ public partial class App : Application
                     {
                         var failed = string.Join("\n  \x2022 ", result.Failed);
                         MessageBox.Show(
-                            "Syndicate detected missing game files but could not fully restore them.\n\n" +
+                            "Tilt detected missing game files but could not fully restore them.\n\n" +
                             "Missing files:\n  \x2022 " + failed + "\n\n" +
                             (result.ErrorMessage is not null ? "Detail: " + result.ErrorMessage + "\n\n" : "") +
                             "If this keeps happening, re-download the launcher. " +
                             "You can also try the \x22Add to Antivirus Exclusions\x22 button in " +
                             "Settings \x2192 Launcher & files.",
-                            "Syndicate \x2014 File Recovery Failed",
+                            "Tilt \x2014 File Recovery Failed",
                             MessageBoxButton.OK,
                             MessageBoxImage.Warning);
                     }

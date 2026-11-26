@@ -270,7 +270,7 @@
                 <Border Grid.Column="3" Height="46" CornerRadius="23" Padding="7,0,20,0" Margin="0,0,14,0"
                         VerticalAlignment="Center" BorderBrush="#2EFFFFFF" BorderThickness="1"
                         Background="{DynamicResource Tint_D90A0A0A}"
-                        ToolTip="Your V-Bucks. Earn more by claiming Syndicate Achievements.">
+                        ToolTip="Your V-Bucks. Earn more by claiming Tilt Achievements.">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Image Source="/SyndicateLauncher;component/Assets/vbucks.png" Width="32" Height="32"
                                RenderOptions.BitmapScalingMode="HighQuality" />
@@ -346,7 +346,7 @@
                         <TextBlock Text="{Binding Home.TotalPlaytime}" Style="{StaticResource Big}" FontSize="52"
                                    TextTrimming="CharacterEllipsis" />
                         <TextBlock FontSize="10" Foreground="#A0A0A0" Margin="1,-2,0,0">
-                            <Run Text="{Binding Home.TotalGames, Mode=OneWay}" /><Run Text=" sessions in Syndicate" />
+                            <Run Text="{Binding Home.TotalGames, Mode=OneWay}" /><Run Text=" sessions in Tilt" />
                         </TextBlock>
                     </StackPanel>
                     <Border Grid.Row="2" CornerRadius="7" Background="#0FFFFFFF" Padding="10,7">
@@ -500,18 +500,18 @@
                         <Rectangle.RenderTransform><SkewTransform AngleX="-18" /></Rectangle.RenderTransform>
                     </Rectangle>
                 </Grid>
-                <TextBlock Text="SYNDICATE ACHIEVEMENTS" FontFamily="{StaticResource DisplayFont}" FontSize="13"
+                <TextBlock Text="TILT ACHIEVEMENTS" FontFamily="{StaticResource DisplayFont}" FontSize="13"
                            FontWeight="Bold" Foreground="{DynamicResource TextBrush}" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="14,0" VerticalAlignment="Center">
                 <!-- Menu on: say so up front, so nobody grinds a match that won't count. -->
                 <Border CornerRadius="10" Padding="9,3" Background="#33E0533B" BorderBrush="#66E0533B" BorderThickness="1"
                         Visibility="{Binding EnableMenu, Converter={StaticResource BoolToVis}}"
-                        ToolTip="Matches played with the Syndicate menu on earn no V-Bucks and don't count toward achievements. Legit matches pay 100 V-Bucks a kill and 1,500 a win. Turn the menu off in Settings.">
+                        ToolTip="Matches played with the Tilt menu on earn no V-Bucks and don't count toward achievements. Legit matches pay 100 V-Bucks a kill and 1,500 a win. Turn the menu off in Settings.">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE7BA;" FontFamily="{StaticResource IconFont}" FontSize="9" Foreground="#FF9C8A"
                                    VerticalAlignment="Center" />
-                        <TextBlock Text="Syndicate menu is on: no V-Bucks or achievements" FontSize="9.5" FontWeight="SemiBold"
+                        <TextBlock Text="Tilt menu is on: no V-Bucks or achievements" FontSize="9.5" FontWeight="SemiBold"
                                    Foreground="#FFC9BE" Margin="6,0,0,0" />
                     </StackPanel>
                 </Border>
@@ -541,7 +541,7 @@
             </ItemsControl>
             <Border Style="{StaticResource Glass}" Visibility="{Binding Home.ShowAchievementsPlaceholder, Converter={StaticResource BoolToVis}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Achievements load from the Syndicate backend" FontSize="12" FontWeight="SemiBold"
+                    <TextBlock Text="Achievements load from the Tilt backend" FontSize="12" FontWeight="SemiBold"
                                Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" />
                     <TextBlock Text="Link your Fortnite build and they'll show up here. Every season counts." FontSize="10"
                                Foreground="#9A9A9A" HorizontalAlignment="Center" Margin="0,4,0,8" />
@@ -569,10 +569,10 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <StackPanel>
-                        <TextBlock Text="SYNDICATE ACHIEVEMENTS" FontFamily="{StaticResource BurbankFont}" FontSize="34"
+                        <TextBlock Text="TILT ACHIEVEMENTS" FontFamily="{StaticResource BurbankFont}" FontSize="34"
                                    Foreground="{DynamicResource TextBrush}" />
                         <TextBlock FontSize="10.5" Foreground="#A0A0A0" Margin="0,-2,0,0"
-                                   Text="Unlock them in any season and claim real V-Bucks. Matches with the Syndicate menu on don't count and earn no V-Bucks." />
+                                   Text="Unlock them in any season and claim real V-Bucks. Matches with the Tilt menu on don't count and earn no V-Bucks." />
                     </StackPanel>
                     <Border Grid.Column="1" CornerRadius="18" Padding="6,4,14,4" Margin="0,0,14,0" VerticalAlignment="Center"
                             Background="{DynamicResource Tint_D90A0A0A}" BorderBrush="#2EFFFFFF" BorderThickness="1">

@@ -50,7 +50,7 @@ public static class RuntimeBundle
         if (Complete(external)) return external;
         using var stream = openBundle();
         if (stream is null)
-            throw new InvalidOperationException("Syndicate's required files are missing. Extract the entire launcher archive into a normal folder, then open SyndicateLauncher.exe there. Do not run it inside the ZIP/RAR preview.");
+            throw new InvalidOperationException("Tilt's required files are missing. Extract the entire launcher archive into a normal folder, then open the launcher there. Do not run it inside the ZIP/RAR preview.");
         if (!stream.CanSeek) throw new InvalidDataException("The bundled launcher files could not be read. Download the complete launcher again.");
         var identity = Convert.ToHexString(SHA256.HashData(stream)).ToLowerInvariant();
         stream.Position = 0;
@@ -68,7 +68,7 @@ public static class RuntimeBundle
         bool locked;
         try { locked = mutex.WaitOne(TimeSpan.FromSeconds(20)); }
         catch (AbandonedMutexException) { locked = true; }
-        if (!locked) throw new IOException("Another Syndicate launcher is preparing its files. Wait a moment, then press Play again.");
+        if (!locked) throw new IOException("Another Tilt launcher is preparing its files. Wait a moment, then press Play again.");
         try
         {
             if (VerifiedCache(destination, identity, manifestHash)) return destination;
@@ -118,7 +118,7 @@ public static class RuntimeBundle
             }
         }
         catch (UnauthorizedAccessException ex)
-        { throw new IOException("Syndicate could not prepare its files in your local app folder. Check that the folder is writable and try again.", ex); }
+        { throw new IOException("Tilt could not prepare its files in your local app folder. Check that the folder is writable and try again.", ex); }
         finally { mutex.ReleaseMutex(); }
     }
 }

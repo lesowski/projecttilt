@@ -397,7 +397,7 @@ public sealed class ControllerService : IDisposable
             Identity = SafeSerial(dev);
             if (Identity.Length == 0 && Connection == "USB") Identity = ReadUsbMac(stream, _dualSense);
             if (Connection == "Bluetooth") RequestFullReports(dev, stream, _dualSense);
-            _thread = new Thread(ReadLoop) { IsBackground = true, Name = "Syndicate controller", Priority = ThreadPriority.Highest };
+            _thread = new Thread(ReadLoop) { IsBackground = true, Name = "Tilt controller", Priority = ThreadPriority.Highest };
         }
 
         public static SonyPad? TryOpen(HidDevice dev, string model, ViGEmClient client, Func<SonyPad, bool> tryClaim, Action<SonyPad> wentLive, Action<SonyPad> release)

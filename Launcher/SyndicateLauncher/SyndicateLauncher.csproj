@@ -7,16 +7,19 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>SyndicateLauncher</AssemblyName>
     <RootNamespace>SyndicateLauncher</RootNamespace>
-    <ApplicationIcon>Assets\syndicate.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\tilt.ico</ApplicationIcon>
     <Version>1.3.1</Version>
     <PlatformTarget>x64</PlatformTarget>
-    <Product>Syndicate Launcher</Product>
-    <Company>Syndicate</Company>
-    <Authors>Unkn0wn (d4shyb0i), Joey, Sact, Trent, Alfie</Authors>
-    <Copyright>Copyright (c) 2026 Unkn0wn, Joey, Sact, Trent, and Alfie (Syndicate). All rights reserved.</Copyright>
-    <Trademark>Syndicate</Trademark>
-    <AssemblyTitle>Syndicate Launcher</AssemblyTitle>
-    <Description>Syndicate Launcher. Made by Unkn0wn, Joey, Sact, Trent, and Alfie. Unauthorized redistribution or rebranding is prohibited.</Description>
+    <!-- AssemblyName/RootNamespace stay SyndicateLauncher (pack URIs, embedded runtime, obfuscar.xml and the dev
+         scripts depend on them). Launcher/build-public.cmd and build-dev.cmd name the shipped exe TiltLauncher. -->
+    <Product>Tilt Launcher</Product>
+    <Company>Project Tilt</Company>
+    <Authors>Project Tilt; original launcher by Unkn0wn (d4shyb0i), Joey, Sact, Trent, Alfie</Authors>
+    <!-- The original authors' MIT copyright notice must stay (LICENSE). -->
+    <Copyright>Copyright (c) 2026 Project Tilt. Based on MIT-licensed code, Copyright (c) 2026 Unkn0wn, Joey, Sact, Trent, and Alfie.</Copyright>
+    <Trademark>Tilt</Trademark>
+    <AssemblyTitle>Tilt Launcher</AssemblyTitle>
+    <Description>Tilt Launcher.</Description>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
   <!-- UPDATE FROM GIT.cmd builds with -p:SyndicateDevBuild=true: shows the DEV LAUNCHER badge. Release builds (build.bat) don't. -->
@@ -42,7 +45,7 @@
     <Resource Include="Assets\Season 9 Wheel page background.png" />
     <Resource Include="Assets\Season x wheel page background.png" />
     <Resource Include="Assets\BurbankBigCondensedBold.otf" />
-    <Resource Include="Assets\syndicate.ico" />
+    <Resource Include="Assets\tilt.ico" />
     <Resource Include="Assets\chapter-1-bg.png" />
     <Resource Include="Assets\chapter-2-bg.png" />
     <Resource Include="Assets\chapter2-season1.png" />

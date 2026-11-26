@@ -126,7 +126,7 @@ public sealed class PadReader : IDisposable
 
         public SonyNavReader()
         {
-            new Thread(Run) { IsBackground = true, Name = "Syndicate launcher PS pad" }.Start();
+            new Thread(Run) { IsBackground = true, Name = "Tilt launcher PS pad" }.Start();
         }
 
         private void Run()

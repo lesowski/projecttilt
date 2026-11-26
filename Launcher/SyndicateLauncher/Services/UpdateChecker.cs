@@ -19,7 +19,9 @@ public static class UpdateChecker
 {
     // The public download repo. Releases are tagged by date, e.g. v2026-11-15, so a later tag sorts greater.
     // Checked in order; the newest release across them wins (same list as dev/standalone/Bootstrap/Updater.cs).
-    private static readonly string[] Repos = { "Sacttt/Syndicate-Launcher", "d4shyb0i/Syndicate-Launcher" };
+    // Empty until Tilt has its own public release repo ("owner/name"): the old list pointed at the original
+    // Syndicate team's repos, which would offer Tilt players a Syndicate download. With none, the check does nothing.
+    private static readonly string[] Repos = System.Array.Empty<string>();
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(10) };
     private static bool _done;
 
@@ -70,6 +72,7 @@ public static class UpdateChecker
         {
             if (_done) return;
             _done = true;
+            if (Repos.Length == 0) return;
 #if DEV_BUILD
             // The dev launcher (UPDATE FROM GIT) is built from source and is never replaced by a public release.
             // Runtime\release-tag.txt is checked into Git, so the tag file alone can't tell a dev copy apart.
@@ -116,9 +119,9 @@ public static class UpdateChecker
             app.Dispatcher.Invoke(() =>
             {
                 var choice = MessageBox.Show(
-                    $"A new version of Syndicate is available ({latest}).\n\n" +
+                    $"A new version of Tilt is available ({latest}).\n\n" +
                     "Download it now? Your accounts and settings are kept.",
-                    "Syndicate Update Available",
+                    "Tilt Update Available",
                     MessageBoxButton.YesNo, MessageBoxImage.Information);
                 if (choice == MessageBoxResult.Yes)
                 {

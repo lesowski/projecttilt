@@ -4,12 +4,12 @@
         xmlns:views="clr-namespace:SyndicateLauncher.Views"
         xmlns:ui="clr-namespace:SyndicateLauncher"
         xmlns:controls="clr-namespace:SyndicateLauncher.Controls"
-        Title="Syndicate Launcher"
+        Title="Tilt Launcher"
         Width="1248" Height="728"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None" Background="{DynamicResource Tint_FF0C0C0C}"
         ResizeMode="CanMinimize"
-        Icon="Assets/syndicate.ico"
+        Icon="Assets/tilt.ico"
         FontFamily="{StaticResource BodyFont}"
         TextOptions.TextFormattingMode="Display"
         UseLayoutRounding="True" SnapsToDevicePixels="True">
@@ -740,7 +740,7 @@
                                 <Button x:Name="StudioNavButton" Style="{StaticResource NavButton}" Content="Studio"
                                         Tag="&#xE70F;" ui:Ui.Active="{Binding IsStudioScreen}"
                                         Command="{Binding OpenStudioScreenCommand}" Visibility="Collapsed"
-                                        ToolTip="Syndicate Studio: run a match server, see the island and edit the map live"
+                                        ToolTip="Tilt Studio: run a match server, see the island and edit the map live"
                                         AutomationProperties.Name="Studio" />
                                 <Button Style="{StaticResource NavButton}" Content="Statistics"
                                         Tag="&#xE9D2;" ui:Ui.Active="{Binding IsStatsScreen}"
@@ -753,25 +753,25 @@
                                 <Border Height="1" Background="#12FFFFFF" Margin="13,9,13,10" />
                                 <Button Style="{StaticResource NavButton}" Content="Discord"
                                         Tag="&#xE8BD;" Command="{Binding OpenCommunityCommand}"
-                                        ToolTip="Join the Syndicate Discord"
+                                        ToolTip="Join the Tilt Discord"
                                         AutomationProperties.Name="Discord" />
                                 <Button Style="{StaticResource NavButton}" Content="Support"
                                         Tag="&#xE897;" Command="{Binding OpenSupportCommand}"
-                                        ToolTip="Get support in the Syndicate Discord"
+                                        ToolTip="Get support in the Tilt Discord"
                                         AutomationProperties.Name="Support" />
                                 <Button Style="{StaticResource NavButton}" Content="Credits"
                                         Tag="&#xE716;" ui:Ui.Active="{Binding IsCreditsScreen}"
                                         Command="{Binding OpenCreditsCommand}"
-                                        ToolTip="Meet the people behind Syndicate"
+                                        ToolTip="Meet the people behind Tilt"
                                         AutomationProperties.Name="Credits" />
                                 <Button Style="{StaticResource NavButton}" Content="Patch Notes"
                                         Tag="&#xE8A5;" ui:Ui.Active="{Binding IsPatchNotesScreen}"
                                         Command="{Binding OpenPatchNotesCommand}"
-                                        ToolTip="See what's new in this version of Syndicate"
+                                        ToolTip="See what's new in this version of Tilt"
                                         AutomationProperties.Name="Patch Notes" />
                                 <Button Style="{StaticResource NavButton}" Content="Donate"
                                         Tag="&#xE00B;" Command="{Binding OpenDonateCommand}"
-                                        ToolTip="Support Syndicate on Buy Me a Coffee"
+                                        ToolTip="Support Tilt on Buy Me a Coffee"
                                         AutomationProperties.Name="Donate" />
                             </StackPanel>
 
@@ -940,7 +940,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="26,0,0,0">
-                            <TextBlock Text="SYNDICATE" FontFamily="{StaticResource DisplayFont}" FontSize="22"
+                            <TextBlock Text="TILT" FontFamily="{StaticResource DisplayFont}" FontSize="22"
                                        FontWeight="Bold" FontStyle="Italic" Foreground="{DynamicResource TextBrush}" />
                             <Border Width="1" Height="16" Background="#26FFFFFF" Margin="12,1,12,0" />
                             <TextBlock Text="R E S T O R A T I O N   P R O J E C T" FontSize="8"
@@ -1047,7 +1047,7 @@
                                             </LinearGradientBrush>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <TextBlock Text="SYNDICATE" FontFamily="{StaticResource DisplayFont}" FontSize="46"
+                                    <TextBlock Text="TILT" FontFamily="{StaticResource DisplayFont}" FontSize="46"
                                                FontWeight="Bold" FontStyle="Italic" Foreground="#FFFFFF"
                                                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,24,10"
                                                IsHitTestVisible="False">
@@ -1083,7 +1083,7 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <TextBlock Text="Syndicate" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" />
+                                        <TextBlock Text="Tilt" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextBrush}" />
                                         <TextBlock Grid.Row="1" Margin="0,12,0,0" FontSize="11" LineHeight="17" TextWrapping="Wrap"
                                                    Foreground="#C9C9C9"
                                                    Text="Welcome back! Pick a season on the Play tab, or launch straight into your current build." />
@@ -1152,7 +1152,7 @@
 
                                         <Border Grid.Row="6" Height="1" Background="#26FFFFFF" Margin="0,22,0,14" />
                                         <StackPanel Grid.Row="7">
-                                            <TextBlock Text="VISIT SYNDICATE ON:" FontSize="8.5" FontWeight="SemiBold" Foreground="#BDBDBD" />
+                                            <TextBlock Text="VISIT TILT ON:" FontSize="8.5" FontWeight="SemiBold" Foreground="#BDBDBD" />
                                             <StackPanel Orientation="Horizontal" Margin="0,9,0,0">
                                                 <Button Style="{StaticResource OgLinkButton}" Content="&#xE8BD;" ToolTip="Discord"
                                                         Command="{Binding OpenCommunityCommand}" AutomationProperties.Name="Discord" />
@@ -1189,7 +1189,7 @@
                                         <ImageBrush ImageSource="Assets/chapter-2-bg.png" Stretch="UniformToFill" />
                                     </Button.Background>
                                 </Button>
-                                <Button Grid.Column="4" Style="{StaticResource OgNewsCard}" Content="JOIN THE SYNDICATE DISCORD" Tag="Visit Now"
+                                <Button Grid.Column="4" Style="{StaticResource OgNewsCard}" Content="JOIN THE TILT DISCORD" Tag="Visit Now"
                                         Command="{Binding OpenCommunityCommand}" AutomationProperties.Name="Discord">
                                     <Button.Background>
                                         <ImageBrush ImageSource="Assets/og-card.png" Stretch="UniformToFill" />
@@ -1974,7 +1974,7 @@
                                             <TextBlock Text="DEV LAUNCHER  ·  MAP EDITOR" FontSize="9" FontWeight="Bold"
                                                        Foreground="{DynamicResource AccentBrush}" />
                                         </Border>
-                                        <TextBlock Text="SYNDICATE" FontFamily="{StaticResource DisplayFont}" FontSize="22"
+                                        <TextBlock Text="TILT" FontFamily="{StaticResource DisplayFont}" FontSize="22"
                                                    FontWeight="Bold" FontStyle="Italic" Foreground="#D8D8D8" Margin="2,16,0,0" />
                                         <TextBlock Text="STUDIO" FontFamily="{StaticResource DisplayFont}" FontSize="70"
                                                    FontWeight="Bold" FontStyle="Italic" Foreground="{DynamicResource TextBrush}"
@@ -2016,7 +2016,7 @@
                                                                Margin="8,0,0,0" VerticalAlignment="Center" />
                                                 </StackPanel>
                                             </Button>
-                                            <TextBlock Text="Pick the season and press Start inside the Studio.&#10;The Syndicate menu stays off in Studio sessions."
+                                            <TextBlock Text="Pick the season and press Start inside the Studio.&#10;The Tilt menu stays off in Studio sessions."
                                                        FontSize="10" Foreground="#9A9A9A" LineHeight="15" Margin="18,0,0,0"
                                                        VerticalAlignment="Center" />
                                         </StackPanel>
@@ -2107,7 +2107,7 @@
                                                     <StackPanel Orientation="Horizontal">
                                                         <Border Width="26" Height="2" Background="{DynamicResource AccentBrush}"
                                                                 VerticalAlignment="Center" />
-                                                        <TextBlock Text="SYNDICATE TEAM" FontSize="7.5" FontWeight="Bold"
+                                                        <TextBlock Text="ORIGINAL TEAM" FontSize="7.5" FontWeight="Bold"
                                                                    Foreground="{DynamicResource AccentSoftBrush}"
                                                                    Margin="10,0,0,0" VerticalAlignment="Center" />
                                                     </StackPanel>
@@ -2115,7 +2115,7 @@
                                                                FontSize="64" FontWeight="Bold" FontStretch="Condensed"
                                                                FontStyle="Normal" Foreground="#FFFFFF"
                                                                LineHeight="64" Margin="0,4,0,0" />
-                                                    <TextBlock Text="The people who build, test, and support Syndicate Local."
+                                                    <TextBlock Text="The people who built the launcher, bots and servers Tilt is based on."
                                                                FontSize="11" Foreground="#C0C0C0" Margin="2,2,0,0" />
                                                 </StackPanel>
                                                 <Button Style="{StaticResource GhostButton}" Height="32" Padding="14,0"
@@ -2197,7 +2197,7 @@
                                                             </Border>
                                                             <StackPanel Grid.Column="1">
                                                                 <TextBlock Text="trentlab" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Contributed to some fixes in the new launcher (Syndicate Launcher V2) for in game QOL (Quality of Life) options"
+                                                                <TextBlock Text="Contributed to some fixes in the new launcher (Launcher V2) for in game QOL (Quality of Life) options"
                                                                            Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
                                                             </StackPanel>
                                                         </Grid>
@@ -2214,7 +2214,7 @@
                                                             </Border>
                                                             <StackPanel Grid.Column="1">
                                                                 <TextBlock Text="Sact" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Syndicate developer"
+                                                                <TextBlock Text="Original developer"
                                                                            Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
                                                             </StackPanel>
                                                         </Grid>
@@ -2231,7 +2231,7 @@
                                                             </Border>
                                                             <StackPanel Grid.Column="1">
                                                                 <TextBlock Text="Unkn0wn" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Syndicate developer"
+                                                                <TextBlock Text="Original developer"
                                                                            Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
                                                             </StackPanel>
                                                         </Grid>
@@ -2248,7 +2248,7 @@
                                                             </Border>
                                                             <StackPanel Grid.Column="1">
                                                                 <TextBlock Text="Alfie" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Syndicate developer"
+                                                                <TextBlock Text="Original developer"
                                                                            Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
                                                             </StackPanel>
                                                         </Grid>
@@ -2285,7 +2285,7 @@
                                                         </Border>
                                                         <StackPanel Grid.Column="1">
                                                             <TextBlock Text="trentlab" Style="{StaticResource CreditsName}" />
-                                                            <TextBlock Text="Designed the NEW Syndicate Launcher V2 UI and contributed to UI Changes/Improvements in the Syndicate Cheat Menu"
+                                                            <TextBlock Text="Designed the Launcher V2 UI and contributed UI changes and improvements to the in-game menu"
                                                                        Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
                                                         </StackPanel>
                                                     </Grid>
@@ -2322,7 +2322,7 @@
                                                             </Border>
                                                             <StackPanel Grid.Column="1">
                                                                 <TextBlock Text="trentlab" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Contributed launcher fixes and UI design across Syndicate Launcher V2."
+                                                                <TextBlock Text="Contributed launcher fixes and UI design across Launcher V2."
                                                                            Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
                                                             </StackPanel>
                                                         </Grid>
@@ -2339,7 +2339,7 @@
                                                             </Border>
                                                             <StackPanel Grid.Column="1">
                                                                 <TextBlock Text="hobosunite" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Coded the entire Syndicate Cheat Menu cheat's ensuring they work correctly"
+                                                                <TextBlock Text="Coded the entire in-game menu and made sure every feature works correctly"
                                                                            Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
                                                             </StackPanel>
                                                         </Grid>
@@ -2362,7 +2362,7 @@
                                                                    FontFamily="{StaticResource DisplayFont}" FontSize="22"
                                                                    FontWeight="Bold" FontStyle="Italic" Foreground="#FFFFFF"
                                                                    Margin="0,4,0,0" />
-                                                        <TextBlock Text="We'd like to thank our Patreon Supporters &amp; Bug Testers that helped report bugs and gave and continue to give feedback on the launcher and ai's as well as overall gameplay. Without them Syndicate Local wouldn't be as amazing as it is today!"
+                                                        <TextBlock Text="We'd like to thank our Patreon Supporters &amp; Bug Testers that helped report bugs and gave and continue to give feedback on the launcher and ai's as well as overall gameplay. Without them this project wouldn't be as good as it is today!"
                                                                    FontSize="10.5" Foreground="#CECECE" TextWrapping="Wrap"
                                                                    LineHeight="17" MaxWidth="840" HorizontalAlignment="Left"
                                                                    Margin="0,7,0,0" />
@@ -2465,7 +2465,7 @@
                                             <Border Style="{StaticResource StatCard}" Margin="0,14,10,0" Background="{DynamicResource Accent_14}"
                                                     BorderBrush="{DynamicResource Accent_4A}"
                                                     Visibility="{Binding BackendOffline, Converter={StaticResource BoolToVis}}">
-                                                <TextBlock Text="The Syndicate backend isn't running, so these are the numbers from your last visit. They update the next time the backend is on."
+                                                <TextBlock Text="The Tilt backend isn't running, so these are the numbers from your last visit. They update the next time the backend is on."
                                                            FontSize="11.5" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap" />
                                             </Border>
 
@@ -2739,7 +2739,7 @@
                                                 <StackPanel>
                                                     <StackPanel Orientation="Horizontal">
                                                         <Border Width="26" Height="2" Background="{DynamicResource AccentBrush}" VerticalAlignment="Center" />
-                                                        <TextBlock Text="WHAT'S NEW IN SYNDICATE" FontSize="7.5" FontWeight="Bold"
+                                                        <TextBlock Text="WHAT'S NEW IN TILT" FontSize="7.5" FontWeight="Bold"
                                                                    Foreground="{DynamicResource AccentSoftBrush}" Margin="10,0,0,0" VerticalAlignment="Center" />
                                                     </StackPanel>
                                                     <TextBlock Text="PATCH NOTES" FontFamily="{StaticResource BurbankFont}" FontSize="58"
@@ -3963,9 +3963,9 @@
 
                                                         <CheckBox Style="{StaticResource SwitchToggle}" Margin="0,18,0,0"
                                                                   IsChecked="{Binding EnableMenu}"
-                                                                  AutomationProperties.Name="Inject the Syndicate menu">
+                                                                  AutomationProperties.Name="Inject the Tilt menu">
                                                             <StackPanel>
-                                                                <TextBlock Text="Inject the Syndicate menu" FontSize="13.5"
+                                                                <TextBlock Text="Inject the Tilt menu" FontSize="13.5"
                                                                            FontWeight="Bold" Foreground="{DynamicResource TextBrush}" />
                                                                 <TextBlock Text="Loads the in-game menu in every season when Fortnite starts. Press Insert in-game to open it. ESP and aim only target bots. While it is on, matches earn no V-Bucks and don't count toward achievements."
                                                                            FontSize="11.5" Foreground="#8A8A8A" TextWrapping="Wrap"
@@ -4136,7 +4136,7 @@
                                                                     <StackPanel>
                                                                         <TextBlock Text="One-time step for PlayStation controllers" FontSize="12.5"
                                                                                    FontWeight="Bold" Foreground="#FFC857" />
-                                                                        <TextBlock Text="Install the free ViGEmBus driver (it creates the virtual Xbox controller), then press Check again. No restart of Syndicate needed."
+                                                                        <TextBlock Text="Install the free ViGEmBus driver (it creates the virtual Xbox controller), then press Check again. No restart of Tilt needed."
                                                                                    FontSize="11.5" Foreground="{DynamicResource TextBrush}" TextWrapping="Wrap"
                                                                                    Margin="0,4,0,10" />
                                                                         <StackPanel Orientation="Horizontal">
@@ -4542,11 +4542,11 @@
                                                         <!-- Discord status (Services/DiscordPresence.cs) -->
                                                         <CheckBox Style="{StaticResource SwitchToggle}" Margin="0,0,0,4"
                                                                   IsChecked="{Binding DiscordPresenceEnabled}"
-                                                                  AutomationProperties.Name="Show Syndicate in Discord">
+                                                                  AutomationProperties.Name="Show Tilt in Discord">
                                                             <StackPanel>
-                                                                <TextBlock Text="Show Syndicate in Discord" FontSize="13.5"
+                                                                <TextBlock Text="Show Tilt in Discord" FontSize="13.5"
                                                                            FontWeight="Bold" Foreground="{DynamicResource TextBrush}" />
-                                                                <TextBlock Text="Your Discord profile shows Playing SYNDICATE with the season, mode, players and bots left, and a Join Discord button. It runs in the background and never affects queues or matches."
+                                                                <TextBlock Text="Your Discord profile shows Playing TILT with the season, mode, players and bots left, and a Join Discord button. It runs in the background and never affects queues or matches."
                                                                            FontSize="11.5" Foreground="#8A8A8A" TextWrapping="Wrap" Margin="0,3,0,0" />
                                                             </StackPanel>
                                                         </CheckBox>
@@ -4556,7 +4556,7 @@
                                                         <!-- Antivirus exclusions -->
                                                         <TextBlock Text="Antivirus" FontSize="13.5" FontWeight="Bold"
                                                                    Foreground="{DynamicResource TextBrush}" />
-                                                        <TextBlock Text="Add Syndicate&amp;#x2019;s files to Windows Defender so they are not flagged or deleted while you play."
+                                                        <TextBlock Text="Add Tilt&amp;#x2019;s files to Windows Defender so they are not flagged or deleted while you play."
                                                                    FontSize="11.5" Foreground="#8A8A8A" TextWrapping="Wrap" Margin="0,4,0,10" />
 
                                                         <CheckBox Style="{StaticResource SwitchToggle}" Margin="0,0,0,14"
@@ -4565,7 +4565,7 @@
                                                             <StackPanel>
                                                                 <TextBlock Text="Add exclusions on startup" FontSize="13.5"
                                                                            FontWeight="Bold" Foreground="{DynamicResource TextBrush}" />
-                                                                <TextBlock Text="Silently adds Syndicate&amp;#x2019;s folders to Windows Defender&amp;#x2019;s exclusion list when the launcher opens. Use the button below if you need a prompt."
+                                                                <TextBlock Text="Silently adds Tilt&amp;#x2019;s folders to Windows Defender&amp;#x2019;s exclusion list when the launcher opens. Use the button below if you need a prompt."
                                                                            FontSize="11.5" Foreground="#8A8A8A" TextWrapping="Wrap" Margin="0,3,0,0" />
                                                             </StackPanel>
                                                         </CheckBox>
@@ -4574,7 +4574,7 @@
                                                             <Button Content="ADD TO EXCLUSIONS" Style="{StaticResource GhostButton}"
                                                                     Height="38" Padding="16,0"
                                                                     Command="{Binding AddExclusionsCommand}"
-                                                                    AutomationProperties.Name="Add Syndicate files to Windows Defender exclusions" />
+                                                                    AutomationProperties.Name="Add Tilt files to Windows Defender exclusions" />
                                                         </WrapPanel>
                                                         <TextBlock Text="{Binding ExclusionStatus}" FontSize="11"
                                                                    Foreground="#8A8A8A" TextWrapping="Wrap" Margin="0,8,0,0"
@@ -4611,7 +4611,7 @@
                                                         <StackPanel Margin="0,0,6,0">
                                                             <Grid Margin="0,0,12,10">
                                                                 <TextBlock Text="SIGNATURE" Style="{StaticResource ThemesSectionLabel}" />
-                                                                <TextBlock Text="Syndicate, plus the two classic launcher looks" FontSize="10"
+                                                                <TextBlock Text="Tilt, plus the two classic launcher looks" FontSize="10"
                                                                            Foreground="{DynamicResource DimTextBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" />
                                                             </Grid>
                                                             <ItemsControl x:Name="SignatureThemeList" ItemsSource="{Binding SignatureThemes}"

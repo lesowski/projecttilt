@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SyndicateLauncher.Services;
 
 /// <summary>
-/// Discord Rich Presence: "Playing SYNDICATE" with the Syndicate logo, the season, the mode, how many players are
+/// Discord Rich Presence: "Playing TILT" with the Syndicate logo, the season, the mode, how many players are
 /// left (and how many of them are bots), a match timer and a "Join Discord" button.
 ///
 /// Gameplay-neutral by design. It runs on its own background task while the launcher is open and only ever:
@@ -147,7 +147,7 @@ public static class DiscordPresence
             ["buttons"] = buttons
         };
         if (matchStarted > 0) activity["timestamps"] = new JsonObject { ["start"] = matchStarted };
-        if (profile.Length > 0) assets["large_text"] = "SYNDICATE · " + profile;
+        if (profile.Length > 0) assets["large_text"] = "TILT · " + profile;
         return activity;
     }
 

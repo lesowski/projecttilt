@@ -286,8 +286,8 @@ public static class GameLauncher
     {
         Dictionary<string, string>? hashes;
         try { hashes = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(Path.Combine(Runtime, "dlls", "manifest.json"))); }
-        catch (JsonException ex) { throw new InvalidOperationException("Syndicate's file manifest is damaged. Extract the complete launcher archive again.", ex); }
-        if (hashes is null) throw new InvalidOperationException("Syndicate's file manifest is empty. Extract the complete launcher archive again.");
+        catch (JsonException ex) { throw new InvalidOperationException("Tilt's file manifest is damaged. Extract the complete launcher archive again.", ex); }
+        if (hashes is null) throw new InvalidOperationException("Tilt's file manifest is empty. Extract the complete launcher archive again.");
         foreach (var name in ModuleStartup.RequiredModules)
         {
             var file = Path.Combine(Runtime, "dlls", name);
@@ -346,7 +346,7 @@ public static class GameLauncher
         ValidateBuild(build);
         if (IsRunning) throw new InvalidOperationException("This launcher already has a running game. Close it before starting another session.");
         if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(build.ExecutablePath)).Any())
-            throw new InvalidOperationException("Close the running Fortnite client/server before starting a new Syndicate session.");
+            throw new InvalidOperationException("Close the running Fortnite client/server before starting a new Tilt session.");
         await Task.Run(VerifyModules);
         // Syndicate Studio open (or its Start): SyndicateMenu.dll never loads into a Studio session, so its hooks
         // can't crash the docked game or fight SyndicateStudio.dll.
@@ -421,7 +421,7 @@ public static class GameLauncher
         if (syndicateServer)
         {
             if (syndicateRuntime.Length == 0)
-                throw new InvalidOperationException("The Syndicate Runtime\\Server folder could not be found next to Syndicate-backend.");
+                throw new InvalidOperationException("The Tilt Runtime\\Server folder could not be found next to Syndicate-backend.");
             Directory.CreateDirectory(syndicateRuntime);
 
             // The matchmaker checks the selected build against the client's build; a stale
@@ -546,7 +546,7 @@ public static class GameLauncher
             while (timer.Elapsed < TimeSpan.FromMinutes(6))
             {
                 if (process.HasExited)
-                    throw new InvalidOperationException("The Syndicate server host exited before the frontend loaded. Log: " + logPath);
+                    throw new InvalidOperationException("The Tilt server host exited before the frontend loaded. Log: " + logPath);
                 int logState = LogState();
                 if (logState == 2)
                 {
@@ -569,11 +569,11 @@ public static class GameLauncher
                 if (second != shownSecond)
                 {
                     shownSecond = second;
-                    status("Preparing the Syndicate server... " + second + "s");
+                    status("Preparing the Tilt server... " + second + "s");
                 }
                 await Task.Delay(500);
             }
-            throw new TimeoutException("The Syndicate server did not bring up the frontend within six minutes. Log: " + logPath);
+            throw new TimeoutException("The Tilt server did not bring up the frontend within six minutes. Log: " + logPath);
         }
 
         async Task Initialize(Process process, bool isHost, string log)
@@ -661,7 +661,7 @@ public static class GameLauncher
             string changelist = build.Changelist is int cl ? " CL-" + cl : " (changelist unavailable)";
             Record("Launcher " + typeof(GameLauncher).Assembly.GetName().Version?.ToString(3) + "; Fortnite " + build.Version + changelist);
             if (!useClientExtras) Record("Fortnite 2.5 compatibility: legacy loading option, optional client modules disabled.");
-            if (studioOpen) Record("Syndicate Studio is open: SyndicateMenu.dll is off for this session.");
+            if (studioOpen) Record("Tilt Studio is open: SyndicateMenu.dll is off for this session.");
             if (syndicateServer) Record("Bot difficulty: " + SyndicateSkillName(options.Difficulty));
             status("Checking Fortnite's content files...");
             GameInstallation.Validate(build, Runtime, Record);
@@ -697,7 +697,7 @@ public static class GameLauncher
             var clientInfo = CreateStartInfo(build, profile.Name, false, extraArguments, exchangeCode);
             clientInfo.ArgumentList.Add("-abslog=" + clientLog);
             options.Apply(clientInfo, false);
-            status(syndicateServer ? "Starting the Syndicate server..." : "Starting the Syndicate 10.40 server...");
+            status(syndicateServer ? "Starting the Tilt server..." : "Starting the Tilt 10.40 server...");
             if (!syndicateServer || NeedsEpicStub(build))
                 CompanionProcesses.Start(build, syndicateServer ? EpicCompanionArgs : "", process => { Owned.Add(process); Record("server companion " + process.ProcessName + " PID " + process.Id); });
             // Every host starts on a hidden desktop like in Syndicate, so its window never flashes up.
@@ -803,7 +803,7 @@ public static class GameLauncher
                 client = StartOwned(clientInfo); Client = client; activeGame = client; activeLog = clientLog;
                 clientInit = Initialize(client, false, clientLog);
                 InputMods.Attach(client.Id, season);
-                status("Syndicate is loading the map. Waiting for port 7777...");
+                status("Tilt is loading the map. Waiting for port 7777...");
                 await WaitJoinableAsync();
                 await clientInit;
                 if (client.HasExited)
@@ -963,7 +963,7 @@ public static class GameLauncher
         while (timer.Elapsed < TimeSpan.FromMinutes(6))
         {
             if (process.HasExited)
-                throw new InvalidOperationException("The Syndicate server host exited before the frontend loaded. Log: " + logPath);
+                throw new InvalidOperationException("The Tilt server host exited before the frontend loaded. Log: " + logPath);
             int logState = LogState();
             if (logState == 2)
             {
@@ -980,7 +980,7 @@ public static class GameLauncher
             }
             await Task.Delay(500);
         }
-        throw new TimeoutException("The Syndicate server did not bring up the frontend within six minutes. Log: " + logPath);
+        throw new TimeoutException("The Tilt server did not bring up the frontend within six minutes. Log: " + logPath);
     }
 
     private static string? SaveErbiumStartupLogs(int pid, string runtime, string sessionDirectory)
@@ -1063,7 +1063,7 @@ public static class GameLauncher
     {
         string erbium = FindSyndicateFile(@"Erbium-Quality-of-life-changes-main\Erbium\x64\Release\Erbium.dll", "Erbium.dll");
         if (erbium.Length == 0)
-            throw new InvalidOperationException("Erbium.dll is missing. Install Syndicate or copy Erbium.dll into Runtime\\dlls.");
+            throw new InvalidOperationException("Erbium.dll is missing. Reinstall Tilt or copy Erbium.dll into Runtime\\dlls.");
 
         string hostLog = Path.Combine(sessionDirectory, hostIndex <= 0 ? "host.log" : "host-" + hostIndex + ".log");
         string readyFile = Path.Combine(syndicateRuntime, slot.ReadyName);
@@ -1474,7 +1474,7 @@ public static class GameLauncher
                     standbyTries++;
                     string mode = MatchOptions.NormalizePlaylist(options.Playlist);
                     if (mode is "intro" or "creative") { }
-                    else if (Studio.StudioSession.Current() is not null) record("fast queue: off while Syndicate Studio is open");
+                    else if (Studio.StudioSession.Current() is not null) record("fast queue: off while Tilt Studio is open");
                     else if (PortInUse(currentSlot.Other.Port)) record("fast queue: skipped, port " + currentSlot.Other.Port + " is in use");
                     else
                     {

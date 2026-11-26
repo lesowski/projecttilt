@@ -101,7 +101,7 @@ public static class InputMods
         _sprintFlag = SprintByDefaultEnabled;
         _autoRunFlag = AutoRunEnabled;
         InstallSprintKeyHook();
-        var thread = new Thread(SprintLoop) { IsBackground = true, Name = "Syndicate sprint by default" };
+        var thread = new Thread(SprintLoop) { IsBackground = true, Name = "Tilt sprint by default" };
         thread.Start();    }
 
     /// <summary>Called when Fortnite starts. The loop follows the flags live.</summary>
@@ -302,7 +302,7 @@ public static class InputMods
             while (GetMessage(out MSG msg, IntPtr.Zero, 0, 0) > 0)
                 if (msg.message == WM_REHOOK) HookUp();
         })
-        { IsBackground = true, Name = "Syndicate sprint key hook" };
+        { IsBackground = true, Name = "Tilt sprint key hook" };
         _sprintHookThread.Start();
     }
 

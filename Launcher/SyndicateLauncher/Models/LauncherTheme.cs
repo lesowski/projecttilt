@@ -147,11 +147,12 @@ public static class ThemeCatalog
     public static readonly IReadOnlyList<ThemePalette> Presets = new[]
     {
         // Signature
-        P("syndicate", "Syndicate", "Signature", "The SYNDICATE look: graphite and clean white.",
+        // Keys stay "syndicate" / "classic-*": they are saved in settings.json (AppSettings.Theme).
+        P("syndicate", "Tilt", "Signature", "The TILT look: graphite and clean white.",
           "#F2F3F5", "#C9CBCF", "#0C0C0C", "#1B1B1B"),
-        P("classic-ice", "Syndicate Ice", "Signature", "The original Syndicate launcher look: deep navy, ice cyan and a gold play button.",
+        P("classic-ice", "Tilt Ice", "Signature", "The classic launcher look: deep navy, ice cyan and a gold play button.",
           "#3BD9FF", "#1E8FD0", "#06121D", "#0E2333", "#EAF6FF", "#F7D154", "#D9A514"),
-        P("classic-gold", "Syndicate Gold", "Signature", "The classic gold launcher look: charcoal olive and bright yellow.",
+        P("classic-gold", "Tilt Gold", "Signature", "The classic gold launcher look: charcoal olive and bright yellow.",
           "#FFD23F", "#F5A900", "#11120D", "#22241A", "#FFFFFF", "#FFE066", "#F5B400"),
 
         // Colour themes

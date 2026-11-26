@@ -73,7 +73,7 @@ public sealed class LaunchSplash
             var thread = new Thread(() => splash.Run(look, shown))
             {
                 IsBackground = true, // never keeps the launcher's process alive
-                Name = "Syndicate splash"
+                Name = "Tilt splash"
             };
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
@@ -202,7 +202,7 @@ internal sealed class SplashWindow : Window
     public SplashWindow(SplashLook look)
     {
         _look = look;
-        Title = "Syndicate Launcher";
+        Title = "Tilt Launcher";
         WindowStyle = WindowStyle.None;
         ResizeMode = ResizeMode.NoResize;
         WindowStartupLocation = WindowStartupLocation.Manual;
@@ -212,7 +212,7 @@ internal sealed class SplashWindow : Window
         Height = look.Bounds.Height;
         Topmost = true; // the main window opens underneath it
         // Not in the taskbar: the main window opens underneath the splash a moment later and is the launcher's one
-        // taskbar button. With both shown, Windows listed two "Syndicate Launcher" windows for the few seconds the
+        // taskbar button. With both shown, Windows listed two "Tilt Launcher" windows for the few seconds the
         // splash plays out (reported 2026-11-14: "2 tabs of the app open on my taskbar").
         ShowInTaskbar = false;
         UseLayoutRounding = true;
@@ -227,7 +227,7 @@ internal sealed class SplashWindow : Window
             CaptionHeight = 0, ResizeBorderThickness = new Thickness(0), GlassFrameThickness = new Thickness(0, 0, 0, 1),
             CornerRadius = new CornerRadius(0), UseAeroCaptionButtons = false
         });
-        try { Icon = BitmapFrame.Create(Pack("Assets/syndicate.ico")); } catch { }
+        try { Icon = BitmapFrame.Create(Pack("Assets/tilt.ico")); } catch { }
 
         BuildScene();
         Content = _scene;
@@ -322,7 +322,7 @@ internal sealed class SplashWindow : Window
         // Title, with the word LAUNCHER spaced out underneath.
         var title = new TextBlock
         {
-            Text = "SYNDICATE",
+            Text = "TILT",
             FontFamily = TitleFont(),
             FontSize = 76,
             HorizontalAlignment = HorizontalAlignment.Center,

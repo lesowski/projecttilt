@@ -118,9 +118,9 @@ public static class SyndicateBackend
         var backend = FindBackend()
             ?? throw new InvalidOperationException(
 #if DEV_BUILD
-                "The Syndicate backend is missing. Copy Syndicate-backend next to the launcher (with node_modules), or run UPDATE FROM GIT.cmd once.");
+                "The Tilt backend is missing. Copy Syndicate-backend next to the launcher (with node_modules), or run UPDATE FROM GIT.cmd once.");
 #else
-                "The Syndicate backend is missing. Reinstall the launcher (extract the whole ZIP), and add the Syndicate folder to your antivirus exclusions.");
+                "The Tilt backend is missing. Reinstall the launcher (extract the whole ZIP), and add the Tilt folder to your antivirus exclusions.");
 #endif
 
         bool ours = Started.Any(process => !process.HasExited);
@@ -163,7 +163,7 @@ public static class SyndicateBackend
             await WaitForPortAsync(MongoPort, TimeSpan.FromSeconds(30), "MongoDB");
         }
 
-        status("Starting the Syndicate backend...");
+        status("Starting the Tilt backend...");
         StartNode(backend, mainSeason);
         await WaitForApiAsync(TimeSpan.FromSeconds(45));
 
@@ -222,12 +222,12 @@ public static class SyndicateBackend
     {
         var quick = await Http.PostAsJsonAsync("launcher/quick", new { username });
         if (!quick.IsSuccessStatusCode)
-            throw new InvalidOperationException("The Syndicate backend could not create or find the player '" + username + "'.");
+            throw new InvalidOperationException("The Tilt backend could not create or find the player '" + username + "'.");
 
         string token;
         using (var document = JsonDocument.Parse(await quick.Content.ReadAsStringAsync()))
             token = document.RootElement.GetProperty("token").GetString()
-                ?? throw new InvalidOperationException("The Syndicate backend returned no login token.");
+                ?? throw new InvalidOperationException("The Tilt backend returned no login token.");
 
         using (var request = new HttpRequestMessage(HttpMethod.Post, "launcher/unlockall/set"))
         {
@@ -251,11 +251,11 @@ public static class SyndicateBackend
             request.Content = JsonContent.Create(new { });
             using var response = await Http.SendAsync(request);
             if (!response.IsSuccessStatusCode)
-                throw new InvalidOperationException("The Syndicate backend did not return a login code.");
+                throw new InvalidOperationException("The Tilt backend did not return a login code.");
             using var document = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             status?.Invoke("Signed in as " + username + ".");
             return document.RootElement.GetProperty("code").GetString()
-                ?? throw new InvalidOperationException("The Syndicate backend returned an empty login code.");
+                ?? throw new InvalidOperationException("The Tilt backend returned an empty login code.");
         }
     }
 
@@ -268,10 +268,10 @@ public static class SyndicateBackend
     {
         using var quick = await Http.PostAsJsonAsync("launcher/quick", new { username });
         if (!quick.IsSuccessStatusCode)
-            throw new InvalidOperationException("The Syndicate backend could not find the player '" + username + "'.");
+            throw new InvalidOperationException("The Tilt backend could not find the player '" + username + "'.");
         using var document = JsonDocument.Parse(await quick.Content.ReadAsStringAsync());
         return document.RootElement.GetProperty("token").GetString()
-            ?? throw new InvalidOperationException("The Syndicate backend returned no login token.");
+            ?? throw new InvalidOperationException("The Tilt backend returned no login token.");
     }
 
     /// <summary>
@@ -323,7 +323,7 @@ public static class SyndicateBackend
     private static async Task ThrowIfRefusedAsync(HttpResponseMessage response)
     {
         if (response.IsSuccessStatusCode) return;
-        string message = "The Syndicate backend refused the change.";
+        string message = "The Tilt backend refused the change.";
         try
         {
             using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
@@ -389,7 +389,8 @@ public static class SyndicateBackend
         info.Environment["GAMESERVER_IP"] = "127.0.0.1:7777";
         info.Environment["MAIN_SEASON"] = mainSeason.ToString();
         // Drives the lobby "Ready" text (hotfix: "${BACKEND_NAME} - Ready"), quit prompt, etc.
-        info.Environment["BACKEND_NAME"] = "Syndicate";
+        // Shown in game: "CONNECTING TO Tilt" and the region names (backend Utils/hotfixes.js).
+        info.Environment["BACKEND_NAME"] = "Tilt";
         info.Environment["TILTED_BACKEND_LOG"] = Path.Combine(logDirectory, "syndicate-backend.log");
         info.Environment["BOT_TOKEN"] = "";
         info.Environment["DISCORD_TOKEN"] = "";
@@ -398,7 +399,7 @@ public static class SyndicateBackend
         info.Environment["TILTED_DEVKIT"] = "1";
 #endif
 
-        var process = Process.Start(info) ?? throw new InvalidOperationException("Could not start the Syndicate backend.");
+        var process = Process.Start(info) ?? throw new InvalidOperationException("Could not start the Tilt backend.");
         Started.Add(process);
         _startedSeason = mainSeason;
     }
@@ -444,11 +445,11 @@ public static class SyndicateBackend
         while (deadline.Elapsed < timeout)
         {
             if (Started.Any(p => p.HasExited))
-                throw new InvalidOperationException("The Syndicate backend exited during startup. See Logs/syndicate-backend.log.");
+                throw new InvalidOperationException("The Tilt backend exited during startup. See Logs/syndicate-backend.log.");
             if (await IsUpAsync()) return;
             await Task.Delay(250);
         }
-        throw new TimeoutException("The Syndicate backend did not become ready within " + timeout.TotalSeconds + " seconds.");
+        throw new TimeoutException("The Tilt backend did not become ready within " + timeout.TotalSeconds + " seconds.");
     }
 
     /// <summary>Stops whatever process is listening on a port (used to replace a stale backend/matchmaker).</summary>

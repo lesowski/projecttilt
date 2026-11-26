@@ -20,7 +20,7 @@ public sealed class PresetStore
             CheckDuplicateNames(doc.RootElement);
             var preset=doc.RootElement.Deserialize<BotPreset>(Options)??throw new InvalidOperationException("The preset is empty.");
             preset.Validate();return preset;
-        }catch(JsonException){throw new InvalidOperationException("This .fnp file is not a valid Syndicate preset.");}
+        }catch(JsonException){throw new InvalidOperationException("This .fnp file is not a valid Tilt preset.");}
     }
     private static void CheckDuplicateNames(JsonElement e)
     {

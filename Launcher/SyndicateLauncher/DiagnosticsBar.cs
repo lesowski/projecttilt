@@ -31,7 +31,7 @@ public partial class MainWindow
         }
 
         DiagnosticsStatus.Text = message;
-        // "Preparing the Syndicate server... 38s" changes every second; keep it in the status
+        // "Preparing the Tilt server... 38s" changes every second; keep it in the status
         // line but out of the log so real events stay readable.
         if (System.Text.RegularExpressions.Regex.IsMatch(message, @"\.\.\. \d+s$")) return;
         // The short "Couldn't start: ..." status repeats the problem block that ShowProblem already wrote.

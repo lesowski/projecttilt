@@ -53,7 +53,7 @@ namespace SyndicateLauncher.Studio
             public double TopRatio { get; set; } = 0.66;
             public double TopLeftRatio { get; set; } = 0.22;
             public double RightRatio { get; set; } = 0.48;
-            public string Theme { get; set; } = "Syndicate";
+            public string Theme { get; set; } = "Tilt";
             public string Accent { get; set; } = "Launcher";
             public bool AutoEmbed { get; set; } = true;   // dock your game in the Server viewport as soon as it renders
             public bool AutoJoin { get; set; } = true;    // kept for saved layouts; Start always launches your game in Syndicate
@@ -151,10 +151,10 @@ namespace SyndicateLauncher.Studio
             _getPaths = getPaths; _me = me; _log = log; _launch = launch; _seasons = seasons;
             // Play: in Syndicate the server and your game start together, so Play is Start unless the game already runs.
             _play = () => { if (StudioSession.ClientRunning()) Out("Fortnite is already running: it docks in the Server viewport once it renders."); else StartServer(); };
-            Title = "Syndicate Studio"; Width = 1600; Height = 940; MinWidth = 1000; MinHeight = 600;
+            Title = "Tilt Studio"; Width = 1600; Height = 940; MinWidth = 1000; MinHeight = 600;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             FontFamily = new FontFamily("Segoe UI Variable Text, Segoe UI"); FontSize = 12.5; // the launcher's body font
-            try { Icon = BitmapFrame.Create(new Uri("pack://application:,,,/Assets/syndicate.ico")); }
+            try { Icon = BitmapFrame.Create(new Uri("pack://application:,,,/Assets/tilt.ico")); }
             catch { }
             _panels = new()
             {
@@ -192,14 +192,14 @@ namespace SyndicateLauncher.Studio
             _mapSession.BaseSeason = _build;
             try { File.Delete(DevFlag("free-cam-on.txt")); } catch { }
             WriteFlySpeed();
-            Out("Syndicate Studio open. Pick a season next to Start and press Start. Settings apply the next time the server starts. The Syndicate menu (SyndicateMenu.dll) stays off while the Studio is open.");
+            Out("Tilt Studio open. Pick a season next to Start and press Start. Settings apply the next time the server starts. The in-game menu (SyndicateMenu.dll) stays off while the Studio is open.");
             PopulateLocations();
             Poll();
         }
 
         // ---- theme -------------------------------------------------------------------------------------
         static SolidColorBrush B(string hex) { var b = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex)); b.Freeze(); return b; }
-        // Themes: "Syndicate" (default) uses the launcher's near-black greys, "Graphite" the lighter editor greys, "Slate" blue.
+        // Themes: "Tilt" (default) uses the launcher's near-black greys, "Graphite" the lighter editor greys, "Slate" blue.
         bool Slate => _layout.Theme == "Slate";
         bool Graphite => _layout.Theme == "Graphite";
         string T(string syndicate, string graphite, string slate) => Slate ? slate : Graphite ? graphite : syndicate;
@@ -221,7 +221,7 @@ namespace SyndicateLauncher.Studio
         static SolidColorBrush Bad => B("#FF5A6A");
         static SolidColorBrush Warn => B("#FFB020");
         // "Launcher" follows the accent of the player's launcher theme (Settings > Themes).
-        static readonly (string Name, string Hex)[] Accents = { ("Syndicate", "#FFD23F"), ("Launcher", ""), ("Blue", "#2F8FFF"), ("Amber", "#FF9A1F"), ("Teal", "#2DD4BF"), ("Violet", "#8B6CFF") };
+        static readonly (string Name, string Hex)[] Accents = { ("Gold", "#FFD23F"), ("Launcher", ""), ("Blue", "#2F8FFF"), ("Amber", "#FF9A1F"), ("Teal", "#2DD4BF"), ("Violet", "#8B6CFF") };
         static string LauncherAccentHex()
         {
             var c = Application.Current?.TryFindResource("AccentBrush") is SolidColorBrush b ? b.Color : Color.FromRgb(0xFF, 0xD2, 0x3F);
@@ -381,7 +381,7 @@ namespace SyndicateLauncher.Studio
             menu.Items.Add(window);
 
             var view = Top("_Appearance");
-            foreach (var theme in new[] { "Syndicate", "Graphite", "Slate" })
+            foreach (var theme in new[] { "Tilt", "Graphite", "Slate" })
                 view.Items.Add(Item("Theme: " + theme, () => { _layout.Theme = theme; SaveLayout(); Rebuild(); }, true, _layout.Theme == theme));
             view.Items.Add(new Separator());
             foreach (var (name, _) in Accents)
@@ -406,7 +406,7 @@ namespace SyndicateLauncher.Studio
             var logo = LoadLogo();
             if (logo != null) brand.Children.Add(new Image { Source = logo, Height = 38, Margin = new Thickness(0, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center });
             var names = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
-            names.Children.Add(new TextBlock { Text = "SYNDICATE STUDIO", Foreground = Bright, FontFamily = Display, FontWeight = FontWeights.Bold, FontStyle = FontStyles.Italic, FontSize = 19 });
+            names.Children.Add(new TextBlock { Text = "TILT STUDIO", Foreground = Bright, FontFamily = Display, FontWeight = FontWeights.Bold, FontStyle = FontStyles.Italic, FontSize = 19 });
             _buildText = new TextBlock { Text = BuildLine(), Foreground = Muted, FontSize = 11 };
             names.Children.Add(_buildText);
             brand.Children.Add(names);
@@ -591,7 +591,7 @@ namespace SyndicateLauncher.Studio
         {
             var w = new Window
             {
-                Title = "Syndicate Studio — " + p.Title, Owner = this, Width = 560, Height = 600, Background = Panel, FontFamily = FontFamily, FontSize = FontSize,
+                Title = "Tilt Studio — " + p.Title, Owner = this, Width = 560, Height = 600, Background = Panel, FontFamily = FontFamily, FontSize = FontSize,
                 Content = Built(p.Id), ShowInTaskbar = false, Icon = Icon, WindowStartupLocation = WindowStartupLocation.CenterOwner
             };
             _floating[p.Id] = w;
@@ -608,6 +608,9 @@ namespace SyndicateLauncher.Studio
                 if (l != null)
                 {
                     l.Groups ??= Preset("Editor"); l.Active ??= new();
+                    // Layouts saved before the rename to Tilt.
+                    if (l.Theme == "Syndicate") l.Theme = "Tilt";
+                    if (l.Accent == "Syndicate") l.Accent = "Gold";
                     foreach (var k in l.Groups.Where(g => g.Value == "float").Select(g => g.Key).ToList()) l.Groups[k] = DefaultGroup(k);
                     return l;
                 }
@@ -732,7 +735,7 @@ namespace SyndicateLauncher.Studio
             string state; Brush dot; var detail = new StringBuilder(); string stats = "";
             HostState? host = paths == null ? null : RunningHost(paths);
             _host = host;
-            if (paths == null) { state = "Syndicate's files not found"; dot = Bad; }
+            if (paths == null) { state = "Tilt's files not found"; dot = Bad; }
             else if (host == null) { state = _starting ? "Starting…" : "Stopped"; dot = _starting ? Warn : Muted; }
             else
             {
@@ -795,7 +798,7 @@ namespace SyndicateLauncher.Studio
         {
             if (_starting || _stopping) return;
             var paths = _getPaths();
-            if (paths == null) { Out("ERROR: Syndicate's files weren't found (Runtime\\Server next to Syndicate-backend). Run UPDATE FROM GIT once."); return; }
+            if (paths == null) { Out("ERROR: Tilt's files weren't found (Runtime\\Server next to Syndicate-backend). Run UPDATE FROM GIT once."); return; }
             if (!StudioSession.SupportsBuild(SeasonBuild()))
             {
                 Out("ERROR: pick a season next to Start first (Pre-season to Season 9: they run on the Erbium match server).");
@@ -813,12 +816,12 @@ namespace SyndicateLauncher.Studio
                 if (_startCancel.IsCancellationRequested) Out("Start cancelled.");
                 else if (ok)
                 {
-                    _log("Syndicate Studio: match ready.");
+                    _log("Tilt Studio: match ready.");
                     Out("Match ready. Your game docks in the Server viewport once it renders: press Play in Fortnite's lobby to drop onto the island.");
                 }
                 else Out("ERROR: the match didn't start. The launcher's Diagnostics panel has the reason and how to fix it.");
             }
-            catch (Exception ex) { Out("ERROR: " + ex.Message); _log("Syndicate Studio: start failed — " + ex.Message); }
+            catch (Exception ex) { Out("ERROR: " + ex.Message); _log("Tilt Studio: start failed — " + ex.Message); }
             finally { _starting = false; _phase = ""; _startCancel?.Dispose(); _startCancel = null; Poll(); }
         }
 
@@ -831,7 +834,7 @@ namespace SyndicateLauncher.Studio
             if (host == null) { Out("No match server is running."); return true; }
             var occ = Occupancy(paths.ServerDir, host.Pid);
             if (occ != null && occ.Value.Connected > 0 && !occ.Value.Ended &&
-                MessageBox.Show(this, occ.Value.Connected + " player(s) are connected to this server. Stop it anyway? They will be disconnected.", "Syndicate Studio", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                MessageBox.Show(this, occ.Value.Connected + " player(s) are connected to this server. Stop it anyway? They will be disconnected.", "Tilt Studio", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
                 return false;
             _stopping = true; UpdateButtons();
             try
@@ -1248,7 +1251,7 @@ namespace SyndicateLauncher.Studio
         async void MapEditorOps(string json, string done)
         {
             var token = DevToken();
-            if (string.IsNullOrEmpty(token)) { Out("ERROR: the backend hasn't created its developer token yet — start Syndicate's local services first."); return; }
+            if (string.IsNullOrEmpty(token)) { Out("ERROR: the backend hasn't created its developer token yet — start Tilt's local services first."); return; }
             try
             {
                 using var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -1386,7 +1389,7 @@ namespace SyndicateLauncher.Studio
         async void PushPlacing(bool on)
         {
             var token = DevToken();
-            if (string.IsNullOrEmpty(token)) { Out("ERROR: the backend hasn't created its developer token yet — start Syndicate's local services first."); return; }
+            if (string.IsNullOrEmpty(token)) { Out("ERROR: the backend hasn't created its developer token yet — start Tilt's local services first."); return; }
             try
             {
                 var body = "{\"on\":" + (on ? "true" : "false") + ",\"class\":" + Json(_contentPick ?? "") + ",\"snap\":" + (_snap ? "true" : "false") + ",\"keys\":{\"place\":120,\"turn\":121,\"remove\":46}}";
@@ -2243,7 +2246,7 @@ namespace SyndicateLauncher.Studio
         // ---- misc --------------------------------------------------------------------------------------
         void OpenFolder(string? folder)
         {
-            if (folder == null) { Out("Syndicate's files weren't found."); return; }
+            if (folder == null) { Out("Tilt's files weren't found."); return; }
             try { Directory.CreateDirectory(folder); Process.Start(new ProcessStartInfo("explorer.exe", "\"" + folder + "\"") { UseShellExecute = true }); }
             catch (Exception ex) { Out("ERROR: " + ex.Message); }
         }

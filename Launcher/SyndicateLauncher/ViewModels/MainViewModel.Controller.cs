@@ -117,9 +117,9 @@ public sealed partial class MainViewModel
         {
             ControllerStatus = "Controller support could not start";
 #if DEV_BUILD
-            ControllerDetail = "Xbox controllers still work in game. Run UPDATE FROM GIT (or reinstall Syndicate) to restore PlayStation support.";
+            ControllerDetail = "Xbox controllers still work in game. Run UPDATE FROM GIT (or reinstall Tilt) to restore PlayStation support.";
 #else
-            ControllerDetail = "Xbox controllers still work in game. Reinstall Syndicate to restore PlayStation support.";
+            ControllerDetail = "Xbox controllers still work in game. Reinstall Tilt to restore PlayStation support.";
 #endif
             ControllerDriverMissing = false;
             return;
@@ -131,6 +131,6 @@ public sealed partial class MainViewModel
             : !PlayStationControllers ? "PlayStation support is off: Fortnite will not see this controller."
             : c.DriverMissing ? "One step left: install the ViGEmBus driver below."
             : c.Mirroring ? "Active: Fortnite sees your PlayStation controller as an Xbox controller."
-            : "Ready: it becomes an Xbox controller as soon as Fortnite starts from Syndicate.";
+            : "Ready: it becomes an Xbox controller as soon as Fortnite starts from Tilt.";
     }
 }

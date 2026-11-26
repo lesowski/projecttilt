@@ -87,13 +87,13 @@ public static class PatchNotes
             Date: "November 17, 2026",
             Title: "LATE GAME EVERYWHERE",
             Summary: "Late game comes to Season X with random loadouts, bots get sharper in fights and drops, the in-game "
-                   + "console works on every season, wins pay more V-Bucks and Syndicate opens in seconds.",
+                   + "console works on every season, wins pay more V-Bucks and Tilt opens in seconds.",
             Highlights: new[]
             {
                 new PatchHighlight("Late game on Season X",
                     "Turn it on in Settings > Bots. The bus flies over the final circles and everyone lands with a random loadout."),
                 new PatchHighlight("Instant start",
-                    "No more \"Preparing verified game files\" every time you open Syndicate. It only runs after an update."),
+                    "No more \"Preparing verified game files\" every time you open Tilt. It only runs after an update."),
                 new PatchHighlight("More V-Bucks",
                     "100 V-Bucks per kill and 1,500 per win, in every season."),
                 new PatchHighlight("Console on every season",
@@ -123,18 +123,18 @@ public static class PatchNotes
                 }),
                 new PatchNoteSection("MATCHES", new[]
                 {
-                    "Fixed \"The Syndicate server exited while loading the island\" (HOST-ISLAND-01) on PCs low on free memory (seen on Season 3 and Season 8).",
+                    "Fixed \"The Tilt server exited while loading the island\" (HOST-ISLAND-01) on PCs low on free memory (seen on Season 3 and Season 8).",
                     "Faster requeue: your next match now loads in the background on 16 GB PCs too, and leaving a match right after the previous one no longer falls back to a full server start.",
                     "The in-game console (~) now opens on every Chapter 1 season.",
                 }),
                 new PatchNoteSection("LAUNCHER", new[]
                 {
-                    "Syndicate opens in seconds: game files stay installed between sessions instead of being re-checked and rewritten every time.",
+                    "Tilt opens in seconds: game files stay installed between sessions instead of being re-checked and rewritten every time.",
                     "Files are still fully checked after every update, and anything antivirus removed is put back automatically.",
                     "New start screen in the launcher's style, with a progress bar while an update installs.",
                     "Old versions' files are cleaned up after an update to save disk space.",
                     "Patch Notes is easier to read: pick a version, then filter by category. No more broken icons.",
-                    "Updates now also come from the new Syndicate download page, so you always get the newest version.",
+                    "Updates now also come from the new Tilt download page, so you always get the newest version.",
                 }),
             },
             KnownIssues: new[]
@@ -201,7 +201,7 @@ public static class PatchNotes
                     "Edit reset on release no longer leaves you stuck in edit mode, and now works on controller too.",
                     "New stretched resolution option in Settings > Display.",
                 }),
-                new PatchNoteSection("SYNDICATE MENU", new[]
+                new PatchNoteSection("TILT MENU", new[]
                 {
                     "Spin bot pauses while you heal and puts your aim back where it was.",
                     "New: time of day, always headshots, and magic bullet on Season 7.",
