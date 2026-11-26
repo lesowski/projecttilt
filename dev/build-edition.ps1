@@ -70,6 +70,13 @@ if ($RuntimeFrom) {
 }
 $dlls = Join-Path $runtime 'dlls'
 New-Item -ItemType Directory -Path $dlls -Force | Out-Null
+# The release tag the update check compares with GitHub (Services\UpdateChecker.cs) always comes from the repo,
+# so a runtime copied from a dev kit can't ship an old tag and nag players about an update they already have.
+$tag = Join-Path $repo 'Launcher\SyndicateLauncher\Runtime\release-tag.txt'
+if (Test-Path -LiteralPath $tag) {
+  Copy-Item -LiteralPath $tag -Destination (Join-Path $runtime 'release-tag.txt') -Force
+  Write-Host ('  release tag ' + (Get-Content -LiteralPath $tag -Raw).Trim())
+}
 
 # ---- SyndicateMenu.dll (crosshair-only in the public edition) ----------------------------------------------------
 Step ('SyndicateMenu.dll (' + $(if ($dev) { 'full menu' } else { 'crosshair only' }) + ')')

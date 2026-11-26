@@ -119,6 +119,13 @@ internal static class Program
    Check(home.VBucksText=="12,500"&&home.Wins=="8"&&home.Kills=="106"&&home.Matches=="48"&&home.WinRate=="16.7%","Home totals and V-Bucks.");
    Check(home.Recent.Count==3&&home.Recent[0].Won&&!home.ShowRecentPlaceholder,"Home shows the latest matches.");
    Check(typeof(HomeViewModel).GetProperty("Achievements")==null&&typeof(HomeViewModel).GetProperty("ClaimCommand")==null&&Type.GetType("SyndicateLauncher.ViewModels.AchievementItem, SyndicateLauncher")==null,"No achievements left in the launcher.");
+   // Update check (Services/UpdateChecker.cs): Tilt's repo, and date tags that compare as dates.
+   var updater=typeof(SyndicateLauncher.Services.UpdateChecker);
+   const System.Reflection.BindingFlags hidden=System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static;
+   Func<string,string,bool> newer=(a,b)=>(bool)updater.GetMethod("IsNewer",hidden)!.Invoke(null,new object[]{a,b})!;
+   Check(((string[])updater.GetField("Repos",hidden)!.GetValue(null)!).SequenceEqual(new[]{"lesowski/projecttilt"}),"Update check reads Tilt's release repo.");
+   Check(newer("v2026-11-28","v2026-11-27")&&newer("v2026.11.27.1","v2026-11-27")&&newer("v2026-11-27","v2026-11-15"),"Update check: a later date tag is an update.");
+   Check(!newer("v2026-11-27","v2026-11-27")&&!newer("v2026-11-15","v2026-11-27")&&!newer("v1.4.1","v2026-11-27"),"Update check: the same or an older tag is not.");
    Check(home.LatestMatch==home.Recent[0],"Home's Recent Match tile shows the newest match.");
    var recentTile=Descendants(root).OfType<Button>().Single(b=>AutomationProperties.GetName(b)=="Recent match");
    var strip=(FrameworkElement)VisualTreeHelper.GetParent(recentTile);

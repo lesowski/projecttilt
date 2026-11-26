@@ -19,9 +19,10 @@ public static class UpdateChecker
 {
     // The public download repo. Releases are tagged by date, e.g. v2026-11-15, so a later tag sorts greater.
     // Checked in order; the newest release across them wins (same list as dev/standalone/Bootstrap/Updater.cs).
-    // Empty until Tilt has its own public release repo ("owner/name"): the old list pointed at the original
-    // Syndicate team's repos, which would offer Tilt players a Syndicate download. With none, the check does nothing.
-    private static readonly string[] Repos = System.Array.Empty<string>();
+    // Tilt's release repo. It must be public: the check reads GitHub without signing in, so a private repo answers
+    // 404 and the check quietly does nothing. Tag releases by date (v2026-11-27, or v2026.11.27.1 for a second one that
+    // day): copies already out there are tagged that way, and a version-style tag (v1.4.1) would compare as older.
+    private static readonly string[] Repos = { "lesowski/projecttilt" };
     private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(10) };
     private static bool _done;
 
@@ -92,7 +93,7 @@ public static class UpdateChecker
                 try
                 {
                     using var req = new HttpRequestMessage(HttpMethod.Get, $"https://api.github.com/repos/{repo}/releases/latest");
-                    req.Headers.UserAgent.ParseAdd("SyndicateLauncher-UpdateCheck");
+                    req.Headers.UserAgent.ParseAdd("TiltLauncher-UpdateCheck");
                     using var resp = await Http.SendAsync(req).ConfigureAwait(false);
                     if (!resp.IsSuccessStatusCode) continue;
                     using var doc = JsonDocument.Parse(await resp.Content.ReadAsStringAsync().ConfigureAwait(false));
