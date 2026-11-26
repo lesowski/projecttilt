@@ -2076,7 +2076,7 @@
                                                     <StackPanel Orientation="Horizontal">
                                                         <Border Width="26" Height="2" Background="{DynamicResource AccentBrush}"
                                                                 VerticalAlignment="Center" />
-                                                        <TextBlock Text="ORIGINAL TEAM" FontSize="7.5" FontWeight="Bold"
+                                                        <TextBlock Text="PROJECT TILT" FontSize="7.5" FontWeight="Bold"
                                                                    Foreground="{DynamicResource AccentSoftBrush}"
                                                                    Margin="10,0,0,0" VerticalAlignment="Center" />
                                                     </StackPanel>
@@ -2084,7 +2084,7 @@
                                                                FontSize="64" FontWeight="Bold" FontStretch="Condensed"
                                                                FontStyle="Normal" Foreground="#FFFFFF"
                                                                LineHeight="64" Margin="0,4,0,0" />
-                                                    <TextBlock Text="The people who built the launcher, bots and servers Tilt is based on."
+                                                    <TextBlock Text="The person behind Tilt."
                                                                FontSize="11" Foreground="#C0C0C0" Margin="2,2,0,0" />
                                                 </StackPanel>
                                                 <Button Style="{StaticResource GhostButton}" Height="32" Padding="14,0"
@@ -2112,230 +2112,24 @@
                                                         <TextBlock Text="01" FontFamily="{StaticResource DisplayFont}"
                                                                    FontSize="8" FontWeight="Bold"
                                                                    Foreground="{DynamicResource AccentBrush}" />
-                                                        <TextBlock Text="DEVELOPERS" Style="{StaticResource CreditsSectionTitle}"
+                                                        <TextBlock Text="DEVELOPER" Style="{StaticResource CreditsSectionTitle}"
                                                                    Margin="0,5,0,0" />
-                                                        <TextBlock Text="6 CONTRIBUTORS" FontSize="7.5" FontWeight="SemiBold"
-                                                                   Foreground="#878787" Margin="0,6,0,0" />
                                                         <Border Width="30" Height="2" Background="{DynamicResource AccentBrush}"
                                                                 HorizontalAlignment="Left" Opacity="0.8" Margin="0,10,0,0" />
                                                     </StackPanel>
-                                                    <StackPanel Grid.Column="1">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="J" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="Joey" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Original Launcher Base, AI's, Offline Servers &amp; Much Much More"
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                        <Border Style="{StaticResource CreditsRule}" />
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="T" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="Trapcein" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Original Launcher Base, AI's, Offline Servers &amp; Much Much More"
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                        <Border Style="{StaticResource CreditsRule}" />
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="T" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="trentlab" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Contributed to some fixes in the new launcher (Launcher V2) for in game QOL (Quality of Life) options"
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                        <Border Style="{StaticResource CreditsRule}" />
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="S" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="Sact" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Original developer"
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                        <Border Style="{StaticResource CreditsRule}" />
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="U" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="Unkn0wn" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Original developer"
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                        <Border Style="{StaticResource CreditsRule}" />
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="A" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="Alfie" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Original developer"
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
-
-                                            <Border Style="{StaticResource CreditsCard}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="200" />
-                                                        <ColumnDefinition Width="*" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Margin="0,2,20,0">
-                                                        <TextBlock Text="02" FontFamily="{StaticResource DisplayFont}"
-                                                                   FontSize="8" FontWeight="Bold"
-                                                                   Foreground="{DynamicResource AccentBrush}" />
-                                                        <TextBlock Text="UI DESIGNERS" Style="{StaticResource CreditsSectionTitle}"
-                                                                   Margin="0,5,0,0" />
-                                                        <TextBlock Text="1 CONTRIBUTOR" FontSize="7.5" FontWeight="SemiBold"
-                                                                   Foreground="#878787" Margin="0,6,0,0" />
-                                                        <Border Width="30" Height="2" Background="{DynamicResource AccentBrush}"
-                                                                HorizontalAlignment="Left" Opacity="0.8" Margin="0,10,0,0" />
-                                                    </StackPanel>
-                                                    <Grid Grid.Column="1">
+                                                    <Grid Grid.Column="1" VerticalAlignment="Center">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="42" />
                                                             <ColumnDefinition Width="*" />
                                                         </Grid.ColumnDefinitions>
-                                                        <Border Style="{StaticResource CreditsAvatar}">
-                                                            <TextBlock Text="T" FontFamily="{StaticResource DisplayFont}" FontSize="13"
+                                                        <Border Style="{StaticResource CreditsAvatar}" VerticalAlignment="Center">
+                                                            <TextBlock Text="L" FontFamily="{StaticResource DisplayFont}" FontSize="13"
                                                                        FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
                                                                        HorizontalAlignment="Center" VerticalAlignment="Center" />
                                                         </Border>
-                                                        <StackPanel Grid.Column="1">
-                                                            <TextBlock Text="trentlab" Style="{StaticResource CreditsName}" />
-                                                            <TextBlock Text="Designed the Launcher V2 UI and contributed UI changes and improvements to the in-game menu"
-                                                                       Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="1" Text="lesowski" Style="{StaticResource CreditsName}"
+                                                                   FontSize="16" VerticalAlignment="Center" />
                                                     </Grid>
-                                                </Grid>
-                                            </Border>
-
-                                            <Border Style="{StaticResource CreditsCard}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="200" />
-                                                        <ColumnDefinition Width="*" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Margin="0,2,20,0">
-                                                        <TextBlock Text="03" FontFamily="{StaticResource DisplayFont}"
-                                                                   FontSize="8" FontWeight="Bold"
-                                                                   Foreground="{DynamicResource AccentBrush}" />
-                                                        <TextBlock Text="PROJECT CONTRIBUTORS" Style="{StaticResource CreditsSectionTitle}"
-                                                                   FontSize="17" Margin="0,5,0,0" />
-                                                        <TextBlock Text="2 CONTRIBUTORS" FontSize="7.5" FontWeight="SemiBold"
-                                                                   Foreground="#878787" Margin="0,6,0,0" />
-                                                        <Border Width="30" Height="2" Background="{DynamicResource AccentBrush}"
-                                                                HorizontalAlignment="Left" Opacity="0.8" Margin="0,10,0,0" />
-                                                    </StackPanel>
-                                                    <StackPanel Grid.Column="1">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="T" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="trentlab" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Contributed launcher fixes and UI design across Launcher V2."
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                        <Border Style="{StaticResource CreditsRule}" />
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="42" />
-                                                                <ColumnDefinition Width="*" />
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border Style="{StaticResource CreditsAvatar}">
-                                                                <TextBlock Text="H" FontFamily="{StaticResource DisplayFont}" FontSize="13"
-                                                                           FontWeight="Bold" Foreground="{DynamicResource Accent_FF}"
-                                                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                                            </Border>
-                                                            <StackPanel Grid.Column="1">
-                                                                <TextBlock Text="hobosunite" Style="{StaticResource CreditsName}" />
-                                                                <TextBlock Text="Coded the entire in-game menu and made sure every feature works correctly"
-                                                                           Style="{StaticResource CreditsCopy}" Margin="0,2,0,0" />
-                                                            </StackPanel>
-                                                        </Grid>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
-
-                                            <Border Style="{StaticResource CreditsCard}" Margin="0,4,0,0"
-                                                    Padding="24,20" Background="{DynamicResource Tint_E6181818}" BorderBrush="{DynamicResource Accent_2E}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="4" />
-                                                        <ColumnDefinition Width="*" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <Border Width="4" Background="{DynamicResource AccentBrush}" CornerRadius="2" />
-                                                    <StackPanel Grid.Column="1" Margin="18,0,0,0">
-                                                        <TextBlock Text="SPECIAL THANKS" FontSize="8" FontWeight="Bold"
-                                                                   Foreground="{DynamicResource AccentSoftBrush}" />
-                                                        <TextBlock Text="PATREON SUPPORTERS &amp; BUG TESTERS"
-                                                                   FontFamily="{StaticResource DisplayFont}" FontSize="22"
-                                                                   FontWeight="Bold" FontStyle="Italic" Foreground="#FFFFFF"
-                                                                   Margin="0,4,0,0" />
-                                                        <TextBlock Text="We'd like to thank our Patreon Supporters &amp; Bug Testers that helped report bugs and gave and continue to give feedback on the launcher and ai's as well as overall gameplay. Without them this project wouldn't be as good as it is today!"
-                                                                   FontSize="10.5" Foreground="#CECECE" TextWrapping="Wrap"
-                                                                   LineHeight="17" MaxWidth="840" HorizontalAlignment="Left"
-                                                                   Margin="0,7,0,0" />
-                                                    </StackPanel>
                                                 </Grid>
                                             </Border>
                                         </StackPanel>
