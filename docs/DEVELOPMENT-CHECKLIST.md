@@ -7,6 +7,20 @@ Status of the project measured against the "OG Fortnite launcher" brief. Written
 - `[ ]` missing
 - `[!]` blocked: needs something that isn't in this repo
 
+## Project Tilt update (1.4.0, 2026-11-27)
+
+- [x] Renamed Syndicate to Tilt everywhere players see it. Internal names unchanged; see AGENTS.md.
+- [x] Discord: presence logo `tilt`, Join Discord and the sidebar Discord/Support buttons go to https://discord.gg/88rnkWgCw.
+- [!] Discord: presence stays off until a Discord application named **Tilt** exists and its ID is set in `DiscordPresence.ApplicationId` (manual, Discord Developer Portal).
+- [x] Achievements removed (launcher and backend). Home shows recent matches instead.
+- [x] Public and developer editions with separate commands, output folders and exe names. The public build has no menu, Studio or dev tools compiled in, and ships the crosshair-only menu DLL.
+- [x] Donate button opens https://buymeacoffee.com/lesowski.
+- [x] Placeholder TILT logo, Home card badge and icon.
+- [ ] Real Tilt artwork to replace the placeholders (`Assets/logo.png`, `Assets/og-card.png`, `Assets/tilt.ico`).
+- [ ] A Tilt release repo for `UpdateChecker.Repos` (empty until then, so the update check is off).
+- [ ] Not renamed: the game DLLs (Season X server, Erbium) mention Syndicate in log lines, flags and identifiers. No player-facing text turned up in a quick search, but they weren't fully audited. The full in-game menu (developer edition only) still shows the Syndicate logo.
+- [ ] Not renamed: the old release and installer scripts (`dev/make-*-release.ps1`, `dev/publish-*`, `dev/standalone`). They still name Syndicate and publish to the original team's GitHub repos, so don't use them for Tilt.
+
 ## Phase 1: analysis (done)
 
 Syndicate is not a starting skeleton. It is a finished, released project (launcher v1.3.1) with about 1 MB of bot AI in C++, two game servers, a Node backend and a WPF launcher. Rebuilding it from scratch would throw working code away. The remaining work is the gaps listed below.

@@ -54,6 +54,53 @@ public static class PatchNotes
     public static IReadOnlyList<PatchRelease> Releases { get; } = new[]
     {
         new PatchRelease(
+            Version: "1.4.0",
+            Date: "November 27, 2026",
+            Title: "PROJECT TILT",
+            Summary: "Project Syndicate is now Project Tilt. Achievements are retired, cheats are gone from the public launcher, "
+                   + "and a new Statistics page, bot skill sliders and adaptive difficulty arrive.",
+            Highlights: new[]
+            {
+                new PatchHighlight("Welcome to Tilt",
+                    "Project Syndicate has officially been renamed to Project Tilt, in the launcher and on Discord."),
+                new PatchHighlight("Statistics",
+                    "See your wins, eliminations, win rate and your last 50 matches on the new STATS tab."),
+            },
+            Sections: new[]
+            {
+                new PatchNoteSection("REBRANDING", new[]
+                {
+                    "Project Syndicate has officially been renamed to Project Tilt.",
+                    "Updated launcher branding throughout the application.",
+                    "Updated Discord Rich Presence to display Tilt.",
+                }),
+                new PatchNoteSection("REMOVED", new[]
+                {
+                    "Discontinued the achievements system.",
+                    "Removed cheat-related functionality from public launcher builds.",
+                }),
+                new PatchNoteSection("DEVELOPER EDITION", new[]
+                {
+                    "Introduced a separate developer build.",
+                    "Restricted developer-only gameplay testing and debugging tools to the developer edition.",
+                }),
+                new PatchNoteSection("MISCELLANEOUS", new[]
+                {
+                    "Updated the official donation link.",
+                    "Improved separation between public and developer functionality.",
+                }),
+                new PatchNoteSection("NEW", new[]
+                {
+                    "Statistics page: career totals, solo/duo/squad breakdown, your last 50 matches and playtime by season.",
+                    "Bot skill sliders are back in Settings > Match & bots, with presets and .fnp import/export.",
+                    "Adaptive difficulty: bots get tougher after wins and deep runs, easier after early eliminations.",
+                }),
+            },
+            KnownIssues: new[]
+            {
+                "Discord Rich Presence stays off until the new Tilt Discord application is set up.",
+            }),
+        new PatchRelease(
             Version: "1.3.1",
             Date: "November 17, 2026",
             Title: "EDIT + AUTO RUN FIXES",
