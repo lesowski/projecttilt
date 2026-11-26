@@ -34,12 +34,18 @@ namespace SyndicateLauncher.Studio
         /// <summary>The Studio's options while its window is open, otherwise null (a normal launch).</summary>
         public static Options? Current()
         {
+#if !DEV_BUILD
+            // Public build: no Studio, so a studio-session.json (even a hand-written one) never turns on Studio
+            // matches or TILTED_DEV_LIVE (dev commands, fly, live map editing).
+            return null;
+#else
             try
             {
                 if (!File.Exists(SessionFile) || DateTime.UtcNow - File.GetLastWriteTimeUtc(SessionFile) > TimeSpan.FromSeconds(20)) return null;
                 return JsonSerializer.Deserialize<Options>(File.ReadAllText(SessionFile));
             }
             catch (Exception) { return null; }
+#endif
         }
 
         internal static void Write(bool studioMatch)

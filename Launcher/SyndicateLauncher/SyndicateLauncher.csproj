@@ -22,10 +22,18 @@
     <Description>Tilt Launcher.</Description>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
-  <!-- UPDATE FROM GIT.cmd builds with -p:SyndicateDevBuild=true: shows the DEV LAUNCHER badge. Release builds (build.bat) don't. -->
+  <!-- Two editions (Launcher/build-public.cmd, Launcher/build-dev.cmd):
+       Developer build (-p:SyndicateDevBuild=true, also what UPDATE FROM GIT.cmd makes): defines DEV_BUILD. DEVELOPER
+       BUILD badge, the in-game menu toggle, Syndicate Studio, the backend's developer routes, Save the World tools.
+       Public build (default): none of that is compiled in. -->
   <PropertyGroup Condition="'$(SyndicateDevBuild)'=='true'">
     <DefineConstants>$(DefineConstants);DEV_BUILD</DefineConstants>
   </PropertyGroup>
+  <!-- Public build: the Studio window and its tools (game docking, SyndicateStudio.dll pipe, map editing, fly) are not
+       compiled. Studio/StudioSession.cs stays: normal Play reads the playlist through it, and its Current() is null. -->
+  <ItemGroup Condition="'$(SyndicateDevBuild)'!='true'">
+    <Compile Remove="Studio\StudioWindow.cs;Studio\StudioEditing.cs;Studio\StudioGizmoOverlay.cs;Studio\StudioMapSession.cs;Studio\StudioPipeClient.cs;Studio\NativeEmbed.cs;Studio\ProcessAudio.cs" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\ice-bg.jpg" />
     <!-- Fortnite Lobby Themes: wallpapers and their card thumbnails (Models/LauncherTheme.cs, ThemeCatalog). -->

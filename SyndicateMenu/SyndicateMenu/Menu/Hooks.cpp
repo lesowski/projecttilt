@@ -626,8 +626,10 @@ HRESULT WINAPI HookedPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT
 
     if (!running) {
         if (!g_unloadCleaned) {
+#ifndef TILT_CROSSHAIR_ONLY
             if (g_bSdk)
                 SafeCleanupBeforeUnload();
+#endif
             StreamProofStop();
             StreamProofRestoreWindowMode();
             g_unloadCleaned = true;

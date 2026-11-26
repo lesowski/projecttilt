@@ -162,5 +162,12 @@
     <ClInclude Include="Menu\Menu.h" />
     <ClInclude Include="Menu\Hooks.h" />
   </ItemGroup>
+  <!-- Public Tilt build: msbuild /p:TiltCrosshairOnly=true builds a crosshair-only SyndicateMenu.dll. The menu, ESP,
+       aim and weapon mods are compiled out (Features/Crosshair.h); Launcher/build-public.cmd ships this one. -->
+  <ItemDefinitionGroup Condition="'$(TiltCrosshairOnly)'=='true'">
+    <ClCompile>
+      <PreprocessorDefinitions>TILT_CROSSHAIR_ONLY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

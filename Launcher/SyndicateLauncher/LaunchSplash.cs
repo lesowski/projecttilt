@@ -398,7 +398,7 @@ internal sealed class SplashWindow : Window
         // Version (and DEV LAUNCHER on dev builds) in the corner.
         string corner = _look.Version;
 #if DEV_BUILD
-        corner = "DEV LAUNCHER   " + corner;
+        corner = "DEVELOPER BUILD   " + corner;
 #endif
         _corner.Text = corner;
         _corner.FontFamily = new FontFamily("Segoe UI Variable Text, Segoe UI");

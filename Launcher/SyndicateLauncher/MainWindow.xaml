@@ -952,7 +952,7 @@
                                     VerticalAlignment="Center" Margin="0,0,16,0"
                                     Padding="10,3" CornerRadius="5" Background="#33FFB020"
                                     BorderBrush="#FFB020" BorderThickness="1">
-                                <TextBlock Text="DEV LAUNCHER" FontFamily="{StaticResource DisplayFont}" FontSize="11"
+                                <TextBlock Text="DEVELOPER BUILD" FontFamily="{StaticResource DisplayFont}" FontSize="11"
                                            FontWeight="Bold" Foreground="#FFC857" />
                             </Border>
                             <Button Style="{StaticResource WindowButton}" Click="Minimize_Click"
@@ -3961,11 +3961,13 @@
                                                             </StackPanel>
                                                         </Border>
 
-                                                        <CheckBox Style="{StaticResource SwitchToggle}" Margin="0,18,0,0"
+                                                        <!-- Developer build only: MainWindow.xaml.cs removes this toggle from the public build,
+                                                             whose EnableMenu is always false (the menu code isn't compiled in). -->
+                                                        <CheckBox x:Name="MenuSetting" Style="{StaticResource SwitchToggle}" Margin="0,18,0,0"
                                                                   IsChecked="{Binding EnableMenu}"
-                                                                  AutomationProperties.Name="Inject the Tilt menu">
+                                                                  AutomationProperties.Name="Inject the in-game menu (developer build)">
                                                             <StackPanel>
-                                                                <TextBlock Text="Inject the Tilt menu" FontSize="13.5"
+                                                                <TextBlock Text="Inject the in-game menu (developer build)" FontSize="13.5"
                                                                            FontWeight="Bold" Foreground="{DynamicResource TextBrush}" />
                                                                 <TextBlock Text="Loads the in-game menu in every season when Fortnite starts. Press Insert in-game to open it. ESP and aim only target bots. While it is on, matches earn no V-Bucks."
                                                                            FontSize="11.5" Foreground="#8A8A8A" TextWrapping="Wrap"

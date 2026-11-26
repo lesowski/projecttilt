@@ -353,6 +353,11 @@ public static class GameLauncher
         bool studioOpen = Studio.StudioSession.Current() is not null;
         bool useClientExtras = !UseLegacy25ClientMode(build);
         if (studioOpen || !useClientExtras) enableMenu = false;
+#if !DEV_BUILD
+        // Public build: the full in-game menu never loads, whatever the caller asks. Its SyndicateMenu.dll is the
+        // crosshair-only build (Launcher/build-public.cmd), which has no menu code to switch on.
+        enableMenu = false;
+#endif
         // Settings > Display > Crosshair: drawn by SyndicateMenu.dll. With the menu off the DLL is still loaded,
         // in crosshair-only mode (Services/CrosshairService.cs): no menu, keys or game-object hooks.
         bool crosshair = CrosshairService.Enabled && !studioOpen && useClientExtras;

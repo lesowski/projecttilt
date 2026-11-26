@@ -92,6 +92,7 @@ static DWORD WINAPI MainThread(LPVOID param) {
     } else
         printf("[menu] Present hooked; reading the game's objects\n");
 
+#ifndef TILT_CROSSHAIR_ONLY
     while (!CrosshairOnlyMode() && !InitSDK()) {
         printf("[menu] game objects not ready, trying again in 3 s\n");
         Sleep(3000);
@@ -111,6 +112,7 @@ static DWORD WINAPI MainThread(LPVOID param) {
         while (running)
             Sleep(200);
     }
+#endif
 
     printf("[menu] unloading\n");
     // Let the next frame give the game back your movement, cursor and speed first (up to 1 s;
@@ -119,13 +121,17 @@ static DWORD WINAPI MainThread(LPVOID param) {
         Sleep(20);
     if (!Hooks::UnloadCleaned())
         printf("[unload] no frame drawn in 1 s: skipped the in-game cleanup\n");
+#ifndef TILT_CROSSHAIR_ONLY
     StopMagicBullet();
+#endif
     Sleep(100);
     Hooks::Shutdown();
+#ifndef TILT_CROSSHAIR_ONLY
     // After the Present hook is off (it is what installs the HUD hook), give the HUD its own
     // vtable back so the game never calls into this DLL once it is freed.
     Sleep(100);
     UninstallHudChamsHook();
+#endif
     printf("[menu] unloaded cleanly\n");
     FreeLibraryAndExitThread(self, 0);
 }
@@ -139,7 +145,9 @@ BOOL WINAPI DllMain(HMODULE hMod, DWORD reason, LPVOID) {
     }
     if (reason == DLL_PROCESS_DETACH) {
         running = false;
+#ifndef TILT_CROSSHAIR_ONLY
         StopMagicBullet();
+#endif
         Hooks::Shutdown();
     }
     return TRUE;

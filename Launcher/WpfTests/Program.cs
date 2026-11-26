@@ -96,6 +96,23 @@ internal static class Program
    stats.ApplyLocal(log);
    Check(stats.Seasons.Count==2&&stats.Seasons[0].Season=="Season X"&&stats.Seasons[0].SessionsText=="2 sessions"&&stats.Seasons[0].MinutesText=="2h 0m"&&stats.Seasons[1].Season=="Pre-season","Playtime by season, most played first.");
    Check(stats.TimePlayed=="11h 40m","Time played is the larger of match time (700 min) and launcher time (140 min).");
+   // Editions: the developer build compiles in the Studio and the in-game menu toggle; the public build has neither.
+   bool developer=Type.GetType("SyndicateLauncher.Studio.StudioWindow, SyndicateLauncher")!=null;
+   var menuToggle=Descendants(root).OfType<CheckBox>().SingleOrDefault(c=>AutomationProperties.GetName(c)=="Inject the in-game menu (developer build)");
+   restored.EnableMenu=true;
+   if(developer)
+   {
+    Check(restored.EnableMenu&&menuToggle!=null,"Developer build: the in-game menu toggle is there and works.");
+    restored.EnableMenu=false;
+   }
+   else
+   {
+    Check(!restored.EnableMenu&&menuToggle==null,"Public build: no menu toggle, and EnableMenu stays off when set.");
+    Check(SyndicateLauncher.Studio.StudioSession.Current()==null,"Public build: a Studio session file never turns on Studio or dev live data.");
+    Check(Type.GetType("SyndicateLauncher.Studio.StudioPipeClient, SyndicateLauncher")==null&&Type.GetType("SyndicateLauncher.Studio.NativeEmbed, SyndicateLauncher")==null,"Public build: the Studio tools are not compiled in.");
+   }
+   Console.WriteLine(developer?"Edition: developer":"Edition: public");
+
    // Home: launcher/home (V-Bucks, menu flag, career totals, latest matches). The achievements system is gone.
    var home=restored.Home;
    home.Apply("{\"vbucks\":12500,\"menuActive\":false,\"totals\":{\"kills\":106,\"wins\":8,\"matches\":48,\"hours\":11.6},\"recent\":"+reply.Substring(reply.IndexOf("[{"))[..^1]+"}");

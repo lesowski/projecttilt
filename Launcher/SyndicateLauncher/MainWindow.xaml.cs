@@ -52,7 +52,11 @@ public partial class MainWindow : Window
 #if DEV_BUILD
         DevBadge.Visibility = Visibility.Visible;
         StudioNavButton.Visibility = Visibility.Visible;
-        Title = "Tilt Launcher (DEV)";
+        Title = "Tilt Launcher (Developer Build)";
+#else
+        // Public build: no in-game menu. Its code is compiled out (MainViewModel.EnableMenu, GameLauncher), and the
+        // toggle is taken out of Settings so there is nothing to switch.
+        if (MenuSetting.Parent is System.Windows.Controls.Panel menuPanel) menuPanel.Children.Remove(MenuSetting);
 #endif
     }
 
@@ -60,10 +64,16 @@ public partial class MainWindow : Window
     // The Studio page (sidebar Studio button, dev launcher) opens the Studio window. One window at a time. Its Start
     // runs this launcher's Play for the season picked in the Studio, without SyndicateMenu.dll; while it is open, every
     // Play starts the match server with the Studio's options (Studio/StudioSession.cs).
+    // The Studio window and its tools are only compiled into the developer build (SyndicateLauncher.csproj).
+#if DEV_BUILD
     private Studio.StudioWindow? _studio;
     private bool _studioOpening;
+#endif
     private async void OnOpenStudio(object sender, RoutedEventArgs e)
     {
+#if !DEV_BUILD
+        await System.Threading.Tasks.Task.CompletedTask;
+#else
         if (_studio is not null)
         {
             if (_studio.WindowState == WindowState.Minimized) _studio.WindowState = WindowState.Normal;
@@ -92,6 +102,7 @@ public partial class MainWindow : Window
             _studioOpening = false;
             ResetStudioPage();
         }
+#endif
     }
 
     // Page in: the key art eases back from a slight push-in while the copy lifts in.

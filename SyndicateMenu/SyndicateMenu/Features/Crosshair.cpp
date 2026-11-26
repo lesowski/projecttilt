@@ -51,6 +51,7 @@ static bool FindSharedFile(const wchar_t* file, wchar_t* out, size_t size) {
     return false;
 }
 
+#ifndef TILT_CROSSHAIR_ONLY
 bool CrosshairOnlyMode() {
     static int mode = -1;
     if (mode >= 0)
@@ -70,6 +71,7 @@ bool CrosshairOnlyMode() {
     printf("[crosshair] %s\n", mode == 1 ? "crosshair-only mode (menu off)" : "full menu mode");
     return mode == 1;
 }
+#endif
 
 static int ClampI(int v, int lo, int hi) { return v < lo ? lo : (v > hi ? hi : v); }
 

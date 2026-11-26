@@ -9,6 +9,12 @@
 // writes menu-load.txt = "crosshair" first, and the DLL runs in crosshair-only mode: no game-object
 // scan, no hooks besides Present/ResizeBuffers, no keys (Insert and End go to the game), no menu.
 
+#ifdef TILT_CROSSHAIR_ONLY
+// Public Tilt build (msbuild /p:TiltCrosshairOnly=true): crosshair-only is a compile-time constant, so every
+// menu, ESP, aim and weapon-mod code path is dead code the linker removes. menu-load.txt is never read.
+constexpr bool CrosshairOnlyMode() { return true; }
+#else
 bool CrosshairOnlyMode();     // read once from menu-load.txt
+#endif
 void TickCrosshairConfig();   // reloads crosshair.ini when it changed (cheap, checks twice a second)
 void DrawCrosshair(float width, float height, bool menuOpen);

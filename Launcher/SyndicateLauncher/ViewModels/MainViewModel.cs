@@ -1200,11 +1200,21 @@ public sealed partial class MainViewModel : ViewModelBase
             Set(ref _isSettingsOpen, value);
         }
     }
+#if DEV_BUILD
+    /// <summary>Settings &gt; Mods: load the full in-game menu (developer build only, bots only).</summary>
     public bool EnableMenu
     {
         get => _enableMenu;
         set { if (!Set(ref _enableMenu, value)) return; _settings.EnableMenu = value; Save(); OnPropertyChanged(nameof(CrosshairSummary)); }
     }
+#else
+    /// <summary>The public build has no in-game menu: always off, whatever settings.json says.</summary>
+    public bool EnableMenu
+    {
+        get => false;
+        set { }
+    }
+#endif
     // Bot difficulty -----------------------------------------------------
     public int DifficultyIndex
     {
