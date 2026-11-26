@@ -2,6 +2,13 @@
 
 Launcher releases, newest first. Version numbers follow `<Version>` in `Launcher/SyndicateLauncher/SyndicateLauncher.csproj` and the in-launcher Patch Notes (`Launcher/SyndicateLauncher/Models/PatchNotes.cs`). Releases up to 1.3.1 are listed only in the Patch Notes.
 
+## 1.4.1 - November 27, 2026
+
+### Bots
+
+- Added a Bot skill slider under Difficulty in Settings > Match & bots: one slider from 0 to 100 that sets all 20 bot skills at once.
+- Easy, Medium, Hard and Sweat sit at 25, 50, 75 and 100; anything in between makes a custom difficulty. The individual skills are still under Fine-tune bot skills.
+
 ## 1.4.0 - November 27, 2026
 
 ### Project Tilt - Launcher Update

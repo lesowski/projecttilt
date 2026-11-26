@@ -54,6 +54,29 @@ public static class PatchNotes
     public static IReadOnlyList<PatchRelease> Releases { get; } = new[]
     {
         new PatchRelease(
+            Version: "1.4.1",
+            Date: "November 27, 2026",
+            Title: "BOT SKILL SLIDER",
+            Summary: "Set how good the bots are with a single slider in Settings > Match & bots.",
+            Highlights: new[]
+            {
+                new PatchHighlight("Bot skill slider",
+                    "One slider from 0 to 100 under the difficulty buttons sets every bot skill at once."),
+            },
+            Sections: new[]
+            {
+                new PatchNoteSection("BOTS", new[]
+                {
+                    "Added a Bot skill slider under Difficulty in Settings > Match & bots.",
+                    "Easy, Medium, Hard and Sweat sit at 25, 50, 75 and 100; anything in between makes a custom difficulty.",
+                    "The 20 individual skills are still under Fine-tune bot skills.",
+                }),
+            },
+            KnownIssues: new[]
+            {
+                "Discord Rich Presence stays off until the new Tilt Discord application is set up.",
+            }),
+        new PatchRelease(
             Version: "1.4.0",
             Date: "November 27, 2026",
             Title: "PROJECT TILT",

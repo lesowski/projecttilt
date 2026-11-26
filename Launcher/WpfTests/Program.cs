@@ -49,6 +49,11 @@ internal static class Program
    Check(restored.IsAdaptive&&restored.DifficultyName=="Adaptive"&&restored.DifficultyIndex==-1&&restored.SkillSliders.All(s=>s.Value==50)&&restored.DifficultyDescription.Contains("tougher"),"Adaptive chip: level on the sliders, no other chip selected.");
    Check(new MainViewModel(store,library).IsAdaptive,"Adaptive survives a restart.");
    restored.SkillSliders[3].Value=70;Check(!restored.IsAdaptive&&restored.DifficultyName=="Custom","Moving a slider turns Adaptive off.");
+   // Bot skill slider (MainViewModel.OverallSkill): one value for all 20 skills.
+   restored.OverallSkill=75;Check(restored.DifficultyName=="Hard"&&restored.DifficultyIndex==3&&restored.SkillSliders.All(s=>s.Value==75),"Bot skill slider on 75 selects Hard.");
+   restored.OverallSkill=40;Check(restored.DifficultyName=="Custom"&&restored.SkillSliders.All(s=>s.Value==40)&&store.Load().BotPreset!.Values.Values.All(v=>v==40),"Bot skill slider between levels: every skill 40, saved as Custom.");
+   restored.SkillSliders[0].Value=100;Check(restored.OverallSkill==(int)Math.Round((100+40*19)/20.0),"Bot skill follows the average of the fine-tune sliders.");
+   restored.SetAdaptiveCommand.Execute(null);restored.OverallSkill=25;Check(!restored.IsAdaptive&&restored.DifficultyName=="Easy","Bot skill slider turns Adaptive off.");
    restored.SetAdaptiveCommand.Execute(null);restored.SetDifficultyCommand.Execute("2");Check(!restored.IsAdaptive&&restored.DifficultyIndex==2,"Picking a fixed difficulty turns Adaptive off.");
    restored.DifficultyIndex=2;restored.IsSettingsOpen=true;
    var window=new MainWindow(restored);var root=(FrameworkElement)window.Content;

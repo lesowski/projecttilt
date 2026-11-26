@@ -74,6 +74,24 @@ public sealed partial class MainViewModel
         // ApplyPreset turns Adaptive off for anything but its own preset; a saved "Adaptive" preset keeps it.
         if(adaptive&&!_settings.AdaptiveDifficulty&&initial?.Name==AdaptiveDifficulty.PresetName)SetAdaptive(true);
     }
+    /// <summary>
+    /// The Bot skill slider under the difficulty chips: the average of the 20 skills. Setting it gives every skill that
+    /// value; on a built-in level (Bot 5, Easy 25, Medium 50, Hard 75, Sweat 100) it selects that level, otherwise it
+    /// makes a Custom difficulty, the same as moving a slider under Fine-tune bot skills.
+    /// </summary>
+    public int OverallSkill
+    {
+        get=>SkillSliders.Count==0?50:(int)Math.Round(SkillSliders.Average(s=>s.Value));
+        set
+        {
+            value=Math.Clamp(value,0,100);
+            int level=Array.IndexOf(new[]{5,25,50,75,100},value);
+            if(level>=0){ApplyPreset(DifficultyPresets[level]);return;}
+            _applyingPreset=true;
+            try{foreach(var slider in SkillSliders)slider.Value=value;}finally{_applyingPreset=false;}
+            SliderChanged();
+        }
+    }
     private void PresetAction(Action action)
     {
         try{action();}catch(Exception e)when(e is IOException or UnauthorizedAccessException or InvalidOperationException){PresetStatus=e.Message;}
@@ -167,6 +185,6 @@ public sealed partial class MainViewModel
     {
         OnPropertyChanged(nameof(DifficultyIndex));OnPropertyChanged(nameof(DifficultyName));
         OnPropertyChanged(nameof(DifficultyDescription));OnPropertyChanged(nameof(SelectedDifficultyPreset));
-        OnPropertyChanged(nameof(DifficultyMeta));OnPropertyChanged(nameof(IsAdaptive));
+        OnPropertyChanged(nameof(DifficultyMeta));OnPropertyChanged(nameof(IsAdaptive));OnPropertyChanged(nameof(OverallSkill));
     }
 }
