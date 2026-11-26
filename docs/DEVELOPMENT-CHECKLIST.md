@@ -15,8 +15,7 @@ Status of the project measured against the "OG Fortnite launcher" brief. Written
 - [x] Achievements removed (launcher and backend). Home shows recent matches instead.
 - [x] Public and developer editions with separate commands, output folders and exe names. The public build has no menu, Studio or dev tools compiled in, and ships the crosshair-only menu DLL.
 - [x] Donate button opens https://buymeacoffee.com/lesowski.
-- [x] Placeholder TILT logo, Home card badge and icon.
-- [ ] Real Tilt artwork to replace the placeholders (`Assets/logo.png`, `Assets/og-card.png`, `Assets/tilt.ico`).
+- [x] Official Tilt logo in the sidebar, splash, Studio, Home card badge and app icon (`Assets/logo.png`, `Assets/og-card.png`, `Assets/tilt.ico`).
 - [ ] A Tilt release repo for `UpdateChecker.Repos` (empty until then, so the update check is off).
 - [ ] Not renamed: the game DLLs (Season X server, Erbium) mention Syndicate in log lines, flags and identifiers. No player-facing text turned up in a quick search, but they weren't fully audited. The full in-game menu (developer edition only) still shows the Syndicate logo.
 - [ ] Not renamed: the old release and installer scripts (`dev/make-*-release.ps1`, `dev/publish-*`, `dev/standalone`). They still name Syndicate and publish to the original team's GitHub repos, so don't use them for Tilt.
