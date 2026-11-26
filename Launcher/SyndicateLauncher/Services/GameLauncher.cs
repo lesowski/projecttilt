@@ -426,7 +426,7 @@ public static class GameLauncher
         if (syndicateServer)
         {
             if (syndicateRuntime.Length == 0)
-                throw new InvalidOperationException("The Tilt Runtime\\Server folder could not be found next to Syndicate-backend.");
+                throw new InvalidOperationException("The Tilt Runtime\\Server folder could not be found next to Tilt-backend.");
             Directory.CreateDirectory(syndicateRuntime);
 
             // The matchmaker checks the selected build against the client's build; a stale

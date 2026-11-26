@@ -126,7 +126,7 @@ if ($missing.Count -gt 0) {
   if (!$dev) { throw 'The runtime is incomplete; players could not start a match. Pass -RuntimeFrom <complete runtime>.' }
   Write-Host '  (developer build: continuing)' -ForegroundColor Yellow
 } else { Write-Host '  all runtime files present' }
-Write-Host '  A release package also needs Syndicate-backend (with node_modules) and Dependencies\Node + Dependencies\MongoDB next to the exe.'
+Write-Host '  A release package also needs Tilt-backend (SyndicateClassic\backend with node_modules) and Dependencies\Node + Dependencies\MongoDB next to the exe.'
 
 Write-Host ''
 Write-Host "Done: $(Join-Path $out $name)" -ForegroundColor Green

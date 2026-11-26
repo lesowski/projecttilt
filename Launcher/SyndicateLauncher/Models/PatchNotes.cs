@@ -54,6 +54,28 @@ public static class PatchNotes
     public static IReadOnlyList<PatchRelease> Releases { get; } = new[]
     {
         new PatchRelease(
+            Version: "1.4.2",
+            Date: "November 27, 2026",
+            Title: "TILT BACKEND",
+            Summary: "The backend folder in the Tilt download is now called Tilt-backend.",
+            Highlights: new[]
+            {
+                new PatchHighlight("Tilt-backend",
+                    "The local server folder next to TiltLauncher.exe is renamed from Syndicate-backend to Tilt-backend."),
+            },
+            Sections: new[]
+            {
+                new PatchNoteSection("MISCELLANEOUS", new[]
+                {
+                    "Renamed the backend folder in the download to Tilt-backend.",
+                    "The launcher still finds a Syndicate-backend folder, so older installs keep working.",
+                }),
+            },
+            KnownIssues: new[]
+            {
+                "Discord Rich Presence stays off until the new Tilt Discord application is set up.",
+            }),
+        new PatchRelease(
             Version: "1.4.1",
             Date: "November 27, 2026",
             Title: "BOT SKILL SLIDER",

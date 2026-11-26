@@ -2,6 +2,12 @@
 
 Launcher releases, newest first. Version numbers follow `<Version>` in `Launcher/SyndicateLauncher/SyndicateLauncher.csproj` and the in-launcher Patch Notes (`Launcher/SyndicateLauncher/Models/PatchNotes.cs`). Releases up to 1.3.1 are listed only in the Patch Notes.
 
+## 1.4.2 - November 27, 2026
+
+### Miscellaneous
+
+- Renamed the backend folder in the download from Syndicate-backend to Tilt-backend. The launcher still finds a Syndicate-backend folder, so older installs and dev kits keep working.
+
 ## 1.4.1 - November 27, 2026
 
 ### Bots

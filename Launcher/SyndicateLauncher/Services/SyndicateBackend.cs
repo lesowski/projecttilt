@@ -56,6 +56,8 @@ public static class SyndicateBackend
     {
         string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        // Release packages ship the backend as Tilt-backend; dev kits (UPDATE FROM GIT) and older installs use Syndicate-backend.
+        yield return Path.Combine(AppContext.BaseDirectory, "Tilt-backend");
         yield return Path.Combine(AppContext.BaseDirectory, "Syndicate-backend");
         yield return Path.Combine(local, "SyndicateLauncher", "Syndicate-backend");
         // Older Project Tilted installs keep their backend under its old folder name.
