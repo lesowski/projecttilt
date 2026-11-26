@@ -45,7 +45,8 @@ public sealed partial class MainViewModel : ViewModelBase
     // The Tilt Discord server; support happens there too.
     private const string CommunityUrl = "https://discord.gg/88rnkWgCw";
     private const string SupportUrl = "https://discord.gg/88rnkWgCw";
-    private const string DonateUrl = "https://buymeacoffee.com/synfn";
+    // Sidebar Donate button (both editions): opens in the default browser.
+    private const string DonateUrl = "https://buymeacoffee.com/lesowski";
     private static readonly Regex ProfileNameRule = new(@"^[A-Za-z0-9_\- ]{3,16}$", RegexOptions.Compiled);
     private readonly SettingsService _store;
     private readonly AppSettings _settings;
