@@ -63,8 +63,10 @@ if ($RuntimeFrom) {
   Copy-Item -LiteralPath $RuntimeFrom -Destination $runtime -Recurse
 } else {
   Write-Host '  no dev kit runtime found (Documents\Syndicate\Runtime or -RuntimeFrom): only the DLLs built here are added.' -ForegroundColor Yellow
-  # Start from the repo's runtime data (backend profiles, configs, game-10.40.json); binaries are not in Git.
-  if (!(Test-Path $runtime)) { Copy-Item -LiteralPath (Join-Path $repo 'Launcher\SyndicateLauncher\Runtime') -Destination $runtime -Recurse }
+  # Fresh copy of the repo's runtime data (backend profiles, configs, game-10.40.json, OWNERSHIP.txt) on every
+  # build, so an edited file never stays stale from an earlier build; binaries are not in Git.
+  if (Test-Path $runtime) { Remove-Item -LiteralPath $runtime -Recurse -Force }
+  Copy-Item -LiteralPath (Join-Path $repo 'Launcher\SyndicateLauncher\Runtime') -Destination $runtime -Recurse
 }
 $dlls = Join-Path $runtime 'dlls'
 New-Item -ItemType Directory -Path $dlls -Force | Out-Null
