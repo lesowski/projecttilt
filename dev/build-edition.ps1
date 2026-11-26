@@ -105,5 +105,21 @@ Step 'Manifest'
 Update-ModuleManifest $dlls | Out-Null
 Write-Host '  Runtime\dlls\manifest.json'
 
+# ---- completeness ----------------------------------------------------------------------------------------------
+Step 'Completeness'
+# Same list as Services\RuntimeBundle.cs (Required). A launcher without these shows "The launcher file bundle is
+# incomplete" on every season, so a public build stops here instead of producing a package players can't use.
+$required = 'dlls\manifest.json', 'dlls\Erbium.dll', 'dlls\cobalt.dll', 'dlls\memory.dll', 'dlls\console.dll',
+  'dlls\Syndicate1040.dll', 'dlls\SyndicateConsoleRecovery.dll', 'dlls\SyndicateMenu.dll', 'game-10.40.json',
+  'backend\lawinserver.exe', 'backend\titanium-profiles.cjs', 'backend\titanium-modes.cjs',
+  'backend\CloudStorage\DefaultEngine.ini', 'backend\CloudStorage\DefaultInput.ini', 'backend\CloudStorage\DefaultGame.ini'
+$missing = @($required | Where-Object { !(Test-Path -LiteralPath (Join-Path $runtime $_)) })
+if ($missing.Count -gt 0) {
+  $missing | ForEach-Object { Write-Host "  missing Runtime\$_" -ForegroundColor Red }
+  if (!$dev) { throw 'The runtime is incomplete; players could not start a match. Pass -RuntimeFrom <complete runtime>.' }
+  Write-Host '  (developer build: continuing)' -ForegroundColor Yellow
+} else { Write-Host '  all runtime files present' }
+Write-Host '  A release package also needs Syndicate-backend (with node_modules) and Dependencies\Node + Dependencies\MongoDB next to the exe.'
+
 Write-Host ''
 Write-Host "Done: $(Join-Path $out $name)" -ForegroundColor Green
