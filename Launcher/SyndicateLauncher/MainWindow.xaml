@@ -4546,7 +4546,7 @@
                                                             <StackPanel>
                                                                 <TextBlock Text="Show Tilt in Discord" FontSize="13.5"
                                                                            FontWeight="Bold" Foreground="{DynamicResource TextBrush}" />
-                                                                <TextBlock Text="Your Discord profile shows Playing TILT with the season, mode, players and bots left, and a Join Discord button. It runs in the background and never affects queues or matches."
+                                                                <TextBlock Text="Your Discord profile shows Playing Tilt with the season, mode, players and bots left, and a Join Discord button. It runs in the background and never affects queues or matches."
                                                                            FontSize="11.5" Foreground="#8A8A8A" TextWrapping="Wrap" Margin="0,3,0,0" />
                                                             </StackPanel>
                                                         </CheckBox>

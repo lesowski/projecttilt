@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SyndicateLauncher.Services;
 
 /// <summary>
-/// Discord Rich Presence: "Playing TILT" with the Syndicate logo, the season, the mode, how many players are
+/// Discord Rich Presence: "Playing Tilt" with the Tilt logo, the season, the mode, how many players are
 /// left (and how many of them are bots), a match timer and a "Join Discord" button.
 ///
 /// Gameplay-neutral by design. It runs on its own background task while the launcher is open and only ever:
@@ -22,15 +22,21 @@ namespace SyndicateLauncher.Services;
 /// It never writes a file, never touches the game, the match server, the backend or the matchmaker, and every
 /// error (Discord closed, pipe gone, file mid-write) is swallowed, so it can't delay or break a queue or a match.
 ///
-/// Setup: a Discord application named SYNDICATE (its name is the "Playing ..." text) with the logo uploaded under
-/// Rich Presence > Art Assets as "syndicate". Put its Application ID in <see cref="ApplicationId"/>.
+/// Setup: a Discord application named Tilt (its name is the "Playing ..." text) with the logo uploaded under
+/// Rich Presence > Art Assets as "tilt". Put its Application ID in <see cref="ApplicationId"/>.
 /// </summary>
 public static class DiscordPresence
 {
-    /// <summary>The SYNDICATE Discord application (discord.com/developers). Empty would turn presence off.</summary>
-    public const string ApplicationId = "1571246344931119285";
-    private const string LogoAsset = "syndicate";
-    private const string InviteUrl = "https://discord.gg/synfn";
+    /// <summary>
+    /// The Tilt Discord application (discord.com/developers). Empty turns presence off. Discord shows the
+    /// application's own name as "Playing ...", so the application must be named Tilt; code cannot change it.
+    /// The previous ID belonged to the original team's application named SYNDICATE, so it was removed: paste the ID
+    /// of your own "Tilt" application here (Developer Portal > your app > General Information > Application ID).
+    /// </summary>
+    public const string ApplicationId = "";
+    /// <summary>Rich Presence > Art Assets key of the logo uploaded to the Tilt application.</summary>
+    private const string LogoAsset = "tilt";
+    private const string InviteUrl = "https://discord.gg/88rnkWgCw";
 
     private static CancellationTokenSource? _stop;
     private static Func<(string Season, string Profile)>? _launcherState;
@@ -105,7 +111,7 @@ public static class DiscordPresence
     private static JsonObject? BuildActivity(long launcherStarted, ref long matchStarted)
     {
         var (season, profile) = SafeLauncherState();
-        var assets = new JsonObject { ["large_image"] = LogoAsset, ["large_text"] = "SYNDICATE" };
+        var assets = new JsonObject { ["large_image"] = LogoAsset, ["large_text"] = "TILT" };
         var buttons = new JsonArray { new JsonObject { ["label"] = "Join Discord", ["url"] = InviteUrl } };
 
         if (!GameLauncher.IsRunning)

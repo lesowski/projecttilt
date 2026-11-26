@@ -118,7 +118,7 @@ public sealed class AppSettings
     /// <summary>Settings &gt; Launcher &amp; files: silently try to add Syndicate's folders to Windows Defender's
     /// exclusion list each time the launcher opens. The button in that section always uses a UAC-elevated prompt.</summary>
     public bool AutoAddExclusions { get; set; } = true;
-    /// <summary>Settings &gt; Launcher: show "Playing TILT" (season, mode, players left) in Discord.</summary>
+    /// <summary>Settings &gt; Launcher: show "Playing Tilt" (season, mode, players left) in Discord.</summary>
     public bool DiscordPresence { get; set; } = true;
     /// <summary>Settings &gt; Display &gt; Crosshair: the custom crosshair drawn in game (Services/CrosshairService.cs).</summary>
     public CrosshairSettings Crosshair { get; set; } = new();

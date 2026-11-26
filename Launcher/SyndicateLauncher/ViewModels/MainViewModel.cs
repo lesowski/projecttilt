@@ -42,8 +42,9 @@ public enum AppScreen
 public sealed partial class MainViewModel : ViewModelBase
 {
     private const string NoFolderText = "Select your Fortnite build folder";
-    private const string CommunityUrl = "https://discord.gg/synfn";
-    private const string SupportUrl = "https://discord.gg/synsupport";
+    // The Tilt Discord server; support happens there too.
+    private const string CommunityUrl = "https://discord.gg/88rnkWgCw";
+    private const string SupportUrl = "https://discord.gg/88rnkWgCw";
     private const string DonateUrl = "https://buymeacoffee.com/synfn";
     private static readonly Regex ProfileNameRule = new(@"^[A-Za-z0-9_\- ]{3,16}$", RegexOptions.Compiled);
     private readonly SettingsService _store;
