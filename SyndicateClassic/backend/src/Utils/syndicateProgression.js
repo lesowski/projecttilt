@@ -4,7 +4,6 @@ import {activeSeason,activateSeason} from './syndicateSeasonState.js';
 import {progressBundleChallenges} from './syndicateChallengeBundles.js';
 import {progressChallenges} from './syndicateChallenges.js';
 import {recordCareer} from './syndicateCareerCore.js';
-import {recordAchievements} from './syndicateAchievements.js';
 import {travelActive} from './syndicateTravel.js';
 import {routeGuestReward,pullRemoteRewards} from './syndicateLan.js';
 import {withAccountLock} from './syndicateAccountLock.js';
@@ -57,8 +56,6 @@ export async function awardAccount(accountId,event=null) {
     if(season===4)progressBundleChallenges(doc.profiles.athena,event);
     if(season===5)progressSeason5Bundles(doc.profiles.athena,event);
     recordCareer(attr,event);
-    // Syndicate Achievements (launcher): any season, never while the Syndicate menu is on.
-    recordAchievements(attr,event);
     result.arena=applyArenaHype(attr,event);
     result.vbucksAwarded=vbucks;
     result.umbrellasGranted=grantVictoryUmbrellas(doc.profiles.athena,event);

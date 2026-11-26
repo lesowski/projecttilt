@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {recordCareer,recentMatches,careerStats,RECENT_MATCH_LIMIT} from '../syndicateCareerCore.js';
+import {recordCareer,recentMatches,careerStats,careerTotals,RECENT_MATCH_LIMIT} from '../syndicateCareerCore.js';
 
 const ev=(kind,extra={})=>({id:'{'+Math.random()+'}',username:'Player',kind,mode:'solo',place:0,arena:false,season:10,seconds:0,players:100,...extra});
 
@@ -30,6 +30,15 @@ test('newest first, capped, and kills never leak into the previous match',()=>{
  assert.equal(list.length,RECENT_MATCH_LIMIT);
  assert.equal(list[0].place,RECENT_MATCH_LIMIT+5);assert.equal(list[0].kills,(RECENT_MATCH_LIMIT+5)%4);
  assert.equal(list[1].kills,(RECENT_MATCH_LIMIT+4)%4);
+});
+
+test('Home totals add every mode and turn match time into hours',()=>{
+ const a={};
+ recordCareer(a,ev('kill'));recordCareer(a,ev('match',{place:3,seconds:5400}));
+ recordCareer(a,ev('kill',{mode:'squad'}));recordCareer(a,ev('win',{mode:'squad',place:1}));recordCareer(a,ev('match',{mode:'squad',place:1,seconds:1800}));
+ assert.deepEqual(careerTotals(a),{kills:2,wins:1,matches:2,hours:2});
+ assert.deepEqual(careerTotals({}),{kills:0,wins:0,matches:0,hours:0});
+ assert.deepEqual(careerTotals({tilted_career:{solo:null,duo:{kills:'x',seconds:-5}}}),{kills:0,wins:0,matches:0,hours:0});
 });
 
 test('bad saved data is cleaned up instead of reaching the launcher',()=>{

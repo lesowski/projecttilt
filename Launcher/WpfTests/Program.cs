@@ -96,6 +96,17 @@ internal static class Program
    stats.ApplyLocal(log);
    Check(stats.Seasons.Count==2&&stats.Seasons[0].Season=="Season X"&&stats.Seasons[0].SessionsText=="2 sessions"&&stats.Seasons[0].MinutesText=="2h 0m"&&stats.Seasons[1].Season=="Pre-season","Playtime by season, most played first.");
    Check(stats.TimePlayed=="11h 40m","Time played is the larger of match time (700 min) and launcher time (140 min).");
+   // Home: launcher/home (V-Bucks, menu flag, career totals, latest matches). The achievements system is gone.
+   var home=restored.Home;
+   home.Apply("{\"vbucks\":12500,\"menuActive\":false,\"totals\":{\"kills\":106,\"wins\":8,\"matches\":48,\"hours\":11.6},\"recent\":"+reply.Substring(reply.IndexOf("[{"))[..^1]+"}");
+   Check(home.VBucksText=="12,500"&&home.Wins=="8"&&home.Kills=="106"&&home.Matches=="48"&&home.WinRate=="16.7%","Home totals and V-Bucks.");
+   Check(home.Recent.Count==3&&home.Recent[0].Won&&!home.ShowRecentPlaceholder,"Home shows the latest matches.");
+   Check(typeof(HomeViewModel).GetProperty("Achievements")==null&&typeof(HomeViewModel).GetProperty("ClaimCommand")==null&&Type.GetType("SyndicateLauncher.ViewModels.AchievementItem, SyndicateLauncher")==null,"No achievements left in the launcher.");
+   var recentRow=Descendants(root).OfType<ItemsControl>().Single(i=>AutomationProperties.GetName(i)=="Recent matches");
+   var strip=(FrameworkElement)VisualTreeHelper.GetParent(recentRow);
+   strip.Measure(new Size(900,128));strip.Arrange(new Rect(0,0,900,128));strip.UpdateLayout();
+   Check(recentRow.Items.Count==3,"Recent matches strip renders.");
+   Render(strip,Path.Combine(args[0],"ui-home-recent.png"));
    var page=Descendants(root).OfType<Grid>().Single(g=>AutomationProperties.GetName(g)=="Statistics");
    page.Visibility=Visibility.Visible;root.UpdateLayout();
    Check(Descendants(page).OfType<ItemsControl>().Single(i=>AutomationProperties.GetName(i)=="Match history").Items.Count==3,"Match history renders.");

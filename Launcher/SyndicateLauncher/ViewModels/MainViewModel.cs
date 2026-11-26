@@ -234,7 +234,7 @@ public sealed partial class MainViewModel : ViewModelBase
     public ThemesViewModel Themes { get; }
     public HomeViewModel Home { get; }
 
-    /// <summary>Home's achievements and V-Bucks come from the local backend; start it if Play could start it now.</summary>
+    /// <summary>Home's V-Bucks, career and recent matches come from the local backend; start it if Play could start it now.</summary>
     private Task EnsureBackendForHomeAsync()
     {
         if (_launching || GameLauncher.IsRunning || ActiveSeason is null) return Task.CompletedTask;
@@ -867,7 +867,7 @@ public sealed partial class MainViewModel : ViewModelBase
             State = BuildState.Found;
             AlignSeasonToBuild(result.Build);
             WarmBackend();
-            _ = Home.RefreshAsync(force: true); // V-Bucks and achievements once the backend is up
+            _ = Home.RefreshAsync(force: true); // V-Bucks and recent matches once the backend is up
         }
         else
         {

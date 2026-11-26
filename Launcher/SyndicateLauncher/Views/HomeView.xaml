@@ -1,8 +1,8 @@
 <UserControl x:Class="SyndicateLauncher.Views.HomeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- Home: a player hub (profile, V-Bucks, Play), Total Playtime, 7-Day Activity, career and Syndicate
-         Achievements. Every panel is translucent glass (Tint_8C...), so the lobby theme behind the launcher shows
+    <!-- Home: a player hub (profile, V-Bucks, Play), Total Playtime, 7-Day Activity, career totals and the latest
+         matches. Every panel is translucent glass (Tint_8C...), so the lobby theme behind the launcher shows
          through. DataContext is MainViewModel; the dashboard data is MainViewModel.Home (HomeViewModel). -->
     <UserControl.Resources>
         <Style x:Key="Glass" TargetType="Border">
@@ -23,109 +23,39 @@
             <Setter Property="FontSize" Value="40" />
         </Style>
 
-        <!-- Season 1 style hexagon badge, coloured by rarity tier. -->
-        <DataTemplate x:Key="Badge">
-            <Grid x:Name="Root" Width="58" Height="64">
-                <Path x:Name="Glow" Stretch="Fill" Margin="-4" Opacity="0"
-                      Data="M28,1 L54,16 L54,46 L28,61 L2,46 L2,16 Z"
-                      Stroke="{Binding Tier, Converter={StaticResource TierBrush}, ConverterParameter=solid}" StrokeThickness="2" />
-                <Path Stretch="Fill" Data="M28,1 L54,16 L54,46 L28,61 L2,46 L2,16 Z"
-                      Fill="{Binding Tier, Converter={StaticResource TierBrush}}" />
-                <Path Stretch="Fill" Margin="5,5.5" Data="M28,1 L54,16 L54,46 L28,61 L2,46 L2,16 Z" Fill="#33000000"
-                      Stroke="#40FFFFFF" StrokeThickness="1" />
-                <Path Stretch="Fill" Margin="0,0,0,32" Data="M28,1 L54,16 L54,30 L2,30 L2,16 Z" IsHitTestVisible="False">
-                    <Path.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#59FFFFFF" Offset="0" />
-                            <GradientStop Color="#00FFFFFF" Offset="1" />
-                        </LinearGradientBrush>
-                    </Path.Fill>
-                </Path>
-                <Path Width="25" Height="25" Stretch="Uniform" Fill="White"
-                      Data="{Binding Badge, Converter={StaticResource BadgeGlyph}}" />
-                <Border x:Name="Lock" Width="18" Height="18" CornerRadius="9" Background="{DynamicResource Tint_F20D0D0D}"
-                        BorderBrush="#33FFFFFF" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        Margin="0,0,-2,1" Visibility="Collapsed">
-                    <TextBlock Text="&#xE72E;" FontFamily="{StaticResource IconFont}" FontSize="9" Foreground="#C8C8C8"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Border>
-            </Grid>
-            <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding Locked}" Value="True">
-                    <Setter TargetName="Root" Property="Opacity" Value="0.42" />
-                    <Setter TargetName="Lock" Property="Visibility" Value="Visible" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Claimable}" Value="True">
-                    <Setter TargetName="Glow" Property="Opacity" Value="0.9" />
-                </DataTrigger>
-            </DataTemplate.Triggers>
-        </DataTemplate>
-
-        <!-- One achievement card (Home strip and the Achievements page). -->
-        <DataTemplate x:Key="AchievementCard">
-            <Border x:Name="Card" Style="{StaticResource Glass}" Padding="12,12,14,12">
+        <!-- One recent match on Home (HomeViewModel.Recent, a RecentMatchRow from launcher/home). -->
+        <DataTemplate x:Key="RecentMatchCard">
+            <Border x:Name="Card" Style="{StaticResource Glass}" Padding="14,12">
                 <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource Badge}" VerticalAlignment="Top"
-                                    Focusable="False" />
-                    <Grid Grid.Column="1" Margin="12,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Text="{Binding TierText}" FontSize="8" FontWeight="Bold"
-                                   Foreground="{Binding Tier, Converter={StaticResource TierBrush}, ConverterParameter=solid}" />
-                        <TextBlock Grid.Row="1" Text="{Binding Name}" FontFamily="{StaticResource BurbankFont}" FontSize="19"
-                                   Foreground="{DynamicResource TextBrush}" TextTrimming="CharacterEllipsis" Margin="0,1,0,0" />
-                        <TextBlock Grid.Row="2" Text="{Binding Description}" FontSize="10" Foreground="#A8A8A8"
-                                   TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxHeight="28" />
-                        <Grid Grid.Row="3" Height="4" Margin="0,8,0,0">
-                            <Border CornerRadius="2" Background="#1FFFFFFF" />
-                            <Border CornerRadius="2" RenderTransformOrigin="0,0.5"
-                                    Background="{Binding Tier, Converter={StaticResource TierBrush}, ConverterParameter=solid}">
-                                <Border.RenderTransform>
-                                    <ScaleTransform ScaleX="{Binding Fraction}" />
-                                </Border.RenderTransform>
-                            </Border>
-                        </Grid>
-                        <Grid Grid.Row="4" Margin="0,7,0,0" Height="24">
-                            <TextBlock Text="{Binding ProgressText}" FontSize="9.5" FontWeight="SemiBold" Foreground="#C4C4C4"
-                                       VerticalAlignment="Center" />
-                            <StackPanel x:Name="Reward" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                <Image Source="/SyndicateLauncher;component/Assets/vbucks.png" Width="14" Height="14"
-                                       RenderOptions.BitmapScalingMode="HighQuality" />
-                                <TextBlock Text="{Binding RewardText}" FontSize="11" FontWeight="Bold" Foreground="#F2F2F2"
-                                           Margin="5,0,0,0" VerticalAlignment="Center" />
-                            </StackPanel>
-                            <Button x:Name="Claim" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right"
-                                    MinHeight="24" Padding="10,2" FontSize="10" Visibility="Collapsed"
-                                    Command="{Binding DataContext.Home.ClaimCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                    CommandParameter="{Binding}" AutomationProperties.Name="Claim reward">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="CLAIM" VerticalAlignment="Center" />
-                                    <Image Source="/SyndicateLauncher;component/Assets/vbucks.png" Width="13" Height="13"
-                                           Margin="7,0,4,0" RenderOptions.BitmapScalingMode="HighQuality" />
-                                    <TextBlock Text="{Binding RewardText}" VerticalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-                        </Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Name="Result" Text="{Binding ResultText}" FontSize="8.5" FontWeight="Bold"
+                               Foreground="{DynamicResource MutedTextBrush}" />
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,1,0,0">
+                        <TextBlock x:Name="Place" Text="{Binding PlaceText}" FontFamily="{StaticResource BurbankFont}" FontSize="34"
+                                   Foreground="{DynamicResource TextBrush}" />
+                        <TextBlock Text="{Binding PlayersText}" FontSize="10" Foreground="{DynamicResource MutedTextBrush}"
+                                   VerticalAlignment="Bottom" Margin="6,0,0,9" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="2" FontSize="10.5" Foreground="{DynamicResource TextBrush}" TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Bottom">
+                        <Run Text="{Binding SeasonText, Mode=OneWay}" /><Run Text="  &#x00B7;  " Foreground="{DynamicResource DimTextBrush}" /><Run Text="{Binding ModeText, Mode=OneWay}" />
+                    </TextBlock>
+                    <Grid Grid.Row="3" Margin="0,4,0,0">
+                        <TextBlock Text="{Binding KillsText}" FontSize="10" Foreground="{DynamicResource MutedTextBrush}" />
+                        <TextBlock Text="{Binding WhenText}" FontSize="9.5" Foreground="{DynamicResource DimTextBrush}" HorizontalAlignment="Right" />
                     </Grid>
                 </Grid>
             </Border>
             <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding Claimable}" Value="True">
-                    <Setter TargetName="Claim" Property="Visibility" Value="Visible" />
-                    <Setter TargetName="Reward" Property="Visibility" Value="Collapsed" />
-                    <Setter TargetName="Card" Property="BorderBrush" Value="{Binding Tier, Converter={StaticResource TierBrush}, ConverterParameter=solid}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Claimed}" Value="True">
-                    <Setter TargetName="Reward" Property="Opacity" Value="0.45" />
+                <DataTrigger Binding="{Binding Won}" Value="True">
+                    <Setter TargetName="Place" Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                    <Setter TargetName="Result" Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                    <Setter TargetName="Card" Property="BorderBrush" Value="{DynamicResource Accent_4A}" />
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
@@ -459,32 +389,23 @@
                     </UniformGrid>
                     <StackPanel Grid.Row="2">
                         <Grid>
-                            <TextBlock Text="ACHIEVEMENTS" Style="{StaticResource Label}" />
-                            <TextBlock HorizontalAlignment="Right" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextBrush}">
-                                <Run Text="{Binding Home.UnlockedCount, Mode=OneWay}" /><Run Text=" / " Foreground="#8A8A8A" /><Run Text="{Binding Home.AchievementCount, Mode=OneWay}" Foreground="#8A8A8A" />
-                            </TextBlock>
+                            <TextBlock Text="WIN RATE" Style="{StaticResource Label}" />
+                            <TextBlock Text="{Binding Home.WinRate}" HorizontalAlignment="Right" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource TextBrush}" />
                         </Grid>
-                        <Grid Height="6" Margin="0,6,0,0">
-                            <Border CornerRadius="3" Background="#1FFFFFFF" />
-                            <Border CornerRadius="3" Background="{DynamicResource AccentGradient}" RenderTransformOrigin="0,0.5">
-                                <Border.RenderTransform>
-                                    <ScaleTransform ScaleX="{Binding Home.AchievementsProgress}" />
-                                </Border.RenderTransform>
-                            </Border>
-                        </Grid>
-                        <StackPanel Orientation="Horizontal" Margin="0,7,0,0">
-                            <Image Source="/SyndicateLauncher;component/Assets/vbucks.png" Width="12" Height="12"
-                                   RenderOptions.BitmapScalingMode="HighQuality" />
-                            <TextBlock FontSize="9.5" Foreground="#A0A0A0" Margin="6,0,0,0">
-                                <Run Text="{Binding Home.RewardsText, Mode=OneWay}" /><Run Text=" earned" />
-                            </TextBlock>
-                        </StackPanel>
+                        <Button Style="{StaticResource LinkButton}" Command="{Binding OpenStatsCommand}" HorizontalAlignment="Left"
+                                Margin="0,7,0,0" AutomationProperties.Name="Open statistics">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="ALL STATISTICS" FontSize="9.5" FontWeight="Bold" VerticalAlignment="Center" />
+                                <TextBlock Text="  &#xE76C;" FontFamily="{StaticResource IconFont}" FontSize="8" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </Grid>
             </Border>
         </Grid>
 
-        <!-- ======================= ACHIEVEMENTS HEADER ======================= -->
+        <!-- ======================= RECENT MATCHES HEADER ======================= -->
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -500,26 +421,24 @@
                         <Rectangle.RenderTransform><SkewTransform AngleX="-18" /></Rectangle.RenderTransform>
                     </Rectangle>
                 </Grid>
-                <TextBlock Text="TILT ACHIEVEMENTS" FontFamily="{StaticResource DisplayFont}" FontSize="13"
+                <TextBlock Text="RECENT MATCHES" FontFamily="{StaticResource DisplayFont}" FontSize="13"
                            FontWeight="Bold" Foreground="{DynamicResource TextBrush}" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="14,0" VerticalAlignment="Center">
-                <!-- Menu on: say so up front, so nobody grinds a match that won't count. -->
+                <!-- Menu on (developer build only): say so up front, so nobody grinds a match that won't pay. -->
                 <Border CornerRadius="10" Padding="9,3" Background="#33E0533B" BorderBrush="#66E0533B" BorderThickness="1"
                         Visibility="{Binding EnableMenu, Converter={StaticResource BoolToVis}}"
-                        ToolTip="Matches played with the Tilt menu on earn no V-Bucks and don't count toward achievements. Legit matches pay 100 V-Bucks a kill and 1,500 a win. Turn the menu off in Settings.">
+                        ToolTip="Matches played with the in-game menu on earn no V-Bucks. Turn the menu off in Settings.">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE7BA;" FontFamily="{StaticResource IconFont}" FontSize="9" Foreground="#FF9C8A"
                                    VerticalAlignment="Center" />
-                        <TextBlock Text="Tilt menu is on: no V-Bucks or achievements" FontSize="9.5" FontWeight="SemiBold"
+                        <TextBlock Text="In-game menu is on: matches earn no V-Bucks" FontSize="9.5" FontWeight="SemiBold"
                                    Foreground="#FFC9BE" Margin="6,0,0,0" />
                     </StackPanel>
                 </Border>
-                <TextBlock Text="{Binding Home.Message}" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}"
-                           VerticalAlignment="Center" Margin="10,0,0,0" TextTrimming="CharacterEllipsis" />
             </StackPanel>
-            <Button Grid.Column="2" Style="{StaticResource LinkButton}" Command="{Binding Home.OpenAchievementsCommand}"
-                    AutomationProperties.Name="View all achievements">
+            <Button Grid.Column="2" Style="{StaticResource LinkButton}" Command="{Binding OpenStatsCommand}"
+                    AutomationProperties.Name="View all statistics">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="VIEW ALL" FontSize="9.5" FontWeight="Bold" VerticalAlignment="Center" />
                     <TextBlock Text="  &#xE76C;" FontFamily="{StaticResource IconFont}" FontSize="8" VerticalAlignment="Center" />
@@ -527,9 +446,10 @@
             </Button>
         </Grid>
 
-        <!-- ======================= ACHIEVEMENTS STRIP ======================= -->
-        <Grid x:Name="AchievementsRow" x:FieldModifier="public" Grid.Row="6" Height="128">
-            <ItemsControl ItemsSource="{Binding Home.Spotlight}" ItemTemplate="{StaticResource AchievementCard}" Focusable="False">
+        <!-- ======================= RECENT MATCHES STRIP ======================= -->
+        <Grid x:Name="RecentRow" x:FieldModifier="public" Grid.Row="6" Height="128">
+            <ItemsControl ItemsSource="{Binding Home.Recent}" ItemTemplate="{StaticResource RecentMatchCard}" Focusable="False"
+                          AutomationProperties.Name="Recent matches">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate><UniformGrid Rows="1" Columns="4" /></ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
@@ -539,71 +459,15 @@
                     </Style>
                 </ItemsControl.ItemContainerStyle>
             </ItemsControl>
-            <Border Style="{StaticResource Glass}" Visibility="{Binding Home.ShowAchievementsPlaceholder, Converter={StaticResource BoolToVis}}">
+            <Border Style="{StaticResource Glass}" Visibility="{Binding Home.ShowRecentPlaceholder, Converter={StaticResource BoolToVis}}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Achievements load from the Tilt backend" FontSize="12" FontWeight="SemiBold"
-                               Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" />
-                    <TextBlock Text="Link your Fortnite build and they'll show up here. Every season counts." FontSize="10"
-                               Foreground="#9A9A9A" HorizontalAlignment="Center" Margin="0,4,0,8" />
-                    <Button Style="{StaticResource LinkButton}" Command="{Binding Home.RefreshCommand}" HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Home.RecentPlaceholder}" FontSize="12" FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextBrush}" HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" />
+                    <Button Style="{StaticResource LinkButton}" Command="{Binding Home.RefreshCommand}" HorizontalAlignment="Center" Margin="0,8,0,0">
                         <TextBlock Text="TRY AGAIN" FontSize="9.5" FontWeight="Bold" />
                     </Button>
                 </StackPanel>
             </Border>
         </Grid>
-
-        <!-- ======================= ACHIEVEMENTS PAGE ======================= -->
-        <Border Grid.RowSpan="7" CornerRadius="14" Background="{DynamicResource Tint_F2161616}" BorderBrush="#26FFFFFF"
-                BorderThickness="1" Padding="20,16,10,16"
-                Visibility="{Binding Home.IsAchievementsOpen, Converter={StaticResource BoolToVis}}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="14" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid Margin="0,0,10,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel>
-                        <TextBlock Text="TILT ACHIEVEMENTS" FontFamily="{StaticResource BurbankFont}" FontSize="34"
-                                   Foreground="{DynamicResource TextBrush}" />
-                        <TextBlock FontSize="10.5" Foreground="#A0A0A0" Margin="0,-2,0,0"
-                                   Text="Unlock them in any season and claim real V-Bucks. Matches with the Tilt menu on don't count and earn no V-Bucks." />
-                    </StackPanel>
-                    <Border Grid.Column="1" CornerRadius="18" Padding="6,4,14,4" Margin="0,0,14,0" VerticalAlignment="Center"
-                            Background="{DynamicResource Tint_D90A0A0A}" BorderBrush="#2EFFFFFF" BorderThickness="1">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/SyndicateLauncher;component/Assets/vbucks.png" Width="26" Height="26"
-                                   RenderOptions.BitmapScalingMode="HighQuality" />
-                            <TextBlock Text="{Binding Home.VBucksText}" FontFamily="{StaticResource BurbankFont}" FontSize="20"
-                                       Foreground="#FFFFFF" Margin="8,0,0,0" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Border>
-                    <Button Grid.Column="2" Style="{StaticResource IconButton}" Width="36" Height="36"
-                            Command="{Binding Home.CloseAchievementsCommand}" VerticalAlignment="Center" ToolTip="Close"
-                            AutomationProperties.Name="Close achievements">
-                        <TextBlock Text="&#xE8BB;" FontFamily="{StaticResource IconFont}" FontSize="12" />
-                    </Button>
-                </Grid>
-                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" CanContentScroll="False" Focusable="False">
-                    <ItemsControl ItemsSource="{Binding Home.Achievements}" ItemTemplate="{StaticResource AchievementCard}"
-                                  Focusable="False" Margin="0,0,10,0">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate><UniformGrid Columns="3" /></ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Margin" Value="0,0,10,10" />
-                                <Setter Property="Height" Value="128" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                    </ItemsControl>
-                </ScrollViewer>
-            </Grid>
-        </Border>
     </Grid>
 </UserControl>

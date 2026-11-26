@@ -11,9 +11,6 @@
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <conv:StateToVisibilityConverter x:Key="StateToVis" />
             <conv:IntEqualsConverter x:Key="IntEquals" />
-            <conv:TierBrushConverter x:Key="TierBrush" />
-            <conv:BadgeGlyphConverter x:Key="BadgeGlyph" />
-            <conv:FractionToLengthConverter x:Key="FractionToLength" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

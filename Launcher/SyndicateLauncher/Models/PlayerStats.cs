@@ -11,13 +11,13 @@ public sealed class GameSession
     public DateTime StartedUtc { get; set; }
     public double Minutes { get; set; }
     public int Season { get; set; }
-    /// <summary>The Syndicate menu was on. Kept for the record; it only matters for achievements (backend).</summary>
+    /// <summary>The Syndicate menu was on. Kept for the record.</summary>
     public bool MenuOn { get; set; }
 }
 
 /// <summary>
 /// The launcher's play history for one profile (Home: Total Playtime and 7-Day Activity), saved to
-/// %AppData%\SyndicateLauncher\stats\&lt;profile&gt;.json. Achievements and V-Bucks live in the backend, not here.
+/// %AppData%\SyndicateLauncher\stats\&lt;profile&gt;.json. Career totals and V-Bucks live in the backend, not here.
 /// </summary>
 public sealed class PlayerStats
 {

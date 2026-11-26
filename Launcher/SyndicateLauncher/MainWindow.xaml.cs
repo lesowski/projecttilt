@@ -522,9 +522,9 @@ public partial class MainWindow : Window
     }
 
     private UIElement?[] HomePanels() =>
-        HomeDashboard is null ? [] : [HomeDashboard.Hub, HomeDashboard.StatsRow, HomeDashboard.AchievementsRow];
+        HomeDashboard is null ? [] : [HomeDashboard.Hub, HomeDashboard.StatsRow, HomeDashboard.RecentRow];
 
-    /// <summary>Home's reveal: the hub, the stats row and the achievements strip rise in one after another.</summary>
+    /// <summary>Home's reveal: the hub, the stats row and the recent matches strip rise in one after another.</summary>
     private void AnimateChapterCards()
     {
         var panels = HomePanels();

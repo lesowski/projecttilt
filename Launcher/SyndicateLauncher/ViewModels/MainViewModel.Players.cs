@@ -108,7 +108,7 @@ public sealed partial class MainViewModel
     {
         PlayerAction.Rename =>
             "Only the name changes. " + _actionProfile?.Name + " keeps their level, Battle Pass, locker, V-Bucks, " +
-            "achievements and stats, and friends see the new name in game. Use 3 to 16 letters, numbers, spaces, - or _.",
+            "stats, and friends see the new name in game. Use 3 to 16 letters, numbers, spaces, - or _.",
         PlayerAction.SwitchMode when SwitchingToUnlockAll =>
             "Every cosmetic from your Fortnite builds is added to " + _actionProfile?.Name + "'s locker, and the season " +
             "is maxed (level, Battle Pass tier and challenges). Your real progress is kept and comes back if you " +
@@ -119,7 +119,7 @@ public sealed partial class MainViewModel
             "V-Bucks.",
         PlayerAction.Delete =>
             "This permanently deletes " + _actionProfile?.Name + " from this PC: level, Battle Pass, locker, V-Bucks, " +
-            "achievements, stats and friends list. It can't be undone. Type the player's name to confirm.",
+            "stats and friends list. It can't be undone. Type the player's name to confirm.",
         _ => ""
     };
 

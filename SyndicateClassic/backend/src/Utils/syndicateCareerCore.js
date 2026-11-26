@@ -41,6 +41,13 @@ export function recordCareer(attributes, event) {
   attributes.lifetime_wins=Object.values(career).reduce((sum,r)=>sum+(Number(r.wins)||0),0);
 }
 
+/** Career totals over every mode, for the launcher's Home (kills, wins, matches and hours in matches). */
+export function careerTotals(attributes = {}) {
+  const rows = Object.values(attributes.tilted_career || {}).filter(r => r && typeof r === 'object');
+  const sum = key => rows.reduce((t, r) => t + whole(r[key]), 0);
+  return {kills: sum('kills'), wins: sum('wins'), matches: sum('matches'), hours: Math.floor(sum('seconds') / 360) / 10};
+}
+
 /** The player's latest matches, newest first, as the launcher's Statistics page shows them. */
 export function recentMatches(attributes = {}) {
   const list = Array.isArray(attributes.syndicate_recent_matches) ? attributes.syndicate_recent_matches : [];

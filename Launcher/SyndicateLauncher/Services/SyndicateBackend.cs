@@ -259,7 +259,7 @@ public static class SyndicateBackend
         }
     }
 
-    // ---------------------------------------------------------------- launcher Home (achievements, wallet)
+    // ---------------------------------------------------------------- launcher Home (wallet, career, recent matches)
 
     /// <summary>True when the local backend answers (it is warmed at startup and by the Play screen).</summary>
     public static Task<bool> IsAvailableAsync() => IsUpAsync();

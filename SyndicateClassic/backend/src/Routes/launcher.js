@@ -19,10 +19,8 @@ import {publishCharacter} from '../Utils/syndicateLocker.js';
 import {redeem as redeemCode,redeemedItems} from '../Utils/syndicateRedeem.js';
 import {arenaThresholds,arenaDivision,arenaBusFare,arenaLeague,placementHype} from '../Utils/syndicateArena.js';
 import {readFileSync,statSync} from 'node:fs';
-import {achievementView,claimAchievement} from '../Utils/syndicateAchievements.js';
-import {recentMatches} from '../Utils/syndicateCareerCore.js';
-import {walletId as achWalletId,ensureSharedWallet as achEnsureWallet} from '../Utils/syndicateShopWallet.js';
-import {withAccountLock as achAccountLock} from '../Utils/syndicateAccountLock.js';
+import {recentMatches,careerTotals} from '../Utils/syndicateCareerCore.js';
+import {withAccountLock} from '../Utils/syndicateAccountLock.js';
 import {fileURLToPath} from 'node:url';
 
 const router = express.Router();
@@ -317,50 +315,30 @@ router.post('/launcher/stats',safe(async(req,res)=>{
  }
  res.json({username:(await User.findOne({accountId:entry.accountId}).lean())?.username||'',modes,total,recent:recentMatches(attributes)});
 }));
-// Syndicate Achievements (Utils/syndicateAchievements.js): the launcher's Home card and Achievements page.
-// Returns every achievement with the player's progress, plus the account's V-Bucks balance for the Home wallet.
-const achAccount=req=>{
+// The launcher's Home: V-Bucks balance, whether the in-game menu is on, career totals and the latest matches
+// (syndicateCareerCore.js). It replaced the achievements routes (the achievements system was removed; saved
+// syndicate_ach progress stays in the profile untouched).
+const sessionAccount=req=>{
  const entry=sessions.get((req.headers.authorization||'').replace(/^Bearer /,''));
  return entry && entry.expires>Date.now()?entry.accountId:null;
 };
-const achBalance=common=>{
+const vbucksBalance=common=>{
  let total=0;for(const [id,i] of Object.entries(common?.items||{}))if(/^currency:mtx/i.test(i?.templateId||id)&&Number.isSafeInteger(i.quantity))total+=i.quantity;
  return total;
 };
-router.post('/launcher/achievements',safe(async(req,res)=>{
- const accountId=achAccount(req);if(!accountId)return res.status(401).json({message:'Please sign in again.'});
+router.post('/launcher/home',safe(async(req,res)=>{
+ const accountId=sessionAccount(req);if(!accountId)return res.status(401).json({message:'Please sign in again.'});
  const doc=await Profile.collection.findOne({accountId},{projection:{'profiles.athena.stats.attributes':1,'profiles.common_core.items':1}});
- res.json({...achievementView(doc?.profiles?.athena?.stats?.attributes||{}),vbucks:achBalance(doc?.profiles?.common_core)});
+ const attributes=doc?.profiles?.athena?.stats?.attributes||{};
+ res.json({vbucks:vbucksBalance(doc?.profiles?.common_core),menuActive:!!attributes.syndicate_menu_active,totals:careerTotals(attributes),recent:recentMatches(attributes).slice(0,4)});
 }));
-// Claims one unlocked achievement: its reward goes into the shared V-Bucks wallet (common_core). Same save pattern as
-// the shops: under the account lock, only if neither profile changed since it was read, with both revisions bumped.
-router.post('/launcher/achievements/claim',safe(async(req,res)=>{
- const accountId=achAccount(req);if(!accountId)return res.status(401).json({message:'Please sign in again.'});
- if(travelActive(accountId))return res.status(409).json({message:'Quit your friend\'s match to sync your account first.'});
- const id=String(req.body?.id||'');
- try{
-  const result=await achAccountLock(accountId,async()=>{
-   for(let attempt=0;attempt<6;attempt++){
-    const doc=await Profile.collection.findOne({accountId});
-    if(!doc?.profiles?.athena||!doc.profiles.common_core)throw new Error('Play a match first.');
-    const a=doc.profiles.athena,c=doc.profiles.common_core,ar=a.rvn,cr=c.rvn;
-    const claimed=claimAchievement(doc.profiles,id,achWalletId,achEnsureWallet);
-    for(const p of [a,c]){p.rvn=(p.rvn||0)+1;p.commandRevision=(p.commandRevision||0)+1;p.updated=new Date().toISOString();}
-    const saved=await Profile.collection.updateOne({accountId,'profiles.athena.rvn':ar,'profiles.common_core.rvn':cr},{$set:{'profiles.athena':a,'profiles.common_core':c}});
-    if(saved.modifiedCount){if(global.giftReceived)global.giftReceived[accountId]=true;return {...achievementView(a.stats.attributes),vbucks:achBalance(c),claimedReward:claimed.reward};}
-   }
-   throw new Error('Your account is busy. Try again.');
-  });
-  res.json(result);
- }catch(error){res.status(400).json({message:error.message});}
-}));
-// The launcher tells the backend at every launch whether the Syndicate menu is on. While it is, no match counts toward
-// achievements (recordAchievements). Set at launch only, never at exit, so late events from a menu match never count.
+// The launcher tells the backend at every launch whether the in-game menu is on. While it is, kills and wins pay no
+// V-Bucks (syndicateProgression.js). Set at launch only, never at exit, so late events from a menu match never pay.
 router.post('/launcher/menu',safe(async(req,res)=>{
- const accountId=achAccount(req);if(!accountId)return res.status(401).json({message:'Please sign in again.'});
+ const accountId=sessionAccount(req);if(!accountId)return res.status(401).json({message:'Please sign in again.'});
  const active=!!req.body?.active;
  // Under the account lock, like the match-event consumer, so the two never overwrite each other.
- await achAccountLock(accountId,()=>Profile.collection.updateOne({accountId},{$set:{'profiles.athena.stats.attributes.syndicate_menu_active':active}}));
+ await withAccountLock(accountId,()=>Profile.collection.updateOne({accountId},{$set:{'profiles.athena.stats.attributes.syndicate_menu_active':active}}));
  res.json({menuActive:active});
 }));
 // The signed-in player's season level and the XP toward the next level, for the launcher home card.
