@@ -39,6 +39,7 @@
     <!-- Fortnite Lobby Themes: wallpapers and their card thumbnails (Models/LauncherTheme.cs, ThemeCatalog). -->
     <Resource Include="Assets\Lobby\*.jpg" />
     <Resource Include="Assets\logo.png" />
+    <Resource Include="Assets\logo-wordmark.png" />
     <Resource Include="Assets\vbucks.png" />
     <Resource Include="Assets\bot-name-pool.txt" />
     <Resource Include="Assets\studio-keyart.jpg" />

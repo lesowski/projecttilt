@@ -272,6 +272,7 @@ public sealed partial class MainViewModel : ViewModelBase
             {
                 if (!Set(ref _state, value)) return;
                 OnPropertyChanged(nameof(PlayHint));
+                OnPropertyChanged(nameof(ActiveSeasonVersionText));
                 OnPropertyChanged(nameof(BuildStateLabel));
                 OnPropertyChanged(nameof(BuildStateDetail));
                 OnPropertyChanged(nameof(BuildSourceText));
@@ -290,6 +291,7 @@ public sealed partial class MainViewModel : ViewModelBase
             OnPropertyChanged(nameof(HasBuildWarning));
             OnPropertyChanged(nameof(BuildVersionText));
             OnPropertyChanged(nameof(BuildEraText));
+            OnPropertyChanged(nameof(ActiveSeasonVersionText));
             OnPropertyChanged(nameof(BuildSourceText));
             OnPropertyChanged(nameof(BuildStateLabel));
             OnPropertyChanged(nameof(BuildStateDetail));
@@ -439,6 +441,7 @@ public sealed partial class MainViewModel : ViewModelBase
             OnPropertyChanged(nameof(IsPlayScreen));
             OnPropertyChanged(nameof(IsChapterScreen));
             OnPropertyChanged(nameof(IsSeasonScreen));
+            OnPropertyChanged(nameof(IsSeasonsScreen));
             OnPropertyChanged(nameof(IsCreditsScreen));
             OnPropertyChanged(nameof(IsStudioScreen));
             OnPropertyChanged(nameof(IsPatchNotesScreen));
@@ -449,6 +452,8 @@ public sealed partial class MainViewModel : ViewModelBase
     public bool IsPlayScreen => CurrentScreen == AppScreen.Play;
     public bool IsChapterScreen => CurrentScreen == AppScreen.Chapter;
     public bool IsSeasonScreen => CurrentScreen == AppScreen.Season;
+    /// <summary>The sidebar's Seasons row: the chapter page and a season's page.</summary>
+    public bool IsSeasonsScreen => IsChapterScreen || IsSeasonScreen;
     public bool IsCreditsScreen => CurrentScreen == AppScreen.Credits;
     public bool IsStudioScreen => CurrentScreen == AppScreen.Studio;
     public bool IsPatchNotesScreen => CurrentScreen == AppScreen.PatchNotes;
@@ -502,6 +507,8 @@ public sealed partial class MainViewModel : ViewModelBase
             OnPropertyChanged(nameof(ActiveSeasonOnAccentBrush));
             OnPropertyChanged(nameof(ActiveSeasonTitleBrush));
             OnPropertyChanged(nameof(ActiveSeasonHeroGradient));
+            OnPropertyChanged(nameof(ActiveSeasonHeading));
+            OnPropertyChanged(nameof(ActiveSeasonVersionText));
             if (CurrentScreen == AppScreen.Play) WarmBackend();
         }
     }
@@ -513,6 +520,11 @@ public sealed partial class MainViewModel : ViewModelBase
     public SolidColorBrush ActiveSeasonOnAccentBrush => ActiveSeason?.OnAccentBrush ?? FallbackOnAccentBrush;
     public LinearGradientBrush ActiveSeasonTitleBrush => ActiveSeason?.TitleGradient ?? FallbackTitleGradient;
     public LinearGradientBrush ActiveSeasonHeroGradient => ActiveSeason?.HeroGradient ?? FallbackHeroGradient;
+    /// <summary>Home's season picker: "Chapter 1, Season 6".</summary>
+    public string ActiveSeasonHeading => ActiveSeason is null ? "Choose a season" : $"Chapter {ActiveSeason.ChapterNumber}, {ActiveSeason.Name}";
+    /// <summary>Home's season picker: the detected build's version, else the version the season needs.</summary>
+    public string ActiveSeasonVersionText => State == BuildState.Found && !string.IsNullOrEmpty(Build?.Version) ? "Fortnite " + Build!.Version
+        : ActiveSeason is { BuildVersion.Length: > 0 } season ? "Fortnite " + season.BuildVersion : "No build selected";
 
     private static SolidColorBrush Frozen(SolidColorBrush brush)
     {

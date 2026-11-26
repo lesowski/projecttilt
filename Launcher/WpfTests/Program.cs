@@ -119,10 +119,11 @@ internal static class Program
    Check(home.VBucksText=="12,500"&&home.Wins=="8"&&home.Kills=="106"&&home.Matches=="48"&&home.WinRate=="16.7%","Home totals and V-Bucks.");
    Check(home.Recent.Count==3&&home.Recent[0].Won&&!home.ShowRecentPlaceholder,"Home shows the latest matches.");
    Check(typeof(HomeViewModel).GetProperty("Achievements")==null&&typeof(HomeViewModel).GetProperty("ClaimCommand")==null&&Type.GetType("SyndicateLauncher.ViewModels.AchievementItem, SyndicateLauncher")==null,"No achievements left in the launcher.");
-   var recentRow=Descendants(root).OfType<ItemsControl>().Single(i=>AutomationProperties.GetName(i)=="Recent matches");
-   var strip=(FrameworkElement)VisualTreeHelper.GetParent(recentRow);
-   strip.Measure(new Size(900,128));strip.Arrange(new Rect(0,0,900,128));strip.UpdateLayout();
-   Check(recentRow.Items.Count==3,"Recent matches strip renders.");
+   Check(home.LatestMatch==home.Recent[0],"Home's Recent Match tile shows the newest match.");
+   var recentTile=Descendants(root).OfType<Button>().Single(b=>AutomationProperties.GetName(b)=="Recent match");
+   var strip=(FrameworkElement)VisualTreeHelper.GetParent(recentTile);
+   strip.Measure(new Size(420,140));strip.Arrange(new Rect(0,0,420,140));strip.UpdateLayout();
+   Check(Descendants(recentTile).OfType<TextBlock>().Any(t=>t.Text==home.Recent[0].PlaceText),"Recent Match tile renders the place.");
    Render(strip,Path.Combine(args[0],"ui-home-recent.png"));
    var page=Descendants(root).OfType<Grid>().Single(g=>AutomationProperties.GetName(g)=="Statistics");
    page.Visibility=Visibility.Visible;root.UpdateLayout();

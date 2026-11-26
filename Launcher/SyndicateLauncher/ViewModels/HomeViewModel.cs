@@ -60,6 +60,8 @@ public sealed class HomeViewModel : ViewModelBase
     public string Matches { get => _matches; private set => Set(ref _matches, value); }
     public string WinRate { get => _winRate; private set => Set(ref _winRate, value); }
     public bool ShowRecentPlaceholder => Recent.Count == 0;
+    /// <summary>The newest match, for Home's Recent Match tile (null before the first match).</summary>
+    public RecentMatchRow? LatestMatch => Recent.Count > 0 ? Recent[0] : null;
     public string RecentPlaceholder => BackendOffline
         ? "Your matches load from the Tilt backend. It isn't running right now."
         : "No matches yet. Finish a match in any season and your latest results show up here.";
@@ -122,7 +124,7 @@ public sealed class HomeViewModel : ViewModelBase
     private void ApplyCached(string profile)
     {
         _vbucks = null; _matchMinutes = 0; _loaded = false;
-        Recent.Clear(); OnPropertyChanged(nameof(ShowRecentPlaceholder));
+        Recent.Clear(); OnPropertyChanged(nameof(ShowRecentPlaceholder)); OnPropertyChanged(nameof(LatestMatch));
         Kills = Wins = Matches = "0"; WinRate = "0%";
         OnPropertyChanged(nameof(VBucksText)); OnPropertyChanged(nameof(HasVBucks));
         try { if (File.Exists(CacheFile(profile))) Apply(File.ReadAllText(CacheFile(profile))); } catch (Exception) { }
@@ -154,7 +156,7 @@ public sealed class HomeViewModel : ViewModelBase
                 Recent.Add(new RecentMatchRow(at, Int(r, "season"), Str(r, "mode"), r.TryGetProperty("arena", out var ar) && ar.ValueKind == JsonValueKind.True,
                     Int(r, "place"), Int(r, "players"), Int(r, "kills"), Int(r, "seconds"), r.TryGetProperty("won", out var w) && w.ValueKind == JsonValueKind.True));
             }
-        OnPropertyChanged(nameof(ShowRecentPlaceholder));
+        OnPropertyChanged(nameof(ShowRecentPlaceholder)); OnPropertyChanged(nameof(LatestMatch));
     }
 
     private static string Str(JsonElement e, string name) =>

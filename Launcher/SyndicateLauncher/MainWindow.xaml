@@ -367,10 +367,10 @@
         </Style>
 
         <Style x:Key="DiagnosticsLinkButton" TargetType="Button">
-            <Setter Property="Foreground" Value="{DynamicResource MutedTextBrush}" />
-            <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
-            <Setter Property="FontSize" Value="10" />
-            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             <Setter Property="Margin" Value="4,0,0,0" />
@@ -667,7 +667,7 @@
                     <ColumnDefinition>
                         <ColumnDefinition.Style>
                             <Style TargetType="ColumnDefinition">
-                                <Setter Property="Width" Value="178" />
+                                <Setter Property="Width" Value="222" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Themes.OgLauncher}" Value="True">
                                         <Setter Property="Width" Value="0" />
@@ -686,153 +686,123 @@
                 <controls:ThemeEffectsLayer x:Name="ThemeBackdrop" Grid.ColumnSpan="2" Mode="Backdrop" />
 
                 <!-- ======================= SIDEBAR ======================= -->
-                <Border Grid.Column="0" CornerRadius="7,0,0,7" BorderBrush="#12FFFFFF" BorderThickness="0,0,1,0">
-                    <Border.Style>
-                        <Style TargetType="Border">
+                <!-- The TILT wordmark on top (level with the header's "RESTORATION PROJECT"), the pages, the website
+                     links (with an external-link arrow) and the version at the bottom. -->
+                <Grid Grid.Column="0">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Themes.OgLauncher}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="{DynamicResource TintColor_FF151515}" Offset="0" />
-                            <GradientStop Color="{DynamicResource TintColor_FF0C0C0C}" Offset="1" />
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Grid>
-                        <Rectangle Fill="{StaticResource FineGridBrush}" Opacity="0.3" IsHitTestVisible="False" />
-                        <Grid Margin="14,16,14,14">
+                    </Grid.Style>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="88" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Image Source="Assets/logo-wordmark.png" Height="44" HorizontalAlignment="Left" VerticalAlignment="Center"
+                           Margin="34,4,0,0" RenderOptions.BitmapScalingMode="HighQuality"
+                           MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" AutomationProperties.Name="Tilt">
+                        <Image.Effect>
+                            <DropShadowEffect x:Name="NavLogoGlow" Color="#FFFFFF" BlurRadius="16" ShadowDepth="0" Opacity="0.28" />
+                        </Image.Effect>
+                    </Image>
+
+                    <Border Grid.Row="1" BorderBrush="#14FFFFFF" BorderThickness="0,0,1,0" Margin="0,8,0,0">
+                        <Grid Margin="20,26,20,18">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <Border Width="56" Height="56" CornerRadius="13" Background="{DynamicResource Tint_FF1B1B1B}"
-                                        BorderBrush="#3F3F43" BorderThickness="1">
-                                    <Border.Effect>
-                                        <DropShadowEffect x:Name="NavLogoGlow" Color="#FFFFFF" BlurRadius="16" ShadowDepth="0" Opacity="0.28" />
-                                    </Border.Effect>
-                                    <Image Source="Assets/logo.png" Stretch="UniformToFill"
-                                           RenderOptions.BitmapScalingMode="HighQuality" />
-                                </Border>
-                            </StackPanel>
-
-                            <StackPanel x:Name="SidebarNav" Grid.Row="1" Margin="0,24,0,0">
-                                <TextBlock Text="M E N U" FontSize="8" FontWeight="Bold"
-                                           Foreground="#727272" Margin="16,0,0,9" />
-
+                            <StackPanel x:Name="SidebarNav">
                                 <Button Style="{StaticResource NavButton}" Content="Home"
                                         Tag="&#xE80F;" ui:Ui.Active="{Binding IsHomeScreen}" Command="{Binding HomeCommand}"
                                         AutomationProperties.Name="Home" />
                                 <Button Style="{StaticResource NavButton}" Content="Play"
                                         Tag="&#xE768;" ui:Ui.Active="{Binding IsPlayScreen}"
                                         Command="{Binding OpenPlayCommand}"
-                                        ToolTip="Browse every season"
+                                        ToolTip="Browse every season on the timeline"
                                         AutomationProperties.Name="Play" />
+                                <Button Style="{StaticResource NavButton}" Content="Seasons"
+                                        Tag="&#xE81E;" ui:Ui.Active="{Binding IsSeasonsScreen}"
+                                        Command="{Binding OpenActiveChapterCommand}"
+                                        ToolTip="Chapters, seasons and their builds"
+                                        AutomationProperties.Name="Seasons" />
+                                <Button Style="{StaticResource NavButton}" Content="Statistics"
+                                        Tag="&#xE9D2;" ui:Ui.Active="{Binding IsStatsScreen}"
+                                        Command="{Binding OpenStatsCommand}"
+                                        ToolTip="Your matches, wins, eliminations and match history"
+                                        AutomationProperties.Name="Statistics" />
                                 <!-- Syndicate Studio (Dev launcher only, shown by MainWindow.xaml.cs): the match editor ported from Tilted Studio. -->
                                 <Button x:Name="StudioNavButton" Style="{StaticResource NavButton}" Content="Studio"
                                         Tag="&#xE70F;" ui:Ui.Active="{Binding IsStudioScreen}"
                                         Command="{Binding OpenStudioScreenCommand}" Visibility="Collapsed"
                                         ToolTip="Tilt Studio: run a match server, see the island and edit the map live"
                                         AutomationProperties.Name="Studio" />
-                                <Button Style="{StaticResource NavButton}" Content="Statistics"
-                                        Tag="&#xE9D2;" ui:Ui.Active="{Binding IsStatsScreen}"
-                                        Command="{Binding OpenStatsCommand}"
-                                        ToolTip="Your matches, wins, eliminations and match history"
-                                        AutomationProperties.Name="Statistics" />
                                 <Button Style="{StaticResource NavButton}" Content="Settings"
-                                        Tag="&#xE713;" Command="{Binding ToggleSettingsCommand}"
+                                        Tag="&#xE713;" ui:Ui.Active="{Binding IsSettingsOpen}" Command="{Binding ToggleSettingsCommand}"
                                         AutomationProperties.Name="Settings" />
-                                <Border Height="1" Background="#12FFFFFF" Margin="13,9,13,10" />
-                                <Button Style="{StaticResource NavButton}" Content="Discord"
-                                        Tag="&#xE8BD;" Command="{Binding OpenCommunityCommand}"
-                                        ToolTip="Join the Tilt Discord"
-                                        AutomationProperties.Name="Discord" />
-                                <Button Style="{StaticResource NavButton}" Content="Support"
-                                        Tag="&#xE897;" Command="{Binding OpenSupportCommand}"
-                                        ToolTip="Get support in the Tilt Discord"
-                                        AutomationProperties.Name="Support" />
-                                <Button Style="{StaticResource NavButton}" Content="Credits"
-                                        Tag="&#xE716;" ui:Ui.Active="{Binding IsCreditsScreen}"
-                                        Command="{Binding OpenCreditsCommand}"
-                                        ToolTip="Meet the people behind Tilt"
-                                        AutomationProperties.Name="Credits" />
+
+                                <Border Height="1" Background="#17FFFFFF" Margin="12,16,12,16" />
+
+                                <Button Style="{StaticResource NavButton}" Tag="&#xE8BD;" Command="{Binding OpenCommunityCommand}"
+                                        ToolTip="Join the Tilt Discord" AutomationProperties.Name="Discord">
+                                    <Grid>
+                                        <TextBlock Text="Discord" />
+                                        <TextBlock Style="{StaticResource NavExternalGlyph}" />
+                                    </Grid>
+                                </Button>
+                                <Button Style="{StaticResource NavButton}" Tag="&#xE897;" Command="{Binding OpenSupportCommand}"
+                                        ToolTip="Get support in the Tilt Discord" AutomationProperties.Name="Support">
+                                    <Grid>
+                                        <TextBlock Text="Support" />
+                                        <TextBlock Style="{StaticResource NavExternalGlyph}" />
+                                    </Grid>
+                                </Button>
                                 <Button Style="{StaticResource NavButton}" Content="Patch Notes"
                                         Tag="&#xE8A5;" ui:Ui.Active="{Binding IsPatchNotesScreen}"
                                         Command="{Binding OpenPatchNotesCommand}"
                                         ToolTip="See what's new in this version of Tilt"
                                         AutomationProperties.Name="Patch Notes" />
-                                <Button Style="{StaticResource NavButton}" Content="Donate"
-                                        Tag="&#xE00B;" Command="{Binding OpenDonateCommand}"
-                                        ToolTip="Support Tilt on Buy Me a Coffee"
-                                        AutomationProperties.Name="Donate" />
+                                <Button Style="{StaticResource NavButton}" Content="Credits"
+                                        Tag="&#xE716;" ui:Ui.Active="{Binding IsCreditsScreen}"
+                                        Command="{Binding OpenCreditsCommand}"
+                                        ToolTip="Meet the people behind Tilt"
+                                        AutomationProperties.Name="Credits" />
+                                <Button Style="{StaticResource NavButton}" Tag="&#xE00B;" Command="{Binding OpenDonateCommand}"
+                                        ToolTip="Support Tilt on Buy Me a Coffee" AutomationProperties.Name="Donate">
+                                    <Grid>
+                                        <TextBlock Text="Donate" />
+                                        <TextBlock Style="{StaticResource NavExternalGlyph}" />
+                                    </Grid>
+                                </Button>
                             </StackPanel>
 
-                            <Border Grid.Row="3" Height="168" CornerRadius="11" ClipToBounds="True"
-                                    BorderBrush="#2A747474" BorderThickness="1">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="{DynamicResource TintColor_FF2D2D2D}" Offset="0" />
-                                        <GradientStop Color="{DynamicResource TintColor_FF111111}" Offset="1" />
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Grid>
-                                    <Image Source="Assets/og-card.png" Stretch="UniformToFill"
-                                           RenderOptions.BitmapScalingMode="HighQuality" />
-                                    <Rectangle IsHitTestVisible="False">
-                                        <Rectangle.Fill>
-                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                <GradientStop Color="{DynamicResource TintColor_990F0F0F}" Offset="0" />
-                                                <GradientStop Color="{DynamicResource TintColor_330F0F0F}" Offset="0.5" />
-                                                <GradientStop Color="#0005111A" Offset="1" />
-                                            </LinearGradientBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <Grid Margin="12">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <StackPanel>
-                                            <TextBlock FontFamily="{StaticResource DisplayFont}"
-                                                       FontSize="15" FontWeight="Bold" FontStyle="Italic"
-                                                       LineHeight="15" Foreground="#FFFFFF" Text="PLAY&#10;THE OG&#10;WAY." />
-                                            <Border Width="20" Height="2" Background="{DynamicResource AccentBrush}"
-                                                    HorizontalAlignment="Left" Margin="0,7,0,0" />
-                                        </StackPanel>
-                                    </Grid>
-                                </Grid>
-                            </Border>
-
-                            <Grid Grid.Row="4" Margin="3,10,3,0">
-                                <Button Command="{Binding OpenPatchNotesCommand}" Cursor="Hand" HorizontalAlignment="Left"
-                                        ToolTip="See what's new (Patch Notes)" AutomationProperties.Name="Version, open patch notes"
-                                        FocusVisualStyle="{x:Null}">
-                                    <Button.Template>
-                                        <ControlTemplate TargetType="Button">
-                                            <TextBlock x:Name="VersionText" Text="{Binding LauncherVersionText}" FontSize="12.5"
-                                                       FontWeight="SemiBold" Foreground="#A4A4A4" VerticalAlignment="Center"
-                                                       Background="Transparent" />
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="VersionText" Property="Foreground" Value="{DynamicResource TextBrush}" />
-                                                    <Setter TargetName="VersionText" Property="TextDecorations" Value="Underline" />
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                </Button>
-                            </Grid>
+                            <Button Grid.Row="2" Command="{Binding OpenPatchNotesCommand}" Cursor="Hand" HorizontalAlignment="Left"
+                                    Margin="10,0,0,0" ToolTip="See what's new (Patch Notes)"
+                                    AutomationProperties.Name="Version, open patch notes" FocusVisualStyle="{x:Null}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <TextBlock x:Name="VersionText" Text="{Binding LauncherVersionText}" FontSize="13"
+                                                   FontFamily="{StaticResource DisplayFont}" Foreground="#8A8A94"
+                                                   VerticalAlignment="Center" Background="Transparent" />
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="VersionText" Property="Foreground" Value="{DynamicResource TextBrush}" />
+                                                <Setter TargetName="VersionText" Property="TextDecorations" Value="Underline" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
                         </Grid>
-                    </Grid>
-                </Border>
+                    </Border>
+                </Grid>
 
                 <!-- ======================= MAIN ======================= -->
                 <Grid Grid.Column="1">
@@ -840,7 +810,7 @@
                         <RowDefinition>
                             <RowDefinition.Style>
                                 <Style TargetType="RowDefinition">
-                                    <Setter Property="Height" Value="64" />
+                                    <Setter Property="Height" Value="88" />
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Themes.OgLauncher}" Value="True">
                                             <Setter Property="Height" Value="38" />
@@ -939,12 +909,11 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="26,0,0,0">
-                            <TextBlock Text="TILT" FontFamily="{StaticResource DisplayFont}" FontSize="22"
-                                       FontWeight="Bold" FontStyle="Italic" Foreground="{DynamicResource TextBrush}" />
-                            <Border Width="1" Height="16" Background="#26FFFFFF" Margin="12,1,12,0" />
-                            <TextBlock Text="R E S T O R A T I O N   P R O J E C T" FontSize="8"
-                                       FontWeight="SemiBold" Foreground="#878787" VerticalAlignment="Center" />
+                        <!-- The TILT wordmark sits in the sidebar column; this divider and subtitle continue it. -->
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,4,0,0">
+                            <Border Width="1" Height="34" Background="#2EFFFFFF" Margin="0,0,30,0" />
+                            <TextBlock Text="R E S T O R A T I O N    P R O J E C T" FontFamily="{StaticResource DisplayFont}"
+                                       FontSize="13" FontWeight="SemiBold" Foreground="#9C9CA6" VerticalAlignment="Center" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,11,0">
                             <!-- Shown only in launchers built by UPDATE FROM GIT.cmd (DEV_BUILD), so devs can tell them from a release. -->
@@ -967,7 +936,7 @@
                     <Grid x:Name="ContentHost" Grid.Row="1">
                         <Grid.Style>
                             <Style TargetType="Grid">
-                                <Setter Property="Margin" Value="24,0,24,20" />
+                                <Setter Property="Margin" Value="30,0,30,16" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Themes.OgLauncher}" Value="True">
                                         <Setter Property="Margin" Value="18,16,18,18" />
@@ -5081,9 +5050,9 @@
                         </ScrollViewer>
                     </Border>
 
-                    <Border x:Name="DiagnosticsBar" Grid.Row="2" Background="#F20A0A0E"
-                            BorderBrush="#1FFFFFFF" BorderThickness="0,1,0,0" CornerRadius="0,0,15,0">
-                        <Grid Height="42" Margin="12,0,12,0">
+                    <Border x:Name="DiagnosticsBar" Grid.Row="2" Background="Transparent" Margin="30,0,30,6"
+                            BorderBrush="#1CFFFFFF" BorderThickness="0,1,0,0">
+                        <Grid Height="48" Margin="0,0,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
@@ -5098,8 +5067,21 @@
                                     <TextBlock x:Name="DiagnosticsChevron" Text="&#xE70E;"
                                                FontFamily="{StaticResource IconFont}" FontSize="10"
                                                Foreground="{DynamicResource DimTextBrush}" Margin="0,0,9,0"
-                                               VerticalAlignment="Center" />
-                                    <TextBlock Text="DIAGNOSTICS" FontSize="10.5" FontWeight="Bold"
+                                               VerticalAlignment="Center" Visibility="Collapsed" />
+                                    <!-- Green while there are no errors; red when the error chip is showing. -->
+                                    <Ellipse Width="9" Height="9" Margin="0,0,11,0" VerticalAlignment="Center">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Fill" Value="{DynamicResource SuccessBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Visibility, ElementName=DiagnosticsErrorChip}" Value="Visible">
+                                                        <Setter Property="Fill" Value="{DynamicResource DangerBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    <TextBlock Text="DIAGNOSTICS" FontFamily="{StaticResource DisplayFont}" FontSize="13" FontWeight="SemiBold"
                                                Foreground="{DynamicResource TextBrush}" VerticalAlignment="Center" />
                                     <Border x:Name="DiagnosticsErrorChip" Visibility="Collapsed"
                                             Background="#40FF5A6A" CornerRadius="8" Padding="7,1"
@@ -5110,9 +5092,10 @@
                                 </StackPanel>
                             </Button>
 
-                            <TextBlock x:Name="DiagnosticsStatus" Grid.Column="1" Text="Ready" FontSize="11"
-                                       Foreground="{DynamicResource DimTextBrush}" VerticalAlignment="Center"
-                                       TextTrimming="CharacterEllipsis" Margin="14,0" />
+                            <Border Grid.Column="1" Width="1" Height="22" Background="#22FFFFFF" HorizontalAlignment="Left" Margin="10,0,0,0" />
+                            <TextBlock x:Name="DiagnosticsStatus" Grid.Column="1" Text="Ready" FontSize="12.5"
+                                       Foreground="{DynamicResource MutedTextBrush}" VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis" Margin="30,0,14,0" />
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                                 <Button Content="COPY LOG" Style="{StaticResource DiagnosticsLinkButton}"

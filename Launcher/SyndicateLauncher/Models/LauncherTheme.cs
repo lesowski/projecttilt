@@ -148,7 +148,9 @@ public static class ThemeCatalog
     {
         // Signature
         // Keys stay "syndicate" / "classic-*": they are saved in settings.json (AppSettings.Theme).
-        P("syndicate", "Tilt", "Signature", "The TILT look: graphite and clean white.",
+        P("syndicate", "Tilt", "Signature", "The TILT look: night black and storm purple.",
+          "#8B5CF6", "#6D3FE0", "#0B0A0F", "#17151E"),
+        P("graphite", "Tilt Graphite", "Signature", "The original TILT look: graphite and clean white.",
           "#F2F3F5", "#C9CBCF", "#0C0C0C", "#1B1B1B"),
         P("classic-ice", "Tilt Ice", "Signature", "The classic launcher look: deep navy, ice cyan and a gold play button.",
           "#3BD9FF", "#1E8FD0", "#06121D", "#0E2333", "#EAF6FF", "#F7D154", "#D9A514"),

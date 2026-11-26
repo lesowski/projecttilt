@@ -153,87 +153,60 @@
     </Style>
 
     <!-- ============================== Navigation =========================== -->
+    <!-- Keyboard / controller focus outline only (WPF shows FocusVisualStyle for keyboard focus, not clicks). -->
+    <Style x:Key="KeyFocusRing">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border CornerRadius="8" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1.5" Margin="-2" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- Sidebar row (Home, Play, ...): outline icon, label, and an optional trailing glyph in Content
+         (the external-link arrow on Discord / Support / Patch Notes). Active: a filled row with an accent bar. -->
     <Style x:Key="NavButton" TargetType="Button">
-        <Setter Property="Height" Value="42" />
-        <Setter Property="Margin" Value="0,0,0,3" />
-        <Setter Property="Foreground" Value="#B3B3B3" />
-        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
-        <Setter Property="FontSize" Value="12.5" />
-        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Height" Value="44" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+        <Setter Property="Foreground" Value="#C4C4CC" />
+        <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource KeyFocusRing}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Grid x:Name="NavRoot" RenderTransformOrigin="0.5,0.5">
-                        <Grid.RenderTransform>
-                            <ScaleTransform x:Name="NavScale" />
-                        </Grid.RenderTransform>
-                        <Border x:Name="Bd" CornerRadius="7" Background="Transparent"
+                    <Grid x:Name="NavRoot" Background="Transparent">
+                        <Border x:Name="Bd" CornerRadius="8" Background="Transparent"
                                 BorderBrush="Transparent" BorderThickness="1" />
-                        <Border x:Name="Bar" Width="2" Height="18" CornerRadius="1"
+                        <Border x:Name="Bar" Width="3" CornerRadius="1.5" Margin="0,4"
                                 Background="{DynamicResource AccentBrush}" HorizontalAlignment="Left"
-                                Opacity="0">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#F2F3F5" BlurRadius="8" ShadowDepth="0" Opacity="0.7" />
-                            </Border.Effect>
-                        </Border>
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0,10,0">
+                                Opacity="0" />
+                        <Grid Margin="17,0,12,0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="34" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
                             <TextBlock x:Name="Glyph" Text="{TemplateBinding Tag}"
-                                       FontFamily="{StaticResource IconFont}" FontSize="15"
-                                       Width="26" VerticalAlignment="Center"
+                                       FontFamily="{StaticResource IconFont}" FontSize="17"
+                                       VerticalAlignment="Center"
                                        Foreground="{TemplateBinding Foreground}" />
-                            <ContentPresenter VerticalAlignment="Center" />
-                        </StackPanel>
-                        <TextBlock x:Name="Chev" Text="&#xE76C;" FontFamily="{StaticResource IconFont}"
-                                   FontSize="9" HorizontalAlignment="Right" VerticalAlignment="Center"
-                                   Margin="0,0,13,0" Opacity="0" Foreground="{DynamicResource AccentBrush}" />
+                            <ContentPresenter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" />
+                        </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#0EFFFFFF" />
+                            <Setter TargetName="Bd" Property="Background" Value="#0DFFFFFF" />
                             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
-                            <Trigger.EnterActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="NavScale" Storyboard.TargetProperty="ScaleX"
-                                                         To="1.02" Duration="0:0:0.14" />
-                                        <DoubleAnimation Storyboard.TargetName="NavScale" Storyboard.TargetProperty="ScaleY"
-                                                         To="1.02" Duration="0:0:0.14" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.EnterActions>
-                            <Trigger.ExitActions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="NavScale" Storyboard.TargetProperty="ScaleX"
-                                                         To="1" Duration="0:0:0.18" />
-                                        <DoubleAnimation Storyboard.TargetName="NavScale" Storyboard.TargetProperty="ScaleY"
-                                                         To="1" Duration="0:0:0.18" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </Trigger.ExitActions>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#18FFFFFF" />
-                        </Trigger>
-                        <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                            <Setter TargetName="Bd" Property="Background" Value="#16FFFFFF" />
                         </Trigger>
                         <Trigger Property="ui:Ui.Active" Value="True">
-                            <Setter TargetName="Bd" Property="Background">
-                                <Setter.Value>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                        <GradientStop Color="#29F2F3F5" Offset="0" />
-                                        <GradientStop Color="#0AF2F3F5" Offset="1" />
-                                    </LinearGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Accent_26}" />
+                            <Setter TargetName="Bd" Property="Background" Value="#17FFFFFF" />
                             <Setter TargetName="Bar" Property="Opacity" Value="1" />
-                            <Setter TargetName="Glyph" Property="Foreground" Value="{DynamicResource AccentBrush}" />
-                            <Setter TargetName="Chev" Property="Opacity" Value="0.85" />
                             <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
@@ -244,6 +217,16 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- Label + external-link arrow for sidebar rows that open a website (put in a NavButton's Content). -->
+    <Style x:Key="NavExternalGlyph" TargetType="TextBlock">
+        <Setter Property="Text" Value="&#xE8A7;" />
+        <Setter Property="FontFamily" Value="{StaticResource IconFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Opacity" Value="0.8" />
     </Style>
 
     <!-- ============================== Launch / ghost buttons =============== -->

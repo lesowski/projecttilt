@@ -68,6 +68,7 @@ public sealed class SeasonInfo
     public Point WheelImageFocus { get; init; } = new(0.5, 0.5);
 
     public string ChapterText => $"CHAPTER {ChapterNumber}";
+    public string TaglineCaps => Tagline.ToUpperInvariant();
     public string ReleaseLabel => IsReleased ? "AVAILABLE" : "NOT RELEASED";
     public string AvailabilityNote => IsReleased
         ? $"{Name} is available to play."
