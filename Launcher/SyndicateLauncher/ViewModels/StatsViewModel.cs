@@ -204,8 +204,7 @@ public sealed class StatsViewModel : ViewModelBase
     private void ShowTime() => TimePlayed = PlaytimeFormat.Duration(Math.Max(_localMinutes, _backendMinutes));
 
     /// <summary>Season names as the game server reports them (Season 0 builds report 1; Chapter 2 is 11 and 12 in
-    /// match history). The launcher's own session log stores the season card's number, so Chapter 2 dev sessions
-    /// show there as Season 1 / Season 2.</summary>
+    /// match history, and in the launcher's own session log since 1.4.3).</summary>
     public static string SeasonName(int season) => season switch
     {
         0 => "Pre-season",

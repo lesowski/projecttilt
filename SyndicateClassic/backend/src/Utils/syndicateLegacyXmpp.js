@@ -1,6 +1,7 @@
 import net from 'node:net';
 import tls from 'node:tls';
 import {readFileSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
 import {StringDecoder} from 'node:string_decoder';
 import {WebSocket} from 'ws';
 import sax from 'sax';
@@ -17,8 +18,12 @@ const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;')
 export const escapeText=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;');
 export function startLegacyXmpp({port=7071,upstream='ws://127.0.0.1:70',host='127.0.0.1',tlsOptions=null}={}){
  let secureContext=null;
- // Use Runtime/Server/legacy-xmpp-tls/{key,cert}.pem when present; there is no built-in certificate. Without TLS, 1.7.2/1.8.2 never send their login ("XMPP log-in credentials not valid (6)").
- let fileOptions=null;try{fileOptions={key:readFileSync(new URL('../../../Runtime/Server/legacy-xmpp-tls/key.pem',import.meta.url)),cert:readFileSync(new URL('../../../Runtime/Server/legacy-xmpp-tls/cert.pem',import.meta.url))};}catch{}
+ // key.pem/cert.pem from TILT_LEGACY_XMPP_TLS (the Tilt launcher makes one pair per install and writes the same
+ // certificate into the game: Launcher Services/LegacyXmppTrust.cs), else Runtime/Server/legacy-xmpp-tls. There is no
+ // built-in certificate. Without TLS, 1.7.2/1.8.2 never send their login ("XMPP log-in credentials not valid (6)").
+ let fileOptions=null;
+ const tlsDirs=[process.env.TILT_LEGACY_XMPP_TLS?pathToFileURL(process.env.TILT_LEGACY_XMPP_TLS.replace(/[\\/]*$/,'/')):null,new URL('../../../Runtime/Server/legacy-xmpp-tls/',import.meta.url)].filter(Boolean);
+ for(const dir of tlsDirs){try{fileOptions={key:readFileSync(new URL('key.pem',dir)),cert:readFileSync(new URL('cert.pem',dir))};break;}catch{fileOptions=null;}}
  try {const options=tlsOptions||fileOptions;if(!options)throw new Error('no key.pem/cert.pem in Runtime/Server/legacy-xmpp-tls');// 1.7.2/1.8.2 (OpenSSL 1.0.2, libjingle) only speak TLS 1.0, which Node refuses by default
   // ("unsupported protocol"). Allow it here; this listener is loopback only.
   secureContext=tls.createSecureContext({minVersion:'TLSv1',ciphers:'DEFAULT:@SECLEVEL=0',...options});}catch(error){console.warn('[Legacy XMPP] TLS setup failed: '+error.message);}

@@ -70,10 +70,10 @@ public static class GameLauncher
         Starting = starting;
         StartingChanged?.Invoke();
     }
-    /// <summary>The Chapter 1 builds Syndicate's Erbium server supports.</summary>
+    /// <summary>The builds Syndicate's Erbium server supports: the Chapter 1 slots and Chapter 2 Season 1 (11.00).</summary>
     public static readonly string[] SyndicateBuilds =
     {
-        "1.7.2", "1.8.2", "1.11", "2.5", "3.5.1", "4.5", "5.10", "6.20", "7.40", "8.50", "9.40"
+        "1.7.2", "1.8.2", "1.11", "2.5", "3.5.1", "4.5", "5.10", "6.20", "7.40", "8.50", "9.40", "11.00"
     };
 
     public static bool IsSyndicateBuild(string version) => SyndicateBuilds.Contains(version, StringComparer.OrdinalIgnoreCase);
@@ -88,7 +88,7 @@ public static class GameLauncher
         bool chapter1 = IsSyndicateBuild(build.Version);
         if (build.Source != DetectionSource.GameFiles || (!native1040 && !chapter1))
             throw new InvalidOperationException(
-                "Select a supported Fortnite build: 1.7.2, 1.8.2, 1.11, 2.5, 3.5.1, 4.5, 5.10, 6.20, 7.40, 8.50, 9.40 or 10.40 CL-9380822.");
+                "Select a supported Fortnite build: 1.7.2, 1.8.2, 1.11, 2.5, 3.5.1, 4.5, 5.10, 6.20, 7.40, 8.50, 9.40, 10.40 CL-9380822 or 11.00.");
     }
 
     /// <summary>All supported builds, including 10.40, use the bundled Erbium startup path.</summary>
@@ -348,6 +348,12 @@ public static class GameLauncher
         if (Process.GetProcessesByName(Path.GetFileNameWithoutExtension(build.ExecutablePath)).Any())
             throw new InvalidOperationException("Close the running Fortnite client/server before starting a new Tilt session.");
         await Task.Run(VerifyModules);
+        // Pre-season, Season 1 and Season 2: the game must trust the backend's chat certificate, or ready-up never finishes.
+        if (LegacyXmppTrust.AppliesTo(build.Version))
+        {
+            try { await Task.Run(() => LegacyXmppTrust.Ensure(build.ExecutablePath, build.Version, message => (log ?? status)(message))); }
+            catch (Exception error) { (log ?? status)("Party chat certificate not installed: " + error.Message); }
+        }
         // Syndicate Studio open (or its Start): SyndicateMenu.dll never loads into a Studio session, so its hooks
         // can't crash the docked game or fight SyndicateStudio.dll.
         bool studioOpen = Studio.StudioSession.Current() is not null;

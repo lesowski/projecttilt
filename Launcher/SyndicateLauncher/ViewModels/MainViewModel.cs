@@ -386,13 +386,13 @@ public sealed partial class MainViewModel : ViewModelBase
                 : $"{Build.SourceLabel}.";
         }
     }
-    // Every supported Chapter 1 build runs Syndicate's Erbium server.
+    // Every supported build (Chapter 1 and Chapter 2 Season 1) runs Syndicate's Erbium server.
     private static bool IsPlayableBuild(BuildInfo? build) =>
         build is not null && build.Source == DetectionSource.GameFiles && GameLauncher.IsSupportedBuild(build.Version);
 
     public string BuildWarning => Build is null ? "" :
         IsPlayableBuild(Build) ? "" :
-        "Unsupported build. Chapter 1 needs 1.7.2, 1.8.2, 1.11, 2.5, 3.5.1, 4.5, 5.10, 6.20, 7.40, 8.50, 9.40 or 10.40 CL-9380822.";
+        "Unsupported build. Tilt needs 1.7.2, 1.8.2, 1.11, 2.5, 3.5.1, 4.5, 5.10, 6.20, 7.40, 8.50, 9.40, 10.40 CL-9380822 or 11.00.";
 
     public bool HasBuildWarning => BuildWarning.Length > 0;
     private void OpenCommunity()

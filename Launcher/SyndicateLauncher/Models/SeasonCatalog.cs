@@ -23,7 +23,8 @@ public sealed class SeasonInfo
     public required string Key { get; init; }
     public required int ChapterNumber { get; init; }
     public required string Code { get; init; }
-    public int SeasonNumber => Code == "X" ? 10 : int.TryParse(Code, out var number) ? number : 0;
+    /// <summary>The season number the backend and game server use: 0-10 for Chapter 1, 11 and up for Chapter 2.</summary>
+    public int SeasonNumber => Code == "X" ? 10 : int.TryParse(Code, out var number) ? (ChapterNumber == 2 ? 10 + number : number) : 0;
     public required string Name { get; init; }
     public required string Tagline { get; init; }
     public required string Description { get; init; }
@@ -177,9 +178,9 @@ public static class SeasonCatalog
 #if DEV_BUILD
             IsReleased = released,
 #else
-            // Public releases: Chapter 2 seasons are dev-only (not finished / crash), so they can't be played -
-            // IsReleased=false disables Play and every launch path for them.
-            IsReleased = chapter >= 2 ? false : released,
+            // Public releases: Chapter 2 Season 1 (11.00) is playable; the later Chapter 2 seasons are dev-only (not
+            // finished / crash), so IsReleased=false disables Play and every launch path for them.
+            IsReleased = chapter >= 2 && !(chapter == 2 && code == "1") ? false : released,
 #endif
             BuildVersion = BuildVersionFor(chapter, code),
 #if DEV_BUILD

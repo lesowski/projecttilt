@@ -54,6 +54,29 @@ public static class PatchNotes
     public static IReadOnlyList<PatchRelease> Releases { get; } = new[]
     {
         new PatchRelease(
+            Version: "1.4.3",
+            Date: "November 27, 2026",
+            Title: "CHAPTER 2 SEASON 1",
+            Summary: "Chapter 2 Season 1 is playable, and Pre-season matches start again.",
+            Highlights: new[]
+            {
+                new PatchHighlight("Chapter 2 Season 1",
+                    "Play the new island on Fortnite 11.00: Seasons > Chapter 2 > Season 1."),
+                new PatchHighlight("Pre-season fixed",
+                    "Pre-season no longer waits forever on \"Waiting for players to ready up\"."),
+            },
+            Sections: new[]
+            {
+                new PatchNoteSection("SEASONS", new[]
+                {
+                    "Added Chapter 2 Season 1 (Fortnite 11.00) with its own Battle Pass and challenges.",
+                }),
+                new PatchNoteSection("BUG FIXES", new[]
+                {
+                    "Fixed Pre-season, Season 1 and Season 2 getting stuck on \"Waiting for players to ready up\". The launcher now sets up the party chat connection those seasons need (it updates the game the first time you press Play and keeps a backup).",
+                }),
+            }),
+        new PatchRelease(
             Version: "1.4.2",
             Date: "November 27, 2026",
             Title: "TILT BACKEND",

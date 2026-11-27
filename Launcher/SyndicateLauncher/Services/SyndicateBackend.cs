@@ -396,6 +396,10 @@ public static class SyndicateBackend
         info.Environment["TILTED_BACKEND_LOG"] = Path.Combine(logDirectory, "syndicate-backend.log");
         info.Environment["BOT_TOKEN"] = "";
         info.Environment["DISCORD_TOKEN"] = "";
+        // This install's chat certificate for Pre-season, Season 1 and Season 2 (Services/LegacyXmppTrust.cs). Without
+        // it those seasons never log in to chat, so the party never syncs and ready-up waits forever.
+        try { LegacyXmppTrust.EnsureCertificate(); info.Environment["TILT_LEGACY_XMPP_TLS"] = LegacyXmppTrust.TlsDirectory; }
+        catch { /* the other seasons don't need it */ }
 #if DEV_BUILD
         // Dev launcher: the backend's developer routes (Syndicate Studio's live map editor, match telemetry).
         info.Environment["TILTED_DEVKIT"] = "1";

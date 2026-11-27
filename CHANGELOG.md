@@ -2,6 +2,16 @@
 
 Launcher releases, newest first. Version numbers follow `<Version>` in `Launcher/SyndicateLauncher/SyndicateLauncher.csproj` and the in-launcher Patch Notes (`Launcher/SyndicateLauncher/Models/PatchNotes.cs`). Releases up to 1.3.1 are listed only in the Patch Notes.
 
+## 1.4.3 - November 27, 2026
+
+### Seasons
+
+- Added Chapter 2 Season 1 (Fortnite 11.00). The backend now gets season 11 for it, so it loads that season's Battle Pass and challenges. The later Chapter 2 seasons stay locked in the public launcher.
+
+### Bug fixes
+
+- Fixed Pre-season, Season 1 and Season 2 waiting forever on "Waiting for players to ready up". Those seasons only log in to party chat over TLS and only trust certificates built into the game. The launcher now makes its own loopback certificate per install (`%APPDATA%SyndicateLauncherlegacy-xmpp-tls`), gives it to the backend and writes it into the game exe on Play (backup: `.tilt-original`).
+
 ## 1.4.2 - November 27, 2026
 
 ### Miscellaneous

@@ -131,6 +131,37 @@ internal static class Program
    Check(((string[])updater.GetField("Repos",hidden)!.GetValue(null)!).SequenceEqual(new[]{"lesowski/projecttilt"}),"Update check reads Tilt's release repo.");
    Check(newer("v2026-11-28","v2026-11-27")&&newer("v2026.11.27.1","v2026-11-27")&&newer("v2026-11-27","v2026-11-15"),"Update check: a later date tag is an update.");
    Check(!newer("v2026-11-27","v2026-11-27")&&!newer("v2026-11-15","v2026-11-27")&&!newer("v1.4.1","v2026-11-27"),"Update check: the same or an older tag is not.");
+   // Party chat certificate for Pre-season / Season 1 / Season 2 (Services/LegacyXmppTrust.cs).
+   var trust=typeof(SyndicateLauncher.Services.UpdateChecker).Assembly.GetType("SyndicateLauncher.Services.LegacyXmppTrust")!;
+   const System.Reflection.BindingFlags open=System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static;
+   var der=(byte[])trust.GetMethod("EnsureCertificate",open)!.Invoke(null,null)!;
+   string tlsDir=(string)trust.GetProperty("TlsDirectory",open)!.GetValue(null)!;
+   using(var made=new System.Security.Cryptography.X509Certificates.X509Certificate2(der))
+    Check(der.Length==1144&&made.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType.SimpleName,false)=="prod.ol.epicgames.com"&&File.Exists(Path.Combine(tlsDir,"key.pem")),"Chat certificate: 1144 bytes, for prod.ol.epicgames.com, with its key saved.");
+   Check(((byte[])trust.GetMethod("EnsureCertificate",open)!.Invoke(null,null)!).SequenceEqual(der),"Chat certificate is kept between runs.");
+   Action<string,string> patch=(file,version)=>trust.GetMethod("Ensure",open)!.Invoke(null,new object?[]{file,version,null});
+   string fakeDir=Path.Combine(Path.GetTempPath(),"tilt-trust-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(fakeDir);
+   try
+   {
+    var expired=Convert.FromBase64String((string)trust.GetField("ExpiredRoot",open)!.GetValue(null)!);
+    var filler=new byte[5000];new Random(7).NextBytes(filler);
+    string fake=Path.Combine(fakeDir,"FortniteClient-Win64-Shipping.exe");
+    File.WriteAllBytes(fake,filler.Concat(expired).Concat(filler).ToArray());
+    patch(fake,"4.5");Check(File.ReadAllBytes(fake).AsSpan(5000,1144).SequenceEqual(expired),"Chat certificate: other seasons' games are left alone.");
+    patch(fake,"1.7.2");var after=File.ReadAllBytes(fake);
+    Check(after.Length==11144&&after.AsSpan(5000,1144).SequenceEqual(der)&&after.AsSpan(0,5000).SequenceEqual(filler)&&File.Exists(fake+".tilt-original"),"Chat certificate replaces the expired root in 1.7.2 and keeps the original.");
+    patch(fake,"1.7.2");Check(File.ReadAllBytes(fake).SequenceEqual(after),"Chat certificate: a patched game is not patched again.");
+    // A game patched by the old Project Tilted launcher carries its certificate (marker in an OU) instead.
+    var old=new byte[1144];new Random(9).NextBytes(old);new byte[]{0x30,0x82,0x04,0x74,0x30,0x82,0x03,0x5C}.CopyTo(old,0);System.Text.Encoding.ASCII.GetBytes("Tilted local XMPP").CopyTo(old,180);
+    string fake2=Path.Combine(fakeDir,"second.exe");File.WriteAllBytes(fake2,filler.Concat(old).Concat(filler).ToArray());
+    patch(fake2,"1.8.2");Check(File.ReadAllBytes(fake2).AsSpan(5000,1144).SequenceEqual(der),"Chat certificate replaces an earlier launcher's certificate.");
+   }
+   finally{Directory.Delete(fakeDir,true);}
+   // Chapter 2 Season 1 (11.00) is playable in both editions; the backend gets season 11.
+   var c2=SyndicateLauncher.Models.SeasonCatalog.GetSeasons(2);
+   Check(c2[0].IsReleased&&c2[0].BuildVersion=="11.00"&&c2[0].SeasonNumber==11&&SyndicateLauncher.Services.GameLauncher.IsSupportedBuild("11.00"),"Chapter 2 Season 1 is playable on 11.00 as season 11.");
+   Check(SyndicateLauncher.Models.SeasonCatalog.GetSeasons(1).Single(s=>s.Code=="X").SeasonNumber==10&&SyndicateLauncher.Models.SeasonCatalog.GetSeasons(1).Single(s=>s.Code=="0").SeasonNumber==0,"Chapter 1 season numbers are unchanged.");
+   if(!developer)Check(c2.Skip(1).All(s=>!s.IsReleased),"Public build: later Chapter 2 seasons stay locked.");
    Check(home.LatestMatch==home.Recent[0],"Home's Recent Match tile shows the newest match.");
    var recentTile=Descendants(root).OfType<Button>().Single(b=>AutomationProperties.GetName(b)=="Recent match");
    var strip=(FrameworkElement)VisualTreeHelper.GetParent(recentTile);
