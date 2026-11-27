@@ -1666,11 +1666,90 @@ namespace SpectraBots
         return GotResult && GotHit;
     }
 
+    // ---- Water map (Chapter 2) -------------------------------------------------------------------------------
+    // On 11.00 the ground trace goes straight through the sea, lakes and rivers and hits the bed, so the name check
+    // on the hit actor never saw water: bots walked into the water, stayed on the seabed or riverbed and shot from
+    // there, never swam and never built across. Water is found from the level instead (as Season X does): water
+    // volumes and large water/ocean actors, with their area and top. A point is under water when it is inside an
+    // area and below its top. Scanned at the start of the match and twice more while levels stream in.
+    struct SyndicateWaterArea{FVector Center{},Extent{};float Top=0;};
+    inline std::vector<SyndicateWaterArea> SyndicateWater;
+    inline ULONGLONG SyndicateWaterNextScan=0;inline int SyndicateWaterScans=0;
+    inline bool SyndicateWaterBox(AActor* A,FVector& Center,FVector& Extent){
+        if(auto Fn=A->GetFunction("GetActorBounds")){auto Params=Fn->GetParamsNamed();std::vector<uint8> Data(Params.Size+16,0);
+            A->ProcessEvent(Fn,Data.data());
+            for(auto& P:Params.NameOffsetMap){if(P.Offset+FVector::Size()>Data.size())continue;
+                if(P.Name=="Origin")memcpy(&Center,Data.data()+P.Offset,FVector::Size());
+                if(P.Name=="BoxExtent")memcpy(&Extent,Data.data()+P.Offset,FVector::Size());}
+            if(std::isfinite(Extent.X) && std::isfinite(Extent.Y) && Extent.X>50 && Extent.Y>50)return true;}
+        // Volumes have no registered brush on the server, so GetActorBounds is empty: use the component's cached bounds.
+        for(auto Name:{"BrushComponent","StaticMeshComponent","RootComponent"}){auto Off=A->GetOffset(Name);if(Off==uint32(-1))continue;
+            auto Comp=GetFromOffset<UObject*>(A,Off);if(!Comp)continue;auto BoundsOff=Comp->GetOffset("Bounds");if(BoundsOff==uint32(-1))continue;
+            FVector O{},E{};memcpy(&O,(uint8*)Comp+BoundsOff,FVector::Size());memcpy(&E,(uint8*)Comp+BoundsOff+FVector::Size(),FVector::Size());
+            if(std::isfinite(E.X) && std::isfinite(E.Y) && std::isfinite(O.Z) && E.X>50 && E.Y>50){Center=O;Extent=E;return true;}}
+        return false;
+    }
+    inline void SyndicateScanWater(){
+        if(VersionInfo.FortniteVersion<11)return;
+        const auto Now=GetTickCount64();if(SyndicateWaterScans>=3 || Now<SyndicateWaterNextScan)return;
+        SyndicateWaterNextScan=Now+(SyndicateWaterScans==0?30000:90000);++SyndicateWaterScans;
+        static auto ActorClass=FindClass("Actor");if(!ActorClass)return;
+        std::vector<SyndicateWaterArea> Found;std::map<std::string,int> Kinds,Skipped;
+        for(int i=0;i<TUObjectArray::Num();++i){auto Obj=TUObjectArray::GetObjectByIndex(i);
+            if(!Obj || !Obj->Class || !Obj->IsA(ActorClass))continue;
+            auto Name=std::string(Obj->Name.ToString().c_str());if(Name.rfind("Default__",0)==0)continue;
+            auto Cls=std::string(Obj->Class->Name.ToString().c_str());
+            auto Low=Name+" "+Cls;std::transform(Low.begin(),Low.end(),Low.begin(),[](unsigned char C){return char(std::tolower(C));});
+            // Bodies of water only: 11.00's Apollo_Waterbody_* (sea, lakes, ponds, rivers, swamps, reservoirs), water
+            // volumes and Chapter 1 style water planes. Props (water towers, pumps, wheels) and nav volumes are not.
+            const bool Body=Low.find("waterbody")!=std::string::npos || Low.find("watervolume")!=std::string::npos || Low.find("fortathenawater")!=std::string::npos
+                || Low.find("water_ocean")!=std::string::npos || Low.find("waterplane")!=std::string::npos;
+            if(!Body)continue;
+            auto A=(AActor*)Obj;if(A->bActorIsBeingDestroyed)continue;
+            const bool Volume=Low.find("volume")!=std::string::npos;
+            // Each piece of the body separately (a river is many pieces, each with its own height), from the
+            // components attached under the root; a flat piece's top is the water surface there.
+            int Pieces=0,Sloped=0;
+            auto AddBox=[&](FVector C,FVector E)->void{
+                if(!std::isfinite(C.Z) || !std::isfinite(E.Z) || (std::max)(E.X,E.Y)<600 || (std::min)(E.X,E.Y)<100 || E.X>600000 || E.Y>600000)return;
+                if(!Volume && E.Z>400){++Sloped;return;}
+                SyndicateWaterArea W;W.Center=C;W.Extent=E;W.Top=float(C.Z+E.Z);Found.push_back(W);++Pieces;};
+            std::vector<UObject*> Stack;if(auto Off=A->GetOffset("RootComponent");Off!=uint32(-1))if(auto Root=GetFromOffset<UObject*>(A,Off))Stack.push_back(Root);
+            for(int Seen=0;!Stack.empty() && Seen<256;++Seen){auto Comp=Stack.back();Stack.pop_back();
+                if(auto BoundsOff=Comp->GetOffset("Bounds");BoundsOff!=uint32(-1)){FVector O{},E{};memcpy(&O,(uint8*)Comp+BoundsOff,FVector::Size());memcpy(&E,(uint8*)Comp+BoundsOff+FVector::Size(),FVector::Size());AddBox(O,E);}
+                if(auto KidsOff=Comp->GetOffset("AttachChildren");KidsOff!=uint32(-1)){auto& Kids=GetFromOffset<TArray<UObject*>>(Comp,KidsOff);for(int K=0;K<Kids.Num() && K<256;++K)if(Kids[K])Stack.push_back(Kids[K]);}}
+            if(!Pieces){FVector C{},E{};if(SyndicateWaterBox(A,C,E))AddBox(C,E);}
+            if(Pieces)Kinds[Cls]+=Pieces;else ++Skipped[Cls+(Sloped?" (sloped)":" (no bounds)")];
+        }
+        SyndicateWater=std::move(Found);
+        std::string Text="water: scan "+std::to_string(SyndicateWaterScans)+" found "+std::to_string(SyndicateWater.size())+" water areas:";
+        for(auto& K:Kinds)Text+=" "+K.first+" x"+std::to_string(K.second);
+        if(!Skipped.empty()){Text+=" | skipped:";int N=0;for(auto& K:Skipped){if(++N>12)break;Text+=" "+K.first+" x"+std::to_string(K.second);}}
+        Text+="\n";AppendBotLog(Text.c_str());
+        for(size_t I=0;I<SyndicateWater.size() && I<8;++I){auto& W=SyndicateWater[I];char L[200];
+            snprintf(L,sizeof(L),"water: area %d center=%.0f,%.0f top=%.0f extent=%.0f,%.0f,%.0f\n",int(I),W.Center.X,W.Center.Y,W.Top,W.Extent.X,W.Extent.Y,W.Extent.Z);AppendBotLog(L);}
+    }
+    // The water surface height at P's position, or false. The highest surface wins (a lake above sea level);
+    // water far below P (a cliff over the sea) does not count.
+    inline bool SyndicateWaterTop(const FVector& P,float& Top){
+        bool Any=false;
+        for(auto& W:SyndicateWater){
+            if(fabs(P.X-W.Center.X)>W.Extent.X+50 || fabs(P.Y-W.Center.Y)>W.Extent.Y+50)continue;
+            if(P.Z>W.Top+300)continue;
+            if(!Any || W.Top>Top){Top=W.Top;Any=true;}
+        }
+        return Any;
+    }
+    // A ground point with at least Depth of water over it.
+    inline bool SyndicateUnderWater(const FVector& Ground,float Depth=60.f){float Top=0;return SyndicateWaterTop(Ground,Top) && Ground.Z<Top-Depth;}
+
     inline bool WalkableAhead(RoamingPawn* Pawn, FVector Location, FVector Direction, float LookAhead = 280.f, bool Extend = true)
     {
         bool Hit=false;FVector Point{},Normal{};
         auto Down=Location;Down.Z-=240;
         if(!ProbeGround(Pawn,Location,Down,12,Hit,Point,Normal)||!Hit)return false;
+        // Chapter 2: never walk into water. A bot already in it may walk on, so it can get back out.
+        const bool StartWet=SyndicateUnderWater(Point,70.f);
         double GroundZ=Point.Z,PreviousDistance=0;auto Previous=Location;
         for(float Distance:{LookAhead*.35f,LookAhead*.75f,LookAhead+(Extend?60.f:0.f)}){
             double Run=Distance-PreviousDistance;
@@ -1691,6 +1770,7 @@ namespace SpectraBots
                     if(GroundZ-Point.Z>150 || Point.Z-GroundZ>(std::max)(45.0,Run*.98))return false;
                 }
             }
+            if(!StartWet && SyndicateUnderWater(Point,70.f)){static ULONGLONG Next=0;if(GetTickCount64()>Next){Next=GetTickCount64()+5000;AppendBotLog("navigation: avoiding water\n");}return false;}
             // Follow the rising floor with the capsule instead of sweeping horizontally into a ramp.
             auto Next=Point;Next.Z+=85;bool Blocked=false;FVector Block{},BN{};
             if(!ProbeGround(Pawn,Previous,Next,30,Blocked,Block,BN,nullptr,WaterSurface)||Blocked){++WallRejects;return false;}
@@ -4442,8 +4522,12 @@ namespace SpectraBots
         if(!ProbeGround(B.Pawn,Top,Bottom,8,Hit,Ground,Normal,&Surface) || !Hit || !Surface)return;
         auto Name=Surface->Name.ToString()+Surface->Class->Name.ToString();
         bool Water=Name.find("Water")!=std::string::npos || Name.find("water")!=std::string::npos || Name.find("Lake")!=std::string::npos;
+        // Chapter 2: the trace passes through the water and hits the bed; the water map knows it is water.
+        float WaterTop=0;const bool Mapped=SyndicateWaterTop(Ground,WaterTop) && Ground.Z<WaterTop-70;
+        if(Mapped)Water=true;
         if(!Water){if(Normal.Z>.72 && fabs(Ground.Z-(P.Z-85))<150)B.BridgeActive=0;return;}
-        if(B.BridgeActive<=0){B.BridgeHeight=(std::max)(float(P.Z-85),float(Ground.Z));B.BridgePieces=0;}
+        // The floor goes at the bot's own level, and never under the water's surface.
+        if(B.BridgeActive<=0){B.BridgeHeight=(std::max)(float(P.Z-85),float(Ground.Z));if(Mapped)B.BridgeHeight=(std::max)(B.BridgeHeight,WaterTop+10);B.BridgePieces=0;}
         Ahead.Z=B.BridgeHeight;
         FVector Placed{};
         if(BuildCone(B,Ahead,true,&Placed)){
@@ -5950,6 +6034,7 @@ namespace SpectraBots
             Stair=false;Bad=N.Z<.55f;
             if(Surf){auto Nm=Surf->Name.ToString()+Surf->Class->Name.ToString();
                 if(Nm.find("Lava")!=std::string::npos || Nm.find("lava")!=std::string::npos || Nm.find("Water")!=std::string::npos)Bad=true;
+                if(SyndicateUnderWater(G))Bad=true;
                 auto Piece=Surf->Cast<ABuildingSMActor>();Stair=Piece && Piece->bPlayerPlaced && Nm.find("Stair")!=std::string::npos;}
             return true;};
         for(int I=0;I<16;++I){
@@ -6205,7 +6290,8 @@ namespace SpectraBots
         // The landing must be real ground inside the map (no water, no lava, no hole under the map).
         {auto Top=Goal;Top.Z=P.Z+5000;auto Low=Goal;Low.Z=P.Z-8000;bool H=false;FVector G{},N{};AActor* Surf=nullptr;
             if(!ProbeGround(B.Pawn,Top,Low,30,H,G,N,&Surf) || !H || N.Z<.6f)return false;
-            if(Surf){auto Nm=Surf->Name.ToString()+Surf->Class->Name.ToString();if(Nm.find("Water")!=std::string::npos || Nm.find("Lava")!=std::string::npos || Nm.find("lava")!=std::string::npos)return false;}}
+            if(Surf){auto Nm=Surf->Name.ToString()+Surf->Class->Name.ToString();if(Nm.find("Water")!=std::string::npos || Nm.find("Lava")!=std::string::npos || Nm.find("lava")!=std::string::npos)return false;}
+            if(SyndicateUnderWater(G))return false;}
         if(B.Harvesting)FinishHarvest(B);StopBotFire(B);EndBotBuild(B);
         if(auto M=(RoamingMovement*)B.Pawn->CharacterMovement)M->StopMovementImmediately();
         FVector V{};V.X=float(AX*1300);V.Y=float(AY*1300);V.Z=5200;
@@ -7756,6 +7842,7 @@ if(GetEnvironmentVariableW(L"TILTED_KNOCK_VISIBILITY_TEST",nullptr,0) && B.Bleed
             Sample X{};bool H=false;FVector G{},Nm{};AActor* Surf=nullptr;
             if(!ProbeGround(B.Pawn,Top,Low,12,H,G,Nm,&Surf) || !H || Nm.Z<.7f)continue;
             if(Surf){auto Name=Surf->Name.ToString()+Surf->Class->Name.ToString();if(Name.find("Lava")!=std::string::npos || Name.find("Water")!=std::string::npos)continue;}
+            if(SyndicateUnderWater(G))continue;
             if(!SafeBotDestination(G) || fabs(G.Z-P.Z)>900)continue;
             X.C.FromBot=float(FlatDistance(P,G));X.C.FromEnemy=float(FlatDistance(Q,G));
             X.C.AwayDot=float(((G.X-P.X)*AX+(G.Y-P.Y)*AY)/(std::max)(1.,FlatDistance(P,G)));
@@ -9734,6 +9821,7 @@ if(GetEnvironmentVariableW(L"TILTED_KNOCK_VISIBILITY_TEST",nullptr,0) && B.Bleed
     }
 
     inline bool SafeBotDestination(FVector Point) {
+        if(SyndicateUnderWater(Point))return false; // Chapter 2: not on the seabed or a riverbed
         auto W=UWorld::GetWorld();auto GS=W?(AFortGameStateAthena*)W->GameState:nullptr;
         auto Z=GS && GS->HasSafeZoneIndicator()?(AFortSafeZoneIndicator*)GS->SafeZoneIndicator:nullptr;
         if(!Z || !Z->HasNextCenter() || !Z->HasNextRadius() || !std::isfinite(Z->NextRadius) || Z->NextRadius<100)return true;
@@ -13134,7 +13222,13 @@ for(auto T=(const UStruct*)V->Class;T;T=T->GetSuper())Dump(T);
     // the water level or a little above. Arena rules hold: ordinary swimming, no teleport, no protection.
     inline bool UpdateSwimming(Bot& B,float DT,FVector P,bool LandingTime){
         auto Movement=B.Pawn?(RoamingMovement*)B.Pawn->CharacterMovement:nullptr;
-        if(!LandingTime || !B.bLanded || !Movement || BotMoveMode(Movement)!=4){B.SwimHasShore=false;B.SwimReplan=0;B.SwimTime=0;return false;}
+        // Chapter 2: the game does not put bots into swimming, so a bot in the sea or a river walks on the bed.
+        // Under the water map's surface it is treated as swimming: no shooting from under water, out to the shore.
+        float WaterLevel=0;const bool Submerged=SyndicateWaterTop(P,WaterLevel) && P.Z<WaterLevel+10; // feet about waist deep or more
+        if(!LandingTime || !B.bLanded || !Movement || (BotMoveMode(Movement)!=4 && !Submerged)){B.SwimHasShore=false;B.SwimReplan=0;B.SwimTime=0;return false;}
+        if(B.SwimTime==0 && Submerged){static ULONGLONG Next=0;if(GetTickCount64()>Next){Next=GetTickCount64()+5000;char L[160];snprintf(L,sizeof(L),"swim: bot under water (bed %.0f, surface %.0f), heading out\n",P.Z-90,WaterLevel);AppendBotLog(L);}}
+        // Shores are measured from the surface when the bot is down on the bed.
+        const float Level=Submerged?WaterLevel:float(P.Z);
         B.SwimTime+=DT;B.SwimReplan-=DT;B.SwimBuildCooldown-=DT;
         StopBotFire(B);if(B.Harvesting)FinishHarvest(B);
         AFortPlayerPawnAthena* Foe=nullptr;
@@ -13147,13 +13241,14 @@ for(auto T=(const UStruct*)V->Class;T;T=T->GetSuper())Dump(T);
             if(Foe){auto Q=Foe->K2_GetActorLocation();double X=P.X-Q.X,Y=P.Y-Q.Y,L=(std::max)(1.,sqrt(X*X+Y*Y));AwayX=X/L;AwayY=Y/L;}
             double Best=1e18;FVector BestPoint{};bool Found=false;
             for(int I=0;I<16;++I){const double A=I*3.14159265358979/8.,DX=cos(A),DY=sin(A);
-                for(float Range:{500.f,1000.f,1600.f,2400.f,3400.f,4600.f,6000.f}){
-                    auto Top=P;Top.X+=float(DX*Range);Top.Y+=float(DY*Range);Top.Z+=700;auto Bottom=Top;Bottom.Z=P.Z-400;
+                for(float Range:{500.f,1000.f,1600.f,2400.f,3400.f,4600.f,6000.f,8500.f,12000.f}){
+                    auto Top=P;Top.X+=float(DX*Range);Top.Y+=float(DY*Range);Top.Z=Level+700;auto Bottom=Top;Bottom.Z=Level-400;
                     bool Hit=false;FVector Ground{},Normal{};AActor* Surface=nullptr;
                     if(!ProbeGround(B.Pawn,Top,Bottom,20,Hit,Ground,Normal,&Surface) || !Hit || Normal.Z<.72f)continue;
                     if(Surface){auto Nm=Surface->Name.ToString()+Surface->Class->Name.ToString();
                         if(Nm.find("Water")!=std::string::npos || Nm.find("water")!=std::string::npos || Nm.find("Lava")!=std::string::npos || Nm.find("lava")!=std::string::npos)continue;}
-                    if(Ground.Z<P.Z-160 || Ground.Z>P.Z+450)continue; // under the water, or a cliff the bot cannot climb out onto
+                    if(SyndicateUnderWater(Ground,40.f))continue; // Chapter 2: still the bed, not the shore
+                    if(Ground.Z<Level-160 || Ground.Z>Level+450)continue; // under the water, or a cliff the bot cannot climb out onto
                     // Nearest first; with an opponent in sight, toward it costs a lot and away from it is worth
                     // a longer swim ("across").
                     double Score=Range;if(Foe)Score-=(DX*AwayX+DY*AwayY)*2500.;
@@ -14304,6 +14399,7 @@ for(auto T=(const UStruct*)V->Class;T;T=T->GetSuper())Dump(T);
         }}
         const float FrameDelta=DeltaSeconds;
         SampleHumanFire(FrameDelta);
+        SyndicateScanWater(); // Chapter 2 water map (three scans per match, then nothing)
         for (auto& Bot : Bots)
         {
             float DeltaSeconds=FrameDelta;
@@ -14818,7 +14914,9 @@ for(auto T=(const UStruct*)V->Class;T;T=T->GetSuper())Dump(T);
             printf("[SyndicateBot] Roaming with %d bots (%d landed)\n", (int)Bots.size(), LandedCount);
             for (auto& B : Bots) if (!B.Eliminated && B.Pawn && !B.Pawn->bActorIsBeingDestroyed) {
                 auto Pos=B.Pawn->K2_GetActorLocation();
-                char H[512];snprintf(H,sizeof(H),"bot status: name=%s health=%.0f landed=%d gun=%d pickups=%d chests=%d doors=%d pursuit=%d loot=%s distance=%.0f pos=%.0f,%.0f,%.0f\n",std::string(B.DisplayName.begin(),B.DisplayName.end()).c_str(),B.Pawn->GetHealth(),B.bLanded,B.HasGun,B.GunsPickedUp,B.ChestsOpened,B.DoorsOpened,B.Pursuing,B.LootTarget.Get()?B.LootTarget.Get()->Name.ToString().c_str():"none",FlatDistance(Pos,B.Target),Pos.X,Pos.Y,Pos.Z);AppendBotLog(H);
+                // mode: movement mode (1 walk, 3 fall, 4 swim, 6 custom); water: the water map's surface over the bot (Chapter 2).
+                int BotMode=-1;if(auto M=(RoamingMovement*)B.Pawn->CharacterMovement)BotMode=int(BotMoveMode(M));float BotWater=0;const bool InWaterArea=SyndicateWaterTop(Pos,BotWater);
+                char H[700];snprintf(H,sizeof(H),"bot status: name=%s health=%.0f landed=%d gun=%d pickups=%d chests=%d doors=%d pursuit=%d loot=%s distance=%.0f pos=%.0f,%.0f,%.0f mode=%d water=%s%.0f stalled=%.1f reason=%s\n",std::string(B.DisplayName.begin(),B.DisplayName.end()).c_str(),B.Pawn->GetHealth(),B.bLanded,B.HasGun,B.GunsPickedUp,B.ChestsOpened,B.DoorsOpened,B.Pursuing,B.LootTarget.Get()?B.LootTarget.Get()->Name.ToString().c_str():"none",FlatDistance(Pos,B.Target),Pos.X,Pos.Y,Pos.Z,BotMode,InWaterArea?"":"none:",InWaterArea?BotWater:0.f,B.NoProgress,B.LastReason);AppendBotLog(H);
             }
             auto Driver = (UNetDriver*)World->NetDriver;
             if (!Bots.empty() && Bots[0].Pawn && !Bots[0].Pawn->bActorIsBeingDestroyed) {

@@ -54,6 +54,34 @@ public static class PatchNotes
     public static IReadOnlyList<PatchRelease> Releases { get; } = new[]
     {
         new PatchRelease(
+            Version: "1.4.4",
+            Date: "November 28, 2026",
+            Title: "STABILITY AND SWIMMING",
+            Summary: "Matches no longer crash halfway through, and Chapter 2 bots get out of the water.",
+            Highlights: new[]
+            {
+                new PatchHighlight("No more mid-match kicks",
+                    "Fixed a match server crash that froze the game and sent you back to the lobby with a connection error."),
+                new PatchHighlight("Bots and water",
+                    "Chapter 2 bots no longer stand on the seabed or in rivers: they head for shore and build across water."),
+            },
+            Sections: new[]
+            {
+                new PatchNoteSection("BUG FIXES", new[]
+                {
+                    "Fixed the match server crashing when an item was picked up onto a full stack. The game froze, you could only look around, and then you were kicked to the lobby with a network error.",
+                }),
+                new PatchNoteSection("BOTS", new[]
+                {
+                    "Chapter 2 bots no longer walk into the sea, lakes and rivers and stand on the bottom shooting.",
+                    "Bots in the water now head for the nearest shore, and bots with materials build floors across water.",
+                }),
+            },
+            KnownIssues: new[]
+            {
+                "Discord Rich Presence stays off until the new Tilt Discord application is set up.",
+            }),
+        new PatchRelease(
             Version: "1.4.3",
             Date: "November 27, 2026",
             Title: "CHAPTER 2 SEASON 1",

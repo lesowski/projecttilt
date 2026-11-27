@@ -2402,8 +2402,15 @@ void AFortPlayerControllerAthena::InternalPickup(FFortItemEntry* PickupEntry)
 		auto itemEntry = WorldInventory->Inventory.ReplicatedEntries.Search([PickupEntry, MaxStack](FFortItemEntry& entry)
 			{ return entry.ItemDefinition == PickupEntry->ItemDefinition && entry.Count < MaxStack; }, FFortItemEntry::Size());
 
-		if (item)
+		// Both lookups must succeed: the stack is updated through the replicated entry and its item instance.
+		if (item && itemEntry)
 		{
+			// Copy the instance out now. item and itemEntry point into the inventory's arrays, and giving the
+			// overflow as a new stack (GiveOrSwapStack -> GiveItem) can grow those arrays and move them, which left
+			// both pointers dangling: the write through *item below crashed the match server mid-match (seen on 4.5,
+			// "Trying to write 0x4f82b" in InternalPickup from FinishedTargetSpline). The overflow is now given last.
+			UFortWorldItem* itemInstance = *item;
+			int32 OverflowCount = 0;
 			bool bFound = false;
 			/*for (int i = 0; i < itemEntry->StateValues.Num(); i++)
 			{
@@ -2420,10 +2427,8 @@ void AFortPlayerControllerAthena::InternalPickup(FFortItemEntry* PickupEntry)
 			auto TheRealOriginalCount = itemEntry->Count;
 			if ((itemEntry->Count += PickupEntry->Count) > MaxStack)
 			{
-				auto OriginalCount = itemEntry->Count;
+				OverflowCount = itemEntry->Count;
 				itemEntry->Count = MaxStack;
-
-				GiveOrSwapStack(OriginalCount);
 			}
 
 			// full proper
@@ -2455,8 +2460,12 @@ void AFortPlayerControllerAthena::InternalPickup(FFortItemEntry* PickupEntry)
 			auto Gained = itemEntry->Count - TheRealOriginalCount;
 
 			_SendStat(Gained);
-			(*item)->ItemEntry.Count = itemEntry->Count;
+			itemInstance->ItemEntry.Count = itemEntry->Count;
 			WorldInventory->UpdateEntry(*itemEntry);
+
+			// Last: this may add a stack (or drop a pickup), after which item and itemEntry are no longer valid.
+			if (OverflowCount > 0)
+				GiveOrSwapStack(OverflowCount);
 		}
 		else
 		{

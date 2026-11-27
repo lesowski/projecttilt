@@ -2,6 +2,17 @@
 
 Launcher releases, newest first. Version numbers follow `<Version>` in `Launcher/SyndicateLauncher/SyndicateLauncher.csproj` and the in-launcher Patch Notes (`Launcher/SyndicateLauncher/Models/PatchNotes.cs`). Releases up to 1.3.1 are listed only in the Patch Notes.
 
+## 1.4.4 - November 28, 2026
+
+### Bug fixes
+
+- Fixed the Erbium match server crashing in `InternalPickup` when a pickup overflowed a full stack: the overflow stack was given before the old stack was updated, which could move the inventory arrays and leave the code writing through stale pointers. Players froze, then were kicked to the lobby with a network error.
+
+### Bots
+
+- Chapter 2 (11.00): bots get a water map built from the level's water bodies (sea, lakes, ponds, rivers, swamps, reservoirs), measured piece by piece. They no longer path into water, pick destinations under it or land in it; bots in water (waist deep or more) stop shooting and head for the shore; bots with materials build floors across at surface level.
+- Bot status lines in the bot log now include the movement mode, the water surface over the bot, how long it has been stalled and its current reason.
+
 ## 1.4.3 - November 27, 2026
 
 ### Seasons
