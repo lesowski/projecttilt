@@ -75,6 +75,10 @@ public static class PatchNotes
                 {
                     "Fixed Pre-season, Season 1 and Season 2 getting stuck on \"Waiting for players to ready up\". The launcher now sets up the party chat connection those seasons need (it updates the game the first time you press Play and keeps a backup).",
                 }),
+            },
+            KnownIssues: new[]
+            {
+                "Discord Rich Presence stays off until the new Tilt Discord application is set up.",
             }),
         new PatchRelease(
             Version: "1.4.2",
