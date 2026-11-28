@@ -2,6 +2,14 @@
 
 Launcher releases, newest first. Version numbers follow `<Version>` in `Launcher/SyndicateLauncher/SyndicateLauncher.csproj` and the in-launcher Patch Notes (`Launcher/SyndicateLauncher/Models/PatchNotes.cs`). Releases up to 1.3.1 are listed only in the Patch Notes.
 
+## 1.4.6 - November 29, 2026
+
+### Loot
+
+- Season 2 (1.11, 2.5): trap drops (chests, floor loot, supply drops) become a directional jump pad 40% of the time and a jump pad 27% of the time.
+- Season 6 (6.20): half of the trap drops become bouncers.
+- An item a build does not have is looked up once and the drop stays as rolled.
+
 ## 1.4.5 - November 28, 2026
 
 ### Bug fixes

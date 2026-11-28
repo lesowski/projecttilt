@@ -459,6 +459,34 @@ void UFortLootPackage::SetupLDSForPackage(TArray<FFortItemEntry*>& LootDrops, SD
 			ItemDefinition = (decltype(ItemDefinition))Guided;
 	}
 
+	// Syndicate: extra movement traps in two seasons, swapped into trap drops (chests, floor loot, supply drops):
+	//   Season 2 (1.11, 2.5): jump pads, about 2 in 3 trap drops (40% directional jump pad, 27% jump pad);
+	//   Season 6 (6.20):      bouncers, half of the trap drops.
+	// An item this build does not have is looked up once and the drop is left unchanged.
+	if (std::string(ItemDefinition->Name.ToString().c_str()).rfind("TID_", 0) == 0)
+	{
+		auto Load = [](const wchar_t* Path, const char* Label) -> UObject* {
+			auto Found = (UObject*)StaticLoadObject(Path, UFortItemDefinition::StaticClass());
+			printf(Found ? "[Syndicate] %s in this season's loot\n" : "[Syndicate] %s is not in this build; loot unchanged\n", Label);
+			return Found;
+		};
+		const int Roll = rand() % 100;
+		UObject* Swap = nullptr;
+		if (VersionInfo.FortniteVersion >= 1.11 && VersionInfo.FortniteVersion < 3)
+		{
+			static auto Directional = Load(L"/Game/Athena/Items/Traps/TID_Floor_Player_Jump_Pad_Free_Direction_Athena.TID_Floor_Player_Jump_Pad_Free_Direction_Athena", "Directional jump pad");
+			static auto JumpPad = Load(L"/Game/Athena/Items/Traps/TID_Floor_Player_Jump_Pad_Athena.TID_Floor_Player_Jump_Pad_Athena", "Jump pad");
+			Swap = Roll < 40 ? Directional : Roll < 67 ? JumpPad : nullptr;
+		}
+		else if (VersionInfo.FortniteVersion >= 6 && VersionInfo.FortniteVersion < 7)
+		{
+			static auto Bouncer = Load(L"/Game/Athena/Items/Traps/TID_Context_BouncePad_Athena.TID_Context_BouncePad_Athena", "Bouncer");
+			Swap = Roll < 50 ? Bouncer : nullptr;
+		}
+		if (Swap)
+			ItemDefinition = (decltype(ItemDefinition))Swap;
+	}
+
 	// Syndicate: Season X also rolls the Batman items: the Grapnel Gun in about 1 in 9 weapon drops, the Explosive
 	// Batarang in about 1 in 40. Chapter 2 Season 1 gets the Grapnel Gun only, when its game files still have it.
 	if (VersionInfo.FortniteVersion >= 10.30 && VersionInfo.FortniteVersion < 12 && ItemDefinition->IsA(UFortWeaponItemDefinition::StaticClass()))

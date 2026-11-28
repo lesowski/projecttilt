@@ -54,6 +54,30 @@ public static class PatchNotes
     public static IReadOnlyList<PatchRelease> Releases { get; } = new[]
     {
         new PatchRelease(
+            Version: "1.4.6",
+            Date: "November 29, 2026",
+            Title: "LOOT POOL UPDATE",
+            Summary: "Jump pads in Season 2 and bouncers in Season 6.",
+            Highlights: new[]
+            {
+                new PatchHighlight("Season 2 jump pads",
+                    "Jump pads and directional jump pads now drop from chests, floor loot and supply drops."),
+                new PatchHighlight("Season 6 bouncers",
+                    "Bouncers are back in the Season 6 loot pool."),
+            },
+            Sections: new[]
+            {
+                new PatchNoteSection("LOOT", new[]
+                {
+                    "Season 2: about 2 in 3 trap drops are now a directional jump pad or a jump pad.",
+                    "Season 6: half of the trap drops are now bouncers.",
+                }),
+            },
+            KnownIssues: new[]
+            {
+                "Discord Rich Presence stays off until the new Tilt Discord application is set up.",
+            }),
+        new PatchRelease(
             Version: "1.4.5",
             Date: "November 28, 2026",
             Title: "DATABASE FIX",
