@@ -2,6 +2,14 @@
 
 Launcher releases, newest first. Version numbers follow `<Version>` in `Launcher/SyndicateLauncher/SyndicateLauncher.csproj` and the in-launcher Patch Notes (`Launcher/SyndicateLauncher/Models/PatchNotes.cs`). Releases up to 1.3.1 are listed only in the Patch Notes.
 
+## 1.4.5 - November 28, 2026
+
+### Bug fixes
+
+- Fixed "MongoDB exited during startup" on every season. The launcher killed MongoDB (`Process.Kill`) after every match, on every season switch and on a failed launch; a kill that landed while it wrote its journal left the database unable to recover (WiredTiger "Recovery failed", a missing `WiredTigerLog` file), so every later start aborted. Each failed start also left three new 100 MB journal files.
+- MongoDB now stays running between matches and season switches (only the Node backend restarts) and is shut down cleanly when the launcher closes (the `shutdown` command, killed only if it does not answer within 8 seconds).
+- A database that fails to start because it is damaged is repaired with MongoDB's own `--repair`. If that fails, the folder is kept as `SyndicateDatabase-damaged-<date>` and a new database is made; accounts are recreated on sign-in.
+
 ## 1.4.4 - November 28, 2026
 
 ### Bug fixes

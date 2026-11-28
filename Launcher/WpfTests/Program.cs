@@ -157,6 +157,13 @@ internal static class Program
     patch(fake2,"1.8.2");Check(File.ReadAllBytes(fake2).AsSpan(5000,1144).SequenceEqual(der),"Chat certificate replaces an earlier launcher's certificate.");
    }
    finally{Directory.Delete(fakeDir,true);}
+   // MongoDB: a damaged database is recognised from its log, and the clean shutdown command is a valid OP_MSG.
+   var backendType=typeof(SyndicateLauncher.Services.SyndicateBackend);
+   Func<string,bool> damaged=log=>(bool)backendType.GetMethod("DamagedDatabase",open)!.Invoke(null,new object[]{log})!;
+   Check(damaged("{\"s\":\"E\",\"msg\":\"__wt_txn_recover:1239:Recovery failed\",\"error_str\":\"WT_ERROR: non-specific WiredTiger error\"}")&&damaged("{\"s\":\"F\",\"msg\":\"Fatal assertion\",\"attr\":{\"msgid\":50944}}"),"MongoDB: a journal that cannot be recovered counts as a damaged database.");
+   Check(!damaged("")&&!damaged("{\"s\":\"E\",\"msg\":\"Failed to set up listener\",\"error\":\"Address already in use\"}"),"MongoDB: a busy port or an empty log is not treated as damage (the database is never moved aside for that).");
+   var shutdown=(byte[])backendType.GetMethod("MongoShutdownMessage",open)!.Invoke(null,null)!;
+   Check(BitConverter.ToInt32(shutdown,0)==shutdown.Length&&BitConverter.ToInt32(shutdown,12)==2013&&shutdown[20]==0&&BitConverter.ToInt32(shutdown,21)==shutdown.Length-21&&System.Text.Encoding.ASCII.GetString(shutdown).Contains("shutdown")&&System.Text.Encoding.ASCII.GetString(shutdown).Contains("admin"),"MongoDB shutdown command is a well-formed OP_MSG.");
    // Chapter 2 Season 1 (11.00) is playable in both editions; the backend gets season 11.
    var c2=SyndicateLauncher.Models.SeasonCatalog.GetSeasons(2);
    Check(c2[0].IsReleased&&c2[0].BuildVersion=="11.00"&&c2[0].SeasonNumber==11&&SyndicateLauncher.Services.GameLauncher.IsSupportedBuild("11.00"),"Chapter 2 Season 1 is playable on 11.00 as season 11.");

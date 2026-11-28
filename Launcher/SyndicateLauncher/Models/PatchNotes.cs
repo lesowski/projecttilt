@@ -54,6 +54,29 @@ public static class PatchNotes
     public static IReadOnlyList<PatchRelease> Releases { get; } = new[]
     {
         new PatchRelease(
+            Version: "1.4.5",
+            Date: "November 28, 2026",
+            Title: "DATABASE FIX",
+            Summary: "Fixes \"MongoDB exited during startup\" on every season.",
+            Highlights: new[]
+            {
+                new PatchHighlight("Play works again",
+                    "If your local account database was damaged, the launcher now repairs it by itself the next time it starts."),
+            },
+            Sections: new[]
+            {
+                new PatchNoteSection("BUG FIXES", new[]
+                {
+                    "Fixed \"MongoDB exited during startup\" on every season. The launcher used to force-close its database after every match and season switch, which could damage it.",
+                    "The database now stays open between matches and closes properly when you close the launcher.",
+                    "A damaged database is repaired automatically. If it cannot be repaired, Tilt keeps a copy and starts a new one, so you can always play (your players, lockers and settings are not affected).",
+                }),
+            },
+            KnownIssues: new[]
+            {
+                "Discord Rich Presence stays off until the new Tilt Discord application is set up.",
+            }),
+        new PatchRelease(
             Version: "1.4.4",
             Date: "November 28, 2026",
             Title: "STABILITY AND SWIMMING",

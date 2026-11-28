@@ -28,7 +28,14 @@ public static class SyndicateBackend
         Timeout = TimeSpan.FromSeconds(30)
     };
 
+    /// <summary>The Node backend and matchmaker this launcher started. MongoDB is kept apart (<see cref="_mongo"/>).</summary>
     private static readonly List<Process> Started = new();
+    /// <summary>
+    /// The MongoDB this launcher started. It is never killed between matches or season switches: a hard kill can land
+    /// while it writes its journal, and the next start then fails ("MongoDB exited during startup") on every season
+    /// until the database is repaired. It is shut down cleanly when the launcher closes (<see cref="StopDatabase"/>).
+    /// </summary>
+    private static Process? _mongo;
     private static readonly SemaphoreSlim StartGate = new(1, 1);
     private static int _startedSeason = -1;
 
@@ -160,9 +167,7 @@ public static class SyndicateBackend
         {
             var mongod = FindMongo(backend)
                 ?? throw new InvalidOperationException("MongoDB is not running and mongod.exe could not be found.");
-            status("Starting the local account database...");
-            StartMongo(mongod);
-            await WaitForPortAsync(MongoPort, TimeSpan.FromSeconds(30), "MongoDB");
+            await StartDatabaseAsync(mongod, status);
         }
 
         status("Starting the Tilt backend...");
@@ -342,9 +347,106 @@ public static class SyndicateBackend
     public static Task SetMenuAsync(string username, bool active) =>
         PostAsPlayerAsync(username, "launcher/menu", new { active });
 
-    private static void StartMongo(string mongod)
+    /// <summary>
+    /// Starts MongoDB. When it quits while starting because its data is damaged (it cannot replay its journal after an
+    /// earlier hard stop), runs MongoDB's own --repair, which salvages what it can, and starts it again. If that fails
+    /// too, the damaged folder is kept aside and a new database is made: players, lockers and settings live in
+    /// %APPDATA%\SyndicateLauncher, and accounts are made again on sign-in, so Play keeps working.
+    /// </summary>
+    private static async Task StartDatabaseAsync(string mongod, Action<string> status)
     {
         string root = LegacyData.DatabaseDirectory;
+        string log = Path.Combine(root, "mongodb.log");
+        long logStart = File.Exists(log) ? new FileInfo(log).Length : 0;
+        status("Starting the local account database...");
+        if (await WaitForMongoAsync(StartMongo(mongod, root))) return;
+
+        string reason = ReadLogFrom(log, logStart);
+        if (!DamagedDatabase(reason))
+            throw new InvalidOperationException("MongoDB exited during startup." + MongoHint(reason));
+
+        status("The local account database was damaged. Repairing it, this can take a minute...");
+        if (await RepairMongoAsync(mongod, root) && await WaitForMongoAsync(StartMongo(mongod, root)))
+        {
+            status("Repaired the local account database.");
+            return;
+        }
+
+        string aside = root + "-damaged-" + DateTime.Now.ToString("yyyyMMdd-HHmmss");
+        try { Directory.Move(root, aside); }
+        catch (Exception error) { throw new InvalidOperationException("The local account database is damaged and could not be repaired or moved aside (" + error.Message + "). Close every Tilt window and press Play again."); }
+        status("The local account database could not be repaired, so Tilt started a new one. The old one is kept in " + aside + ".");
+        if (!await WaitForMongoAsync(StartMongo(mongod, root)))
+            throw new InvalidOperationException("MongoDB exited during startup, even with a new database." + MongoHint(ReadLogFrom(Path.Combine(root, "mongodb.log"), 0)));
+    }
+
+    /// <summary>True once MongoDB listens; false when the process quit first.</summary>
+    private static async Task<bool> WaitForMongoAsync(Process process)
+    {
+        var deadline = Stopwatch.StartNew();
+        while (deadline.Elapsed < TimeSpan.FromSeconds(30))
+        {
+            if (PortOpen(MongoPort)) return true;
+            if (process.HasExited) return false;
+            await Task.Delay(150);
+        }
+        if (PortOpen(MongoPort)) return true;
+        throw new TimeoutException("MongoDB did not start within 30 seconds.");
+    }
+
+    /// <summary>MongoDB's log says its data files or journal could not be opened or recovered.</summary>
+    internal static bool DamagedDatabase(string log) =>
+        log.Contains("--repair", StringComparison.OrdinalIgnoreCase)
+        || log.Contains("Recovery failed", StringComparison.OrdinalIgnoreCase)
+        || log.Contains("WT_ERROR", StringComparison.Ordinal)
+        || log.Contains("WT_PANIC", StringComparison.Ordinal)
+        || log.Contains("WT_TRY_SALVAGE", StringComparison.Ordinal)
+        || log.Contains("\"msgid\":50944", StringComparison.Ordinal)
+        || log.Contains("corrupt", StringComparison.OrdinalIgnoreCase);
+
+    private static string MongoHint(string log) =>
+        log.Contains("Address already in use", StringComparison.OrdinalIgnoreCase) || log.Contains("SocketException", StringComparison.Ordinal)
+            ? " Port " + MongoPort + " is used by another program. Close other Tilt copies or restart your PC, then press Play again."
+            : log.Length == 0
+                ? " Windows may have blocked mongod.exe: add the Tilt folder to your antivirus exclusions and extract the whole ZIP again."
+                : "";
+
+    private static string ReadLogFrom(string path, long offset)
+    {
+        try
+        {
+            using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            if (offset > stream.Length) offset = 0;
+            stream.Position = offset;
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+        catch { return ""; }
+    }
+
+    private static async Task<bool> RepairMongoAsync(string mongod, string root)
+    {
+        try
+        {
+            var info = new ProcessStartInfo(mongod)
+            {
+                UseShellExecute = false, CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden,
+                WorkingDirectory = Path.GetDirectoryName(mongod)!
+            };
+            foreach (var argument in new[] { "--dbpath", root, "--repair", "--logpath", Path.Combine(root, "mongodb.log"), "--logappend" })
+                info.ArgumentList.Add(argument);
+            using var repair = Process.Start(info);
+            if (repair is null) return false;
+            using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+            try { await repair.WaitForExitAsync(timeout.Token); }
+            catch (OperationCanceledException) { try { repair.Kill(); } catch { } return false; }
+            return repair.ExitCode == 0;
+        }
+        catch { return false; }
+    }
+
+    private static Process StartMongo(string mongod, string root)
+    {
         Directory.CreateDirectory(root);
 
         var info = new ProcessStartInfo(mongod)
@@ -364,7 +466,8 @@ public static class SyndicateBackend
         }) info.ArgumentList.Add(argument);
 
         var process = Process.Start(info) ?? throw new InvalidOperationException("Could not start MongoDB.");
-        Started.Add(process);
+        _mongo = process;
+        return process;
     }
 
     private static void StartNode(string backend, int mainSeason)
@@ -496,6 +599,7 @@ public static class SyndicateBackend
     }
 
     /// <summary>Stops only the processes this launcher started (an existing Syndicate session is left alone).</summary>
+    /// <summary>Stops the Node backend and matchmaker. MongoDB keeps running for the next match (see <see cref="_mongo"/>).</summary>
     public static void StopStarted()
     {
         foreach (var process in Started.ToArray().Reverse())
@@ -505,5 +609,60 @@ public static class SyndicateBackend
         }
         Started.Clear();
         _startedSeason = -1;
+    }
+
+    /// <summary>
+    /// Shuts down the MongoDB this launcher started, cleanly: the shutdown command, then up to 8 seconds for it to
+    /// finish writing. Only a MongoDB that does not answer is killed. Called when the launcher closes.
+    /// </summary>
+    public static void StopDatabase()
+    {
+        var mongo = _mongo;
+        _mongo = null;
+        if (mongo is null) return;
+        try
+        {
+            if (mongo.HasExited) return;
+            SendMongoShutdown();
+            if (!mongo.WaitForExit(8000)) mongo.Kill();
+        }
+        catch { try { if (!mongo.HasExited) mongo.Kill(); } catch { } }
+    }
+
+    /// <summary>
+    /// Sends { shutdown: 1 } to the local MongoDB as one OP_MSG (the wire protocol's command message), so the database
+    /// is closed the way MongoDB's own tools close it. No driver is needed for this one command.
+    /// </summary>
+    internal static void SendMongoShutdown()
+    {
+        using var client = new TcpClient();
+        if (!client.ConnectAsync("127.0.0.1", MongoPort).Wait(1000)) return;
+        using var stream = client.GetStream();
+        stream.WriteTimeout = 2000; stream.ReadTimeout = 2000;
+        var command = MongoShutdownMessage();
+        stream.Write(command, 0, command.Length);
+        try { stream.ReadExactly(new byte[16]); } catch { /* MongoDB closes the connection as it shuts down */ }
+    }
+
+    internal static byte[] MongoShutdownMessage()
+    {
+        // BSON document { shutdown: 1, $db: "admin" }.
+        var document = new MemoryStream();
+        var writer = new BinaryWriter(document);
+        writer.Write(0); // length, set below
+        writer.Write((byte)0x10); writer.Write(System.Text.Encoding.ASCII.GetBytes("shutdown\0")); writer.Write(1);
+        writer.Write((byte)0x02); writer.Write(System.Text.Encoding.ASCII.GetBytes("$db\0")); writer.Write(6); writer.Write(System.Text.Encoding.ASCII.GetBytes("admin\0"));
+        writer.Write((byte)0);
+        writer.Flush();
+        var body = document.ToArray();
+        BitConverter.GetBytes(body.Length).CopyTo(body, 0);
+
+        // OP_MSG: header (length, request id, response to, opcode 2013), flag bits, one body section (kind 0).
+        var message = new MemoryStream();
+        var output = new BinaryWriter(message);
+        output.Write(16 + 4 + 1 + body.Length); output.Write(1); output.Write(0); output.Write(2013);
+        output.Write(0); output.Write((byte)0); output.Write(body);
+        output.Flush();
+        return message.ToArray();
     }
 }

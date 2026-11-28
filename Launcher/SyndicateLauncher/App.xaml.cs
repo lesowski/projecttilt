@@ -178,6 +178,8 @@ public partial class App : Application
     {
         StartupTrace.Flush();
         Services.GameLauncher.StopOwned();
+        // Last, and cleanly: a killed MongoDB can leave its journal unreadable for the next start.
+        Services.SyndicateBackend.StopDatabase();
         base.OnExit(e);
     }
 }
